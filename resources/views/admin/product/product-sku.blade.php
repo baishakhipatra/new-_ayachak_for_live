@@ -16,6 +16,9 @@
                 </form>
             </div>
             <div class="col-md-6 text-end">
+                <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#importStock">
+                    Stock Inventory
+                </button>
                 {{-- <a href="{{route('admin.product.sku_list.export', ['search' => request('search')])}}" class="btn btn-sm btn-primary">Export</a> --}}
                 <a href="{{ route('admin.product.sku_list.export', request()->query()) }}" 
                     class="btn btn-sm btn-primary">
@@ -138,6 +141,39 @@
                         <button type="submit" class="btn btn-primary">Update Variation</button>
                     </div>
                 </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal fade" id="importStock" tabindex="-1" aria-labelledby="importStockLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <form action="{{ route('admin.stock.stock_import') }}" method="POST" enctype="multipart/form-data" class="modal-content">
+            @csrf
+            <div class="modal-header">
+                <h5 class="modal-title" id="importStockLabel">Import Stock</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <p>
+                    <strong>Sample Format:</strong> <br>
+                    <code>SKU_code,available_stock,required_stock</code>
+                </p>
+
+                <a href="{{route('admin.stock.sample_csv')}}" target="_blank" class="text-decoration-underline">
+                    Download sample file
+                </a>
+
+                <div class="mb-3">
+                    <label for="csv_file" class="form-label">Upload CSV File</label>
+                    <input type="file" name="csv_file" id="csv_file" class="form-control" accept=".csv" required>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-success">Import</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
             </form>
         </div>
     </div>
