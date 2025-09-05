@@ -14,10 +14,13 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class StockController extends Controller
 {
-   public function stock_sample_csv()
+   public function stock_sample_csv(Request $request)
     {
         $fileName = 'stock_sample.csv';
-        $productvariation = ProductVariation::all();
+
+        $productvariation = json_decode($request->input('product_var'), true);
+
+        $variations = $productvariation['data'] ?? [];
 
         $headers = [
             "Content-type"        => "text/csv",
@@ -29,14 +32,14 @@ class StockController extends Controller
 
         $columns = ['SKU_code', 'available_stock', 'required_stock'];
 
-        $callback = function() use($productvariation, $columns) {
+        $callback = function () use ($variations, $columns) {
             $file = fopen('php://output', 'w');
             fputcsv($file, $columns);
 
-            foreach ($productvariation  as $product_v) {
+            foreach ($variations as $product_v) {
                 fputcsv($file, [
-                    $product_v->code,
-                    $product_v->stock,
+                    $product_v['code'] ?? '',
+                    $product_v['stock'] ?? '',
                     ''
                 ]);
             }
@@ -44,7 +47,7 @@ class StockController extends Controller
             fclose($file);
         };
 
-        return Response::stream($callback, 200, $headers);
+        return response()->stream($callback, 200, $headers);
     }
 
     public function stock_import(Request $request)
