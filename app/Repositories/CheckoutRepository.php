@@ -225,7 +225,6 @@ class CheckoutRepository implements CheckoutInterface
                 'orderCancelledReason' => null,
             ]);
             //dd($order);
-
             $orderNo = 'ORD-' . str_pad($order->id, 6, '0', STR_PAD_LEFT); 
             $order->update(['order_no' => $orderNo]);
 

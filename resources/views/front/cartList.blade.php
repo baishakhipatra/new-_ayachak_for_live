@@ -18,7 +18,7 @@
                         <ul class="cart-item-list">
                             @forelse($cartItems as $item)
                                 <li>
-                                    <div class="inner-wrap">
+                                    <div class="inner-wrap {{ $item->is_out_of_stock ? 'bg-light border-danger' : '' }}">
                                         <figure>
                                             <img src="{{ asset($item->productDetails->image ?? 'assets/images/placeholder-product.jpg') }}" alt="">
                                         </figure>
@@ -36,11 +36,23 @@
                                                     <span>GST:</span> {{ $item->productDetails->gst ?? 0 }}%
                                                 </div>
                                                 @endif
-                                                <div class="number-input" data-id="{{ $item->id }}" data-price="{{ $item->offer_price > 0 ? $item->offer_price : $item->price }}">
-                                                    <button type="button" class="decrement">-</button>
-                                                    <input type="number" class="quantity" name="quantity" min="1" max="10" value="{{ $item->qty }}" step="1" readonly>
-                                                    <button type="button" class="increment">+</button>
-                                                </div>
+
+                                                @if($item->is_out_of_stock)
+                                                    <div class="alert alert-danger mt-2 p-1">Out of Stock</div>
+                                                @else
+                                                    <div class="number-input" data-id="{{ $item->id }}" 
+                                                        data-price="{{ $item->offer_price > 0 ? $item->offer_price : $item->price }}"
+                                                        data-stock = "{{$item->variation->stock ?? 0}}">
+                                                        <button type="button" class="decrement">-</button>
+                                                        <input type="number" class="quantity" name="quantity" min="1" max="{{ $item->variation->stock }}" value="{{ $item->qty }}" step="1" readonly>
+                                                        <button type="button" class="increment">+</button>
+                                                    </div>
+
+                                                    <small class="stock-warning text-danger" style="display: none;">
+                                                        Can't add more than {{ $item->variation->stock ?? 0 }} items.
+                                                    </small>
+                                                @endif
+
                                                 <a href="javascript:void(0);" 
                                                     class="remove-item" 
                                                     data-id="{{ $item->id }}">
@@ -48,7 +60,7 @@
                                                 </a>
                                                 {{-- <a href="{{ route('cart.remove', $item->id) }}" class="remove">Remove</a> --}}
                                             </div>
-                                            <span class="cart-price">₹<span class="price-amount">{{ number_format(($item->offer_price > 0 ? $item->offer_price : $item->price) * $item->qty, 2) }}</span></span>
+                                            <span class="cart-price">₹<span class="price-amount">{{ $item->is_out_of_stock ? '0.00' :number_format(($item->offer_price > 0 ? $item->offer_price : $item->price) * $item->qty, 2) }}</span></span>
                                         </figcaption>
                                     </div>
                                 </li>
@@ -71,13 +83,6 @@
                         </div>
                         <div class="cart-row">
                             <span>Subtotal</span>
-                            @php
-                               // $subtotal = $cartItems->sum(fn($item) => $item->qty * $item->offer_price);
-                                $subtotal = $cartItems->sum(function($item) {
-                                    $price = $item->offer_price > 0 ? $item->offer_price : $item->price;
-                                    return $item->qty * $price;
-                                });
-                            @endphp
                             <span class="subtotal-amount">₹{{ number_format($subtotal, 2) }}</span>
                         </div>
 
@@ -187,23 +192,20 @@
         //     }
         // });
         // });
-
-
-    
     });
 
-        // quantity jquery
-        // document.addEventListener("DOMContentLoaded", () => {
-        //     const input = document.getElementById("quantity");
-        //     document.querySelector(".increment").addEventListener("click", (e) => {
-        //         e.preventDefault(); // Prevent form submission
-        //         input.stepUp();
-        //     });
-        //     document.querySelector(".decrement").addEventListener("click", (e) => {
-        //         e.preventDefault(); // Prevent form submission
-        //         input.stepDown();
-        //     });
-        // });
+    // quantity jquery
+    // document.addEventListener("DOMContentLoaded", () => {
+    //     const input = document.getElementById("quantity");
+    //     document.querySelector(".increment").addEventListener("click", (e) => {
+    //         e.preventDefault(); // Prevent form submission
+    //         input.stepUp();
+    //     });
+    //     document.querySelector(".decrement").addEventListener("click", (e) => {
+    //         e.preventDefault(); // Prevent form submission
+    //         input.stepDown();
+    //     });
+    // });
 
 
     document.addEventListener("DOMContentLoaded", () => {
@@ -225,17 +227,6 @@
             });
         });
     });
-
-
-    // function recalculateCartTotals() {
-    //     let subtotal = 0;
-    //     $('.price-amount').each(function () {
-    //         subtotal += parseFloat($(this).text().replace(/,/g, ''));
-    //     });
-
-    //     $('.subtotal-amount').text('₹' + subtotal.toFixed(2));
-    //     $('.total-amount').text('₹' + subtotal.toFixed(2));
-    // }
 
     function recalculateCartTotals() {
         let subtotal = 0;
