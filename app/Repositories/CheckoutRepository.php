@@ -18,6 +18,7 @@ use App\Models\ThirdPartyPayload;
 use App\Models\CartOffer;
 use App\Models\OrderOffer;
 use App\Models\Checkout;
+use App\Models\ProductVariation;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -152,8 +153,6 @@ class CheckoutRepository implements CheckoutInterface
 
             $finalAmount = max(0, ($subtotal + $taxTotal + $shippingCharges) - $discount);
 
-            
-            // $orderNo = 'ORD-' . date('YmdHis') . '-' . mt_rand(100, 999);
             $ipAddr  = request()->ip() ?? '0.0.0.0';
 
 
@@ -264,6 +263,15 @@ class CheckoutRepository implements CheckoutInterface
                     'gst_amount' => $lineTax,
                     'total' => $lineSubtotal + $lineTax,
                 ]);
+
+                $productQuantity = ProductVariation::where('id',$variation->id)->first();
+                //dd($productQuantity->id);
+                if($productQuantity->stock > 0){
+                    $stockQuantity = $productQuantity->stock - $qty;
+                }else{
+                    $stockQuantity = 0;
+                }
+                ProductVariation::where('id',$variation->id)->update(['stock' => $stockQuantity]);
             }
 
             Cart::where('user_id', $userId)->delete();
