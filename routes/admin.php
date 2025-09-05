@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Admin\{AdminUserManagementController, PageController, MenuController,CSRProjectController, TagController,DonationController, ProductController, EventController};
+use App\Http\Controllers\Admin\{AdminUserManagementController, PageController, MenuController,CSRProjectController, TagController,DonationController, ProductController, EventController, StockController};
 
 // admin guard
 use Illuminate\Support\Facades\Route;
@@ -253,7 +253,11 @@ Route::prefix('admin')->name('admin.')->middleware('prevent-back-history')->grou
             // Route::get('/sku-list/sync/all/report/{id}/export', 'Admin\UnicommerceController@syncAllreportDetailExport')->name('sku_list.sync.all.report.detail.export');
         });
 
-       
+          Route::prefix('stock')->name('stock.')->group(function () {
+            Route::get('/stock_sample_csv', [StockController::class, 'stock_sample_csv'])->name('sample_csv');
+            Route::post('/stock_import', [StockController::class, 'stock_import'])->name('stock_import');
+
+          });
 
 
         // address
