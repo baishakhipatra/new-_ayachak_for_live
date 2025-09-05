@@ -165,7 +165,7 @@
                 </a> -->
                 <input type="hidden" id="product_var" value='@json($products)'>
 
-                <div onclick="stock_sample();" class="text-decoration-underline" style="cursor: pointer;">
+                <div onclick="stock_sample();" class="text-decoration-underline text-primary" style="cursor: pointer;">
                     Download sample file
                 </div>
                 <div class="mb-3">
@@ -370,7 +370,7 @@
             });
         });
     });
-    
+
     function stock_sample() {
         let productData = document.getElementById('product_var').value;
         let encodedData = encodeURIComponent(productData);
