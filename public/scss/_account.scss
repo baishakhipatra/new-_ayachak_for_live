@@ -1,0 +1,421 @@
+.name-card {
+    padding: 20px;
+    background: #f6f6f6;
+    border-radius: 4px;
+
+    h4 {
+        font-size: 20px;
+        margin: 0;
+    }
+    h5 {
+        font-size: 14px;
+        margin: 0;
+
+        &:last-child {
+            margin: 0;
+        }
+    }
+}
+.account-list {
+    margin: 20px 0;
+    padding: 0;
+    list-style-type: none;
+    border-right: 1px solid #eee;
+
+    li {
+        display: inline-block;
+        width: 100%;
+        padding: 20px 0;
+        border-bottom: 1px solid #eee;
+
+        a {
+            display: block;
+            font-size: 14px;
+        }
+        &.active {
+            a {
+                font-weight: 500;
+            }
+        }
+        span {
+            display: flex;
+            color: #888;
+            font-weight: 500;
+            text-transform: uppercase;
+            font-size: 11px;
+        }
+
+        ul {
+            margin: 20px 0 0 0;
+
+            li {
+                padding: 0;
+                border: none;
+                margin-top: 10px;
+
+                a {
+                    font-size: 14px;
+                }
+            }
+        }
+    }
+}
+.account-card {
+    display: flex;
+    height: 160px;
+    padding: 20px;
+    align-items: center;
+    border: 1px solid #EAEAEC;
+    margin-bottom: 30px;
+
+    &:hover {
+        background: #f6f6f6;
+    }
+
+    span {
+        width: 60px;
+        height: 60px;
+        display: flex;
+        margin-right: 10px;
+        border-radius: 50%;
+        background: rgba($color: $primary, $alpha: 0.1);
+        align-items: center;
+        justify-content: center;
+    }
+    figure {
+        margin: 0;
+    }
+    h4 {
+        margin-top: 0;
+        margin-bottom: 5px;
+        font-size: 15px;
+        font-weight: 600;
+        line-height: 1.3;
+    }
+    h6 {
+        margin: 0;
+        font-size: 12px;
+        line-height: 1.3;
+    }
+}
+
+.profile-card {
+    display: block;
+    padding: 20px;
+    border: 1px solid #EAEAEC;
+    margin-bottom: 30px;
+
+    @include media-breakpoint-down(sm) {
+        padding: 8px;
+    }
+
+    h3 {
+        padding-bottom: 20px;
+        border-bottom: 1px solid #EAEAEC;
+        font-size: 20px;
+        margin-bottom: 20px;
+        line-height: 1.2;
+
+        @include media-breakpoint-down(sm) {
+            padding-bottom: 8px;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+    }
+    input.form-control {
+        border: 1px solid #EAEAEC !important;
+        border-radius: 0 !important;
+    }
+}
+
+.order-card {
+    background: #f6f6f6;
+    padding: 15px;
+    margin-bottom: 15px;
+
+    @include media-breakpoint-down(sm) {
+        padding: 8px;
+        margin-bottom: 8px;
+    }
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+
+    &-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+
+        figure {
+            max-width: 40px;
+            flex: 0 0 40px;
+            margin: 0;
+            margin-right: 15px;
+            height: 40px;
+            display: flex;
+            border-radius: 50%;
+            background: $primary;
+            color: #fff;
+            align-items: center;
+            justify-content: center;
+
+            svg {
+                width: 20px;
+                height: 20px;
+            }
+        }
+        figcaption {
+            flex: 1 0 0;
+
+            h5 {
+                font-size: 15px;
+                line-height: 1.4;
+                margin: 0;
+            }
+            p {
+                font-size: 13px;
+                line-height: 1.4;
+                margin: 0;
+            }
+        }
+    }
+    &-body {
+        .order-product-card {
+            display: flex;
+            align-items: center;
+            background: #fff;
+            padding: 15px;
+            margin-bottom: 2px;
+
+            @include media-breakpoint-down(sm) {
+                padding: 8px;
+                margin-bottom: 8px;
+            }
+
+            &:hover {
+                background: #eee;
+            }
+
+            figure {
+                flex: 0 0 auto;
+                margin: 0;
+                margin-right: 15px;
+
+                @include media-breakpoint-down(sm) {
+                    margin-right: 8px;
+                }
+
+                img {
+                    width: 80px;
+                    height: 80px;
+                    object-fit: cover;
+
+                    @include media-breakpoint-down(sm) {
+                        width: 60px;
+                        height: 60px;
+                    }
+                }
+            }
+            figcaption {
+                flex: 1 0 0;
+                h5 {
+                    font-size: 13px;
+                    line-height: 1.4;
+                    color: #888;
+
+                    span {
+                        color: $primary;
+                    }
+                }
+                h4 {
+                    font-size: 16px;
+                    line-height: 1.4;
+                }
+                h6 {
+                    font-size: 13px;
+                }
+            }
+        }
+    }
+    &-footer {
+        padding: 15px 0 0;
+        font-size: 14px;
+        font-weight: 600;
+        color: $black;
+
+        .cart_btn {
+            border: none;
+            background: $secondary;
+            color: $white;
+            font-size: 14px;
+            border: none;
+            padding: 10px 20px;
+            font-weight: $font-weight-medium;
+            border-radius: 3px;
+        }
+        .remove_btn {
+            border: none;
+            background: $gray91;
+            color: $primary;
+            font-size: 14px;
+            border: none;
+            padding: 10px 20px;
+            font-weight: $font-weight-medium;
+            border-radius: 3px;
+            display: inline-block;
+            vertical-align: top;
+        }
+    }
+}
+.address-card {
+    padding: 15px;
+    display: block;
+    margin-bottom: 15px;
+    background: #f6f6f6;
+
+    @include media-breakpoint-down(sm) {
+        padding: 8px;
+        margin-bottom: 8px;
+    }
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+
+    h5 {
+        font-size: 14px;
+        font-weight: 500;
+    }
+    p {
+        font-size: 13px;
+        line-height: 1.4;
+        color: #111;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+}
+
+.coupon-card {
+    display: flex;
+    background: #f6f6f6;
+    padding: 15px;
+    margin-bottom: 15px;
+    position: relative;
+    align-items: center;
+
+    @include media-breakpoint-down(sm) {
+        padding: 8px;
+        margin-bottom: 8px;
+    }
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+
+    &:before {
+        width: 30px;
+        background: #fff;
+        content: '';
+        height: 30px;
+        border-radius: 50%;
+        position: absolute;
+        left: 100px;
+        top: -15px;
+
+        @include media-breakpoint-down(sm) {
+            width: 16px;
+            height: 16px;
+            top: -8px;
+            left: 60px;
+        }
+    }
+    &:after {
+        width: 30px;
+        background: #fff;
+        content: '';
+        height: 30px;
+        border-radius: 50%;
+        position: absolute;
+        left: 100px;
+        bottom: -15px;
+
+        @include media-breakpoint-down(sm) {
+            width: 16px;
+            height: 16px;
+            bottom: -8px;
+            left: 60px;
+        }
+    }
+
+    .coupon-head {
+        width: 100px;
+        height: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: $secondary;
+        font-size: 20px;
+        font-weight: 600;
+        line-height: 1.2;
+        text-align: center;
+        border-right: 3px dashed $white;
+
+        @include media-breakpoint-down(sm) {
+            width: 60px;
+            height: 60px;
+            font-size: 16px;
+        }
+    }
+    .coupon-content {
+        flex: 1 0 0%;
+        padding: 0 15px;
+
+        @include media-breakpoint-down(sm) {
+            padding: 0 8px;
+        }
+
+        h5 {
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        h4 {
+            font-size: 14px;
+            line-height: 1.4;
+        }
+    }
+}
+
+.cms_context {
+    p {
+        font-size: 14px;
+        line-height: 1.4;
+    }
+
+    .faq_heading {
+        font-size: 14px;
+        font-weight: $font-weight-semibold;
+        border: 1px solid #eee;
+        padding: 15px;
+        margin-top: 15px;
+        line-height: 1;
+        cursor: pointer;
+
+        &:first-child {
+            margin-top: 0;
+        }
+
+        &.active {
+            border-bottom: none;
+        }
+    }
+    .faq_content {
+        padding: 10px;
+        border: 1px solid #eee;
+        border-top: none;
+        margin-bottom: 15px;
+        display: none;
+    }
+}

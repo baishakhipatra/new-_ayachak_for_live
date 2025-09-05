@@ -1,0 +1,215 @@
+@extends('admin.layouts.app')
+
+@section('page', 'Address')
+
+@section('content')
+<section>
+    <div class="row">
+        <div class="col-sm-8">
+            <div class="card">
+                <div class="card-body">
+
+                    <div class="search__filter">
+                        <div class="row align-items-center justify-content-between">
+                            <div class="col">
+                                <ul>
+                                    <li class="active"><a href="{{ route('admin.address.index') }}">All <span class="count">({{$data->count()}})</span></a></li>
+                                    @php
+                                        $activeCount = $inactiveCount = 0;
+                                        foreach ($data as $addKey => $addVal) {
+                                            if ($addVal->status == 1) $activeCount++;
+                                            else $inactiveCount++;
+                                        }
+                                    @endphp
+                                    <li><a href="{{ route('admin.address.index', ['status' => 'active'])}}">Active <span class="count">({{$activeCount}})</span></a></li>
+                                    <li><a href="{{ route('admin.address.index', ['status' => 'inactive'])}}">Inactive <span class="count">({{$inactiveCount}})</span></a></li>
+                                </ul>
+                            </div>
+                            <div class="col-auto">
+                                <form action="{{ route('admin.address.index') }}" method="GET">
+                                <div class="row g-3 align-items-center">
+                                    <div class="col-auto">
+                                        <div class="col-auto">
+                                            <input type="search" name="term" class="form-control" placeholder="Search here.." id="term" value="{{app('request')->input('term')}}" autocomplete="off">
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <button type="submit" class="btn btn-outline-danger btn-sm">Search Address</button>
+                                    </div>
+                                </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <form action="{{ route('admin.address.bulkDestroy') }}">
+                        <div class="filter">
+                            <div class="row align-items-center justify-content-between">
+                            <div class="col">
+                                <div class="row g-3 align-items-center">
+                                    <div class="col-auto">
+                                        <select name="bulk_action" class="form-control">
+                                            <option value=" hidden selected">Bulk Action</option>
+                                            <option value="delete">Delete</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-auto">
+                                    <button type="submit" class="btn btn-outline-danger btn-sm">Apply</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                {{-- <p>{{$data->count()}} Items</p> --}}
+                                @php
+                                    if (!empty($_GET['status'])) {
+                                        if ($_GET['status'] == 'active') {
+                                            ($activeCount>1) ? $itemShow = 'Items' : $itemShow = 'Item';
+                                            echo '<p>'.$activeCount.' '.$itemShow.'</p>';
+                                        } elseif ($_GET['status'] == 'inactive') {
+                                            ($inactiveCount>1) ? $itemShow = 'Items' : $itemShow = 'Item';
+                                            echo '<p>'.$inactiveCount.' '.$itemShow.'</p>';
+                                        }
+                                    } else {
+                                        ($data->count() > 1) ? $itemShow = 'Items' : $itemShow = 'Item';
+                                        echo '<p>'.$data->count().' '.$itemShow.'</p>';
+                                    }
+                                    @endphp
+                            </div>
+                            </div>
+                        </div>
+
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th class="check-column">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="flexCheckDefault" onclick="headerCheckFunc()">
+                                            <label class="form-check-label" for="flexCheckDefault"></label>
+                                        </div>
+                                    </th>
+                                    </th>
+                                    <th>User</th>
+                                    <th>Address</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse ($data as $index => $item)
+                                @php
+                                    if (!empty($_GET['status'])) {
+                                        if ($_GET['status'] == 'active') {
+                                            if ($item->status == 0) continue;
+                                        } else {
+                                            if ($item->status == 1) continue;
+                                        }
+                                    }
+                                    @endphp
+                                <tr>
+                                    <td class="check-column">
+                                        <input name="delete_check[]" class="tap-to-delete" type="checkbox" onclick="clickToRemove()" value="{{$item->id}}" 
+                                        @php
+                                        if (old('delete_check')) {
+                                            if (in_array($item->id, old('delete_check'))) {
+                                                echo 'checked';
+                                            }
+                                        }
+                                        @endphp>
+                                    {{-- </td> <td class="check-column">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                            <label class="form-check-label" for="flexCheckDefault"></label>
+                                        </div>
+                                    </td> --}}
+                                    <td>
+                                        @if($item->user)
+                                        {{$item->user->fname.' '.$item->user->lname}}
+                                        @endif
+                                    </td>
+                                    <td>
+                                    {{$item->address}}
+                                    <div class="row__action">
+                                        <a href="{{ route('admin.address.view', [$item->id,'mode'=>'edit']) }}">Edit</a>
+                                        <a href="{{ route('admin.address.view', [$item->id,'mode'=>'view']) }}">View</a>
+                                        <a href="{{ route('admin.address.status', $item->id) }}">{{($item->status == 1) ? 'Active' : 'Inactive'}}</a>
+                                        {{-- <a href="{{ route('admin.address.delete', $item->id) }}" class="text-danger">Delete</a> --}}
+                                    </div>
+                                    </td>
+                                    <td>Published<br/>{{date('d M Y', strtotime($item->created_at))}}</td>
+                                    <td><span class="badge bg-{{($item->status == 1) ? 'success' : 'danger'}}">{{($item->status == 1) ? 'Active' : 'Inactive'}}</span></td>
+                                </tr>
+                                @empty
+                                <tr><td colspan="100%" class="small text-muted">No data found</td></tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </form>    
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-4">
+            <div class="card">
+                <div class="card-body">
+                    <form method="POST" action="{{ route('admin.address.store') }}" enctype="multipart/form-data">
+                    @csrf
+                        <h4 class="page__subtitle">Add New</h4>
+                        <div class="form-group mb-3">
+                            <label class="label-control">User <span class="text-danger">*</span> </label>
+                            <select class="form-control" name="user_id">
+                                <option hidden selected>Select user...</option>
+                                @foreach ($users as $index => $item)
+                                    <option value="{{$item->id}}" {{ (old('user_id')) ?? (old('user_id') == $item->id) ? 'selected' : ''  }}>{{ $item->fname.' '.$item->lname }}</option>
+                                @endforeach
+                            </select>
+                            @error('name') <p class="small text-danger">{{ $message }}</p> @enderror
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="label-control">Address </label>
+                            <textarea name="address" class="form-control">{{old('address')}}</textarea>
+                            @error('address') <p class="small text-danger">{{ $message }}</p> @enderror
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="label-control">Landmark <span class="text-danger">*</span> </label>
+                            <input type="text" name="landmark" placeholder="" class="form-control" value="{{old('landmark')}}">
+                            @error('landmark') <p class="small text-danger">{{ $message }}</p> @enderror
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="label-control">Latitude</label>
+                            <input type="text" name="lat" placeholder="" class="form-control" value="{{old('lat')}}">
+                            @error('lat') <p class="small text-danger">{{ $message }}</p> @enderror
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="label-control">Longitude</label>
+                            <input type="text" name="lng" placeholder="" class="form-control" value="{{old('lng')}}">
+                            @error('lng') <p class="small text-danger">{{ $message }}</p> @enderror
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="label-control">State <span class="text-danger">*</span> </label>
+                            <input type="text" name="state" placeholder="" class="form-control" value="{{old('state')}}">
+                            @error('state') <p class="small text-danger">{{ $message }}</p> @enderror
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="label-control">City <span class="text-danger">*</span> </label>
+                            <input type="text" name="city" placeholder="" class="form-control" value="{{old('city')}}">
+                            @error('city') <p class="small text-danger">{{ $message }}</p> @enderror
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="label-control">Pin <span class="text-danger">*</span> </label>
+                            <input type="number" name="pin" placeholder="" class="form-control" value="{{old('pin')}}">
+                            @error('pin') <p class="small text-danger">{{ $message }}</p> @enderror
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="label-control">Type <span class="text-danger">*</span> </label>
+                            <input type="text" name="type" placeholder="" class="form-control" value="{{old('type')}}">
+                            @error('type') <p class="small text-danger">{{ $message }}</p> @enderror
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-sm btn-danger">Add New</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+@endsection

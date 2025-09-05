@@ -1,0 +1,331 @@
+.footer {
+    padding: 50px 0;
+    position: relative;
+    color: $white;
+    background: $secondary;
+
+    @include media-breakpoint-down(md) {
+        padding: 20px 0;
+    }
+    &-logo {
+        margin-bottom: 45px;
+        display: flex;
+        align-items: center;
+        @include media-breakpoint-down(lg) {
+            margin-bottom: 35px;
+        }
+        @include media-breakpoint-down(md) {
+            margin-bottom: 20px;
+        }
+        img {
+            max-height: 90px;
+            @include media-breakpoint-down(xl) {
+                height: 70px;
+            }
+            @include media-breakpoint-down(md) {
+                height: 70px;
+            }
+        }
+    }
+    &-main {
+        position: relative;
+
+        &-top {
+            margin-bottom: 100px;
+
+            @include media-breakpoint-down(md) {
+                margin-bottom: 50px;
+            }
+        }
+
+        .newsletter-form {
+            display: flex;
+            flex-wrap: wrap;
+            flex-direction: column;
+            height: 100%;
+
+            img {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    }
+    &-form {
+        position: relative;
+        display: flex;
+        align-items: flex-end;
+        border-bottom: 2px solid #fff;
+
+        input[type="email"] {
+            flex: 1 0 0%;
+            padding: 0 40px 0 0;
+            height: 60px;
+            line-height: 60px;
+            font-size: 14px;
+            background: transparent;
+            border: none;
+            color: $white;
+            font-weight: $font-weight-medium;
+
+            &::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+                color: $white;
+                opacity: 1;
+            }
+            &::-moz-placeholder { /* Firefox 19+ */
+                color: $white;
+                opacity: 1;
+            }
+            &:-ms-input-placeholder { /* IE 10+ */
+                color: $white;
+                opacity: 1;
+            }
+            &:-moz-placeholder { /* Firefox 18- */
+                color: $white;
+                opacity: 1;
+            }
+        }
+        button[type="submit"] {
+            width: 40px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            color: $white;
+            border: none;
+        }
+    }
+    &-block {
+        font-size: 14px;
+        line-height: 28px;
+        letter-spacing: 0.7px;
+        font-weight: $font-weight-normal;
+
+        @include media-breakpoint-down(md) {
+            margin-bottom: 20px;
+        }
+
+        address {
+            margin: 0px 0 30px;
+            color:$dark-charcoal;
+            font-weight: $font-weight-light;
+
+            &:last-child {
+                margin: 0;
+            }
+        }
+        a {
+            display: flex;
+            letter-spacing: 0.7px;
+            font-weight: $font-weight-light;
+
+            &:hover {
+                color: $secondary;
+            }
+        }
+        .social {
+            display: flex;
+            justify-content: flex-end;
+
+            a {
+                color: $white;
+                display: flex;
+                margin-right: 40px;
+                font-size: 24px;
+                &:hover {
+                    color: $white;
+                }
+            }
+
+            li {
+                &:last-child {
+                    a {
+                        margin-right: 0;
+                    }
+                }
+            }
+        }
+        .icons {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 70px;
+            @include media-breakpoint-down(lg) {
+                margin-bottom: 50px;
+            }
+            @include media-breakpoint-down(md) {
+                margin-bottom: 30px;
+                justify-content: flex-start;
+            }
+            a {
+                margin-left: 12px;
+                &:first-child {
+                    margin-left: 0px;
+                }
+                img {
+                    @include media-breakpoint-down(lg) {
+                        width: 45px;
+                    }
+                    @include media-breakpoint-down(sm) {
+                        width: 35px;
+                    }
+                }
+            }
+        }
+        .newsletter {
+            text-decoration: underline;
+        }
+        a {
+            color: $white;
+            letter-spacing: 0.7px;
+            font-weight: $font-weight-light;
+        }
+        &-menu {
+            
+            li {
+                display: block;
+
+                a {
+                    display: inline-block;
+                    color: rgba($color: $white, $alpha: 0.7);
+                    line-height: 1;
+                    letter-spacing: 1.4px;
+                    font-weight: $font-weight-medium;
+                    font-size: 13px;
+                    letter-spacing: 1px;
+    
+                    &:hover {
+                        color: $white;
+                    }
+                    &:nth-last-child(2) {
+                        border-right: 1px solid $dark-charcoal;
+                        margin-right: 7px;
+                        padding-right: 7px;
+                    }
+                }
+            }
+        }
+    }
+    &-heading {
+        font-size: 15px;
+        font-weight: $font-weight-semibold;
+        margin-bottom: 20px;
+        letter-spacing: 1px;
+        color: $white;
+        
+        @include media-breakpoint-down(md) {
+            margin-bottom: 15px;
+        }
+        &-right {
+            text-align: right;
+            @include media-breakpoint-down(md) {
+                text-align: left;
+            }
+        }
+    }
+    &-bottom {
+        color: $dark-charcoal;
+        padding-top: 50px;
+        margin-top: 50px;
+
+        @include media-breakpoint-down(md) {
+            padding-top: 30px;
+            margin-top: 10px;
+        }
+        
+        .text-block {
+            @include media-breakpoint-down(md) {
+                justify-content: center;
+                display: flex;
+            }
+            p {
+                margin-bottom: 0;
+                font-size: 12px;
+                font-weight: $font-weight-light;
+                
+                a {
+                    color: $dark-charcoal;
+
+                    &:hover {
+                        color: $secondary;
+                    }
+                }
+            }
+        }
+        p {
+            &.copy-right {
+                color: $white;
+                font-size: 13px;
+                line-height: 1;
+                text-align: right;
+
+                @include media-breakpoint-down(md) {
+                    text-align: center;
+                }
+            }
+
+            &.heart_text{
+                line-height: 30px;
+
+                i{
+                    color:#FF004E;
+                }
+
+                @include media-breakpoint-down(md) {
+                    text-align: center;
+                }
+            }
+        }
+        &-menu {
+            display: flex;
+            justify-content: flex-start;
+            flex-wrap: wrap;
+
+            @include media-breakpoint-down(md) {
+                justify-content: center;
+            }
+            
+            a {
+                color: rgba($color: $white, $alpha: 0.7);
+                line-height: 1;
+                letter-spacing: 0.7px;
+                font-weight: $font-weight-medium;
+                margin-right: 10px;
+                padding-right: 10px;
+
+                @include media-breakpoint-down(md) {
+                    margin-bottom: 10px;
+                }
+
+                &:hover {
+                    color: $white;
+                }
+                &:last-child {
+                    border-right: none;
+                    margin-right: 0;
+                    padding-right: 0;
+                }
+            }
+        }
+    }
+}
+.pl-50 {
+    padding-left: 50px;
+    position: relative;
+    @include media-breakpoint-down(md) {
+        padding-left: 0px;
+    }
+    &:before {
+        content: "";
+        position: absolute;
+        left: -15px;
+        top: 0;
+        height: 220px;
+        width: 1px;
+        background: #919191;
+        opacity: 0.3;
+        @include media-breakpoint-down(md) {
+            display: none;
+        }
+    }
+    
+}

@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lux Cozi</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- font-awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/responsive.css">
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <div class="header_sec">
+                <a href="#" class="logo_img">
+                    <img src="./images/logo1.png" alt="logo">
+                </a>
+
+                <form action="" class="search_from">
+                    <input type="search" class="search_input" placeholder="Search for products">
+                    <button type="submit" class="search_btn">GO</button>
+                </form>
+                <div class="wishlist">
+                    <div class="search_for_mob">
+                        <a href="#url" class="search_for_mob_a" data-bs-toggle="modal"
+                            data-bs-target="#examplesearchModal">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="#655D5D" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="feather feather-search">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                            <!--search Modal -->
+                            <div class="modal fade" id="examplesearchModal" tabindex="-1"
+                                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header search_m_h">
+                                            <!-- <h5 class="modal-title" id="exampleModalLabel">Modal title</h5> -->
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form action="">
+                                                <input type="search" class="mobile_search"
+                                                    placeholder="Search for products">
+                                                <input type="submit" class="mobile_search_btn" value="Search">
+                                            </form>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </a>
+                    </div>
+                    <div class="header_heart header_user_menu">
+                        <a href="#"><svg width="30" height="30" viewBox="0 0 30 30" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M26.0501 5.76258C25.4117 5.12384 24.6537 4.61714 23.8193 4.27144C22.985 3.92574 22.0908 3.7478 21.1876 3.7478C20.2845 3.7478 19.3903 3.92574 18.556 4.27144C17.7216 4.61714 16.9636 5.12384 16.3251 5.76258L15.0001 7.08758L13.6751 5.76258C12.3855 4.47297 10.6364 3.74847 8.81265 3.74847C6.98886 3.74847 5.23976 4.47297 3.95015 5.76258C2.66053 7.0522 1.93604 8.80129 1.93604 10.6251C1.93604 12.4489 2.66053 14.198 3.95015 15.4876L5.27515 16.8126L15.0001 26.5376L24.7251 16.8126L26.0501 15.4876C26.6889 14.8491 27.1956 14.0911 27.5413 13.2568C27.887 12.4225 28.0649 11.5282 28.0649 10.6251C28.0649 9.72198 27.887 8.82771 27.5413 7.99339C27.1956 7.15907 26.6889 6.40103 26.0501 5.76258Z"
+                                    stroke="#655D5D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </a>
+                        <span class="wish_list_count">5</span>
+                    </div>
+                    <div class="header_user header_user_menu">
+                        <a href="#"><svg width="30" height="30" viewBox="0 0 30 30" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M25 26.25V23.75C25 22.4239 24.4732 21.1521 23.5355 20.2145C22.5979 19.2768 21.3261 18.75 20 18.75H10C8.67392 18.75 7.40215 19.2768 6.46447 20.2145C5.52678 21.1521 5 22.4239 5 23.75V26.25"
+                                    stroke="#655D5D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                <path
+                                    d="M15 13.75C17.7614 13.75 20 11.5114 20 8.75C20 5.98858 17.7614 3.75 15 3.75C12.2386 3.75 10 5.98858 10 8.75C10 11.5114 12.2386 13.75 15 13.75Z"
+                                    stroke="#655D5D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </a>
+
+                    </div>
+                    <div class="header_bag header_user_menu">
+                        <a href="#"><svg width="30" height="30" viewBox="0 0 30 30" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M7.5 2.5L3.75 7.5V25C3.75 25.663 4.01339 26.2989 4.48223 26.7678C4.95107 27.2366 5.58696 27.5 6.25 27.5H23.75C24.413 27.5 25.0489 27.2366 25.5178 26.7678C25.9866 26.2989 26.25 25.663 26.25 25V7.5L22.5 2.5H7.5Z"
+                                    stroke="#655D5D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                <path d="M3.75 7.5H26.25" stroke="#655D5D" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                                <path
+                                    d="M20 12.5C20 13.8261 19.4732 15.0979 18.5355 16.0355C17.5979 16.9732 16.3261 17.5 15 17.5C13.6739 17.5 12.4021 16.9732 11.4645 16.0355C10.5268 15.0979 10 13.8261 10 12.5"
+                                    stroke="#655D5D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </a>
+                        <span class="wish_list_count">10</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <section class="home_bannar_sec">
+        <figure class="home_bannar_img">
+            <img src="./images/banner 1.png" alt="bannar">
+        </figure>
+    </section>
+    <section class="deal_sec">
+        <div class="container">
+            <div class="deal_text">
+                <h2>
+                    <span>Hot Deals.</span>
+                    Good things are waiting for you
+                </h2>
+            </div>
+            <div class="swiper deal_slider">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide deal_swiper_slide">
+                        <div class="deal_slider_sec">
+                            <div class="deal_slider_text">
+                                <h4>50% off </h4>
+                                <p>VW 80 cm (32 inches) Frameless Series HD Ready LED TV VW32A (Black)</p>
+                                <h5>₹22500<span>₹45000</span></h5>
+                                <a class="buy_now_btn" href="#">Buy Now</a>
+                            </div>
+                            <div class="deal_slider_img">
+                                <img src="./images/tv.png" alt="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="swiper-slide deal_swiper_slide">
+                        <div class="deal_slider_sec">
+                            <div class="deal_slider_text">
+                                <h4>20% off</h4>
+                                <p>ZEBRONICS Zeb-Bro in Ear Wired Earphones with Mic, 3.5mm Audio Jack...</p>
+                                <h5>₹1600<span>₹2000</span></h5>
+                                <a class="buy_now_btn" href="#">Buy Now</a>
+                            </div>
+                            <div class="deal_slider_img">
+                                <img src="./images/headset.png" alt="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="swiper-slide deal_swiper_slide">
+                        <div class="deal_slider_sec">
+                            <div class="deal_slider_text">
+                                <h4>50% off </h4>
+                                <p>VW 80 cm (32 inches) Frameless Series HD Ready LED TV VW32A (Black)</p>
+                                <h5>₹22500<span>₹45000</span></h5>
+                                <a class="buy_now_btn" href="#">Buy Now</a>
+                            </div>
+                            <div class="deal_slider_img">
+                                <img src="./images/tv.png" alt="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="swiper-slide deal_swiper_slide">
+                        <div class="deal_slider_sec">
+                            <div class="deal_slider_text">
+                                <h4>30% off </h4>
+                                <p>Samsung Galaxy M34 5G (Prism Silver,6GB,128GB)|120Hz...</p>
+                                <h5>₹1400<span>₹2000</span></h5>
+                                <a class="buy_now_btn" href="#">Buy Now</a>
+                            </div>
+                            <div class="deal_slider_img">
+                                <img src="./images/tv.png" alt="">
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="swiper-button-next"></div>
+                <div class="swiper-button-prev"></div>
+            </div>
+    </section>
+    <section class="product_sec">
+        <div class="container">
+            <div class="product_sec_grid">
+                <div class="product_grid_1 product_grid_img">
+                    <img src="./images/banner-13.png" alt="">
+                    <div class="product_grid_img_text product_grid_img_text_lg">
+                        <h3>1m 08cm (43") CUE70 Crystal 4K UHD Smart TV
+                        </h3>
+                        <a class="product_buy" href="#">Buy Now</a>
+                    </div>
+                </div>
+                <div class="product_grid_2 product_grid_img">
+                    <img src="./images/headset2.png" alt="">
+                    <div class="product_grid_img_text product_grid_img_text_sm">
+                        <h3>Convertible 5in1 AC ₹41215*
+                        </h3>
+                        <a class="product_buy" href="#">Buy Now</a>
+                    </div>
+                </div>
+                <div class="product_grid_3 product_grid_img">
+                    <img src="./images/table.png" alt="">
+                    <div class="product_grid_img_text product_grid_img_text_sm">
+                        <h3>Convertible 5in1 AC Starting ₹ 41215*
+                        </h3>
+                        <a class="product_buy" href="#">Buy Now</a>
+                    </div>
+                </div>
+                <div class="product_grid_4 product_grid_img">
+                    <img src="./images/box.png" alt="">
+                    <div class="product_grid_img_text product_grid_img_text_sm product_grid_img_text_cl">
+                        <h3>8.0 kg Ecobubble ₹ 36100*
+                        </h3>
+                        <a class="product_buy" href="#">Buy Now</a>
+                    </div>
+                </div>
+                <div class="product_grid_5 product_grid_img">
+                    <img src="./images/Rectangle 34.png" alt="">
+                    <div class="product_head_set">
+                        <img src="./images/Rectangle 35.png" alt="">
+                    </div>
+                    <div class="product_grid_img_text product_grid_img_text_sm product_grid_img_text_cl">
+                        <h3>Rockerz 258 Pro+ Starting ₹ 1599*
+                        </h3>
+                        <a class="product_buy" href="#">Buy Now</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="deal_product">
+        <div class="container">
+            <div class="deal_product_text">
+                <h3>Deals of the day</h3>
+                <a class="deal_product_text_btn" href="#">View All
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M4.6665 11.3334L11.3332 4.66669" stroke="black" stroke-width="1.2"
+                            stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M4.6665 4.66669H11.3332V11.3334" stroke="black" stroke-width="1.2"
+                            stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+
+                </a>
+            </div>
+            <div class="swiper deal_product_slider">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide">
+                        <div class="swiper_slide_deal_product_p">
+                            <div class="swiper_slide_deal_product">
+                                <figure class="deal_img">
+                                    <a href="#" class="deal_img_anch">
+                                        <img src="./images/sunglass.png" alt="">
+                                    </a>
+                                    <div class="deal_offer_sec_text">
+                                        30% <br>Off
+                                    </div>
+                                    <a href="#" class="blue_heart">
+                                        <svg width="30" height="30" viewBox="0 0 30 30" fill="none"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                d="M26.05 5.76088C25.4116 5.12213 24.6535 4.61543 23.8192 4.26973C22.9849 3.92403 22.0906 3.74609 21.1875 3.74609C20.2844 3.74609 19.3902 3.92403 18.5558 4.26973C17.7215 4.61543 16.9635 5.12213 16.325 5.76088L15 7.08588L13.675 5.76088C12.3854 4.47126 10.6363 3.74676 8.81253 3.74676C6.98874 3.74676 5.23964 4.47126 3.95003 5.76088C2.66041 7.05049 1.93591 8.79958 1.93591 10.6234C1.93591 12.4472 2.66041 14.1963 3.95003 15.4859L5.27503 16.8109L15 26.5359L24.725 16.8109L26.05 15.4859C26.6888 14.8474 27.1955 14.0894 27.5412 13.2551C27.8869 12.4207 28.0648 11.5265 28.0648 10.6234C28.0648 9.72027 27.8869 8.82601 27.5412 7.99168C27.1955 7.15736 26.6888 6.39932 26.05 5.76088Z"
+                                                stroke="#631096" stroke-width="2" stroke-linecap="round"
+                                                stroke-linejoin="round" />
+                                        </svg>
+                                    </a>
+                                </figure>
+                                <div class="swiper_deal_text">
+                                    <a href="#" class="product_text">
+                                        <h4>Intellilens | Branded Sunglasses | Aviator</h4>
+                                    </a>
+                                    <div class="swiper_deal_flex">
+                                        <h5>₹1500<span>₹1050</span></h5>
+                                        <a href="#" class="swiper_deal_btn"><svg width="20" height="20"
+                                                viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <g clip-path="url(#clip0_53_867)">
+                                                    <path
+                                                        d="M7.50002 18.3346C7.96026 18.3346 8.33335 17.9615 8.33335 17.5013C8.33335 17.0411 7.96026 16.668 7.50002 16.668C7.03978 16.668 6.66669 17.0411 6.66669 17.5013C6.66669 17.9615 7.03978 18.3346 7.50002 18.3346Z"
+                                                        stroke="white" stroke-width="2" stroke-linecap="round"
+                                                        stroke-linejoin="round" />
+                                                    <path
+                                                        d="M16.6666 18.3346C17.1269 18.3346 17.5 17.9615 17.5 17.5013C17.5 17.0411 17.1269 16.668 16.6666 16.668C16.2064 16.668 15.8333 17.0411 15.8333 17.5013C15.8333 17.9615 16.2064 18.3346 16.6666 18.3346Z"
+                                                        stroke="white" stroke-width="2" stroke-linecap="round"
+                                                        stroke-linejoin="round" />
+                                                    <path
+                                                        d="M0.833313 0.832031H4.16665L6.39998 11.9904C6.47618 12.374 6.6849 12.7187 6.9896 12.9639C7.2943 13.2092 7.67556 13.3395 8.06665 13.332H16.1666C16.5577 13.3395 16.939 13.2092 17.2437 12.9639C17.5484 12.7187 17.7571 12.374 17.8333 11.9904L19.1666 4.9987H4.99998"
+                                                        stroke="white" stroke-width="2" stroke-linecap="round"
+                                                        stroke-linejoin="round" />
+                                                </g>
+                                                <defs>
+                                                    <clipPath id="clip0_53_867">
+                                                        <rect width="20" height="20" fill="white" />
+                                                    </clipPath>
+                                                </defs>
+                                            </svg>
+
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <div class="swiper_slide_deal_product_p">
+                            <div class="swiper_slide_deal_product">
+                                <figure class="deal_img">
+                                    <a href="#" class="deal_img_anch">
+                                        <img src="./images/men.png" alt="">
+                                    </a>
+                                    <div class="deal_offer_sec_text">
+                                        30% <br>Off
+                                    </div>
+                                    <a href="#" class="blue_heart">
+                                        <svg width="30" height="30" viewBox="0 0 30 30" fill="none"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                d="M26.05 5.76088C25.4116 5.12213 24.6535 4.61543 23.8192 4.26973C22.9849 3.92403 22.0906 3.74609 21.1875 3.74609C20.2844 3.74609 19.3902 3.92403 18.5558 4.26973C17.7215 4.61543 16.9635 5.12213 16.325 5.76088L15 7.08588L13.675 5.76088C12.3854 4.47126 10.6363 3.74676 8.81253 3.74676C6.98874 3.74676 5.23964 4.47126 3.95003 5.76088C2.66041 7.05049 1.93591 8.79958 1.93591 10.6234C1.93591 12.4472 2.66041 14.1963 3.95003 15.4859L5.27503 16.8109L15 26.5359L24.725 16.8109L26.05 15.4859C26.6888 14.8474 27.1955 14.0894 27.5412 13.2551C27.8869 12.4207 28.0648 11.5265 28.0648 10.6234C28.0648 9.72027 27.8869 8.82601 27.5412 7.99168C27.1955 7.15736 26.6888 6.39932 26.05 5.76088Z"
+                                                stroke="#631096" stroke-width="2" stroke-linecap="round"
+                                                stroke-linejoin="round" />
+                                        </svg>
+                                    </a>
+                                </figure>
+                                <div class="swiper_deal_text">
+                                    <a href="#" class="product_text">
+                                        <h4>Premium Cotton Apricat Polo T-Shirt for men</h4>
+                                    </a>
+                                    <div class="swiper_deal_flex">
+                                        <h5>₹1500<span>₹1050</span></h5>
+                                        <a href="#" class="swiper_deal_btn"><svg width="20" height="20"
+                                                viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <g clip-path="url(#clip0_53_867)">
+                                                    <path
+                                                        d="M7.50002 18.3346C7.96026 18.3346 8.33335 17.9615 8.33335 17.5013C8.33335 17.0411 7.96026 16.668 7.50002 16.668C7.03978 16.668 6.66669 17.0411 6.66669 17.5013C6.66669 17.9615 7.03978 18.3346 7.50002 18.3346Z"
+                                                        stroke="white" stroke-width="2" stroke-linecap="round"
+                                                        stroke-linejoin="round" />
+                                                    <path
+                                                        d="M16.6666 18.3346C17.1269 18.3346 17.5 17.9615 17.5 17.5013C17.5 17.0411 17.1269 16.668 16.6666 16.668C16.2064 16.668 15.8333 17.0411 15.8333 17.5013C15.8333 17.9615 16.2064 18.3346 16.6666 18.3346Z"
+                                                        stroke="white" stroke-width="2" stroke-linecap="round"
+                                                        stroke-linejoin="round" />
+                                                    <path
+                                                        d="M0.833313 0.832031H4.16665L6.39998 11.9904C6.47618 12.374 6.6849 12.7187 6.9896 12.9639C7.2943 13.2092 7.67556 13.3395 8.06665 13.332H16.1666C16.5577 13.3395 16.939 13.2092 17.2437 12.9639C17.5484 12.7187 17.7571 12.374 17.8333 11.9904L19.1666 4.9987H4.99998"
+                                                        stroke="white" stroke-width="2" stroke-linecap="round"
+                                                        stroke-linejoin="round" />
+                                                </g>
+                                                <defs>
+                                                    <clipPath id="clip0_53_867">
+                                                        <rect width="20" height="20" fill="white" />
+                                                    </clipPath>
+                                                </defs>
+                                            </svg>
+
+                                        </a>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <div class="swiper_slide_deal_product_p">
+                            <div class="swiper_slide_deal_product">
+                                <figure class="deal_img">
+                                    <a href="#" class="deal_img_anch">
+                                        <img src="./images/watch.png" alt="">
+                                    </a>
+                                    <div class="deal_offer_sec_text">
+                                        30% <br>Off
+                                    </div>
+                                    <a href="#" class="blue_heart">
+                                        <svg width="30" height="30" viewBox="0 0 30 30" fill="none"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                d="M26.05 5.76088C25.4116 5.12213 24.6535 4.61543 23.8192 4.26973C22.9849 3.92403 22.0906 3.74609 21.1875 3.74609C20.2844 3.74609 19.3902 3.92403 18.5558 4.26973C17.7215 4.61543 16.9635 5.12213 16.325 5.76088L15 7.08588L13.675 5.76088C12.3854 4.47126 10.6363 3.74676 8.81253 3.74676C6.98874 3.74676 5.23964 4.47126 3.95003 5.76088C2.66041 7.05049 1.93591 8.79958 1.93591 10.6234C1.93591 12.4472 2.66041 14.1963 3.95003 15.4859L5.27503 16.8109L15 26.5359L24.725 16.8109L26.05 15.4859C26.6888 14.8474 27.1955 14.0894 27.5412 13.2551C27.8869 12.4207 28.0648 11.5265 28.0648 10.6234C28.0648 9.72027 27.8869 8.82601 27.5412 7.99168C27.1955 7.15736 26.6888 6.39932 26.05 5.76088Z"
+                                                stroke="#631096" stroke-width="2" stroke-linecap="round"
+                                                stroke-linejoin="round" />
+                                        </svg>
+                                    </a>
+                                </figure>
+                                <div class="swiper_deal_text">
+                                    <a href="#" class="product_text">
+                                        <h4>Fastrack New Limitless X2 Smartwatch|1.91" UltraVU...</h4>
+                                    </a>
+                                    <div class="swiper_deal_flex">
+                                        <h5>₹1500<span>₹1050</span></h5>
+                                        <a href="#" class="swiper_deal_btn"><svg width="20" height="20"
+                                                viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <g clip-path="url(#clip0_53_867)">
+                                                    <path
+                                                        d="M7.50002 18.3346C7.96026 18.3346 8.33335 17.9615 8.33335 17.5013C8.33335 17.0411 7.96026 16.668 7.50002 16.668C7.03978 16.668 6.66669 17.0411 6.66669 17.5013C6.66669 17.9615 7.03978 18.3346 7.50002 18.3346Z"
+                                                        stroke="white" stroke-width="2" stroke-linecap="round"
+                                                        stroke-linejoin="round" />
+                                                    <path
+                                                        d="M16.6666 18.3346C17.1269 18.3346 17.5 17.9615 17.5 17.5013C17.5 17.0411 17.1269 16.668 16.6666 16.668C16.2064 16.668 15.8333 17.0411 15.8333 17.5013C15.8333 17.9615 16.2064 18.3346 16.6666 18.3346Z"
+                                                        stroke="white" stroke-width="2" stroke-linecap="round"
+                                                        stroke-linejoin="round" />
+                                                    <path
+                                                        d="M0.833313 0.832031H4.16665L6.39998 11.9904C6.47618 12.374 6.6849 12.7187 6.9896 12.9639C7.2943 13.2092 7.67556 13.3395 8.06665 13.332H16.1666C16.5577 13.3395 16.939 13.2092 17.2437 12.9639C17.5484 12.7187 17.7571 12.374 17.8333 11.9904L19.1666 4.9987H4.99998"
+                                                        stroke="white" stroke-width="2" stroke-linecap="round"
+                                                        stroke-linejoin="round" />
+                                                </g>
+                                                <defs>
+                                                    <clipPath id="clip0_53_867">
+                                                        <rect width="20" height="20" fill="white" />
+                                                    </clipPath>
+                                                </defs>
+                                            </svg>
+
+                                        </a>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <div class="swiper_slide_deal_product_p">
+                            <div class="swiper_slide_deal_product">
+                                <figure class="deal_img">
+                                    <a href="#" class="deal_img_anch">
+                                        <img src="./images/wallet.png" alt="">
+                                    </a>
+                                    <div class="deal_offer_sec_text">
+                                        30% <br>Off
+                                    </div>
+                                    <a href="#" class="blue_heart">
+                                        <svg width="30" height="30" viewBox="0 0 30 30" fill="none"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                d="M26.05 5.76088C25.4116 5.12213 24.6535 4.61543 23.8192 4.26973C22.9849 3.92403 22.0906 3.74609 21.1875 3.74609C20.2844 3.74609 19.3902 3.92403 18.5558 4.26973C17.7215 4.61543 16.9635 5.12213 16.325 5.76088L15 7.08588L13.675 5.76088C12.3854 4.47126 10.6363 3.74676 8.81253 3.74676C6.98874 3.74676 5.23964 4.47126 3.95003 5.76088C2.66041 7.05049 1.93591 8.79958 1.93591 10.6234C1.93591 12.4472 2.66041 14.1963 3.95003 15.4859L5.27503 16.8109L15 26.5359L24.725 16.8109L26.05 15.4859C26.6888 14.8474 27.1955 14.0894 27.5412 13.2551C27.8869 12.4207 28.0648 11.5265 28.0648 10.6234C28.0648 9.72027 27.8869 8.82601 27.5412 7.99168C27.1955 7.15736 26.6888 6.39932 26.05 5.76088Z"
+                                                stroke="#631096" stroke-width="2" stroke-linecap="round"
+                                                stroke-linejoin="round" />
+                                        </svg>
+                                    </a>
+                                </figure>
+                                <div class="swiper_deal_text">
+                                    <a href="#" class="product_text">
+                                        <h4>WildHorn Leather Wallet for Men</h4>
+                                    </a>
+                                    <div class="swiper_deal_flex">
+                                        <h5>₹1500<span>₹1050</span></h5>
+                                        <a href="#" class="swiper_deal_btn"><svg width="20" height="20"
+                                                viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <g clip-path="url(#clip0_53_867)">
+                                                    <path
+                                                        d="M7.50002 18.3346C7.96026 18.3346 8.33335 17.9615 8.33335 17.5013C8.33335 17.0411 7.96026 16.668 7.50002 16.668C7.03978 16.668 6.66669 17.0411 6.66669 17.5013C6.66669 17.9615 7.03978 18.3346 7.50002 18.3346Z"
+                                                        stroke="white" stroke-width="2" stroke-linecap="round"
+                                                        stroke-linejoin="round" />
+                                                    <path
+                                                        d="M16.6666 18.3346C17.1269 18.3346 17.5 17.9615 17.5 17.5013C17.5 17.0411 17.1269 16.668 16.6666 16.668C16.2064 16.668 15.8333 17.0411 15.8333 17.5013C15.8333 17.9615 16.2064 18.3346 16.6666 18.3346Z"
+                                                        stroke="white" stroke-width="2" stroke-linecap="round"
+                                                        stroke-linejoin="round" />
+                                                    <path
+                                                        d="M0.833313 0.832031H4.16665L6.39998 11.9904C6.47618 12.374 6.6849 12.7187 6.9896 12.9639C7.2943 13.2092 7.67556 13.3395 8.06665 13.332H16.1666C16.5577 13.3395 16.939 13.2092 17.2437 12.9639C17.5484 12.7187 17.7571 12.374 17.8333 11.9904L19.1666 4.9987H4.99998"
+                                                        stroke="white" stroke-width="2" stroke-linecap="round"
+                                                        stroke-linejoin="round" />
+                                                </g>
+                                                <defs>
+                                                    <clipPath id="clip0_53_867">
+                                                        <rect width="20" height="20" fill="white" />
+                                                    </clipPath>
+                                                </defs>
+                                            </svg>
+
+                                        </a>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="mobile_sec">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="mobile_left mobile_left_m">
+                                <figure class="deal_img">
+                                    <a href="#" class="mobile_img_ancher">
+                                        <img src="./images/mobile1.png" alt="">
+                                    </a>
+                                    <a class=" mobile_heart blue_heart" href="#">
+                                        <svg class="blue_heart_fill" width="30" height="30" viewBox="0 0 30 30"
+                                            fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                d="M26.05 5.76088C25.4116 5.12213 24.6535 4.61543 23.8192 4.26973C22.9849 3.92403 22.0906 3.74609 21.1875 3.74609C20.2844 3.74609 19.3902 3.92403 18.5558 4.26973C17.7215 4.61543 16.9635 5.12213 16.325 5.76088L15 7.08588L13.675 5.76088C12.3854 4.47126 10.6363 3.74676 8.81253 3.74676C6.98874 3.74676 5.23964 4.47126 3.95003 5.76088C2.66041 7.05049 1.93591 8.79958 1.93591 10.6234C1.93591 12.4472 2.66041 14.1963 3.95003 15.4859L5.27503 16.8109L15 26.5359L24.725 16.8109L26.05 15.4859C26.6888 14.8474 27.1955 14.0894 27.5412 13.2551C27.8869 12.4207 28.0648 11.5265 28.0648 10.6234C28.0648 9.72027 27.8869 8.82601 27.5412 7.99168C27.1955 7.15736 26.6888 6.39932 26.05 5.76088Z"
+                                                stroke="#631096" stroke-width="2" stroke-linecap="round"
+                                                stroke-linejoin="round" />
+                                        </svg>
+                                    </a>
+                                </figure>
+                                <div class="mobile_img_sec_text">
+                                    <a href="#" class="product_text">
+                                        <h4>VIVO T2 Pro 5G</h4>
+                                    </a>
+                                    <div class="swiper_deal_flex">
+                                        <h5>₹16,490<span>₹20,990</span></h5>
+                                        <a href="#" class="swiper_deal_btn"><svg width="20" height="20"
+                                                viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <g clip-path="url(#clip0_53_867)">
+                                                    <path
+                                                        d="M7.50002 18.3346C7.96026 18.3346 8.33335 17.9615 8.33335 17.5013C8.33335 17.0411 7.96026 16.668 7.50002 16.668C7.03978 16.668 6.66669 17.0411 6.66669 17.5013C6.66669 17.9615 7.03978 18.3346 7.50002 18.3346Z"
+                                                        stroke="white" stroke-width="2" stroke-linecap="round"
+                                                        stroke-linejoin="round" />
+                                                    <path
+                                                        d="M16.6666 18.3346C17.1269 18.3346 17.5 17.9615 17.5 17.5013C17.5 17.0411 17.1269 16.668 16.6666 16.668C16.2064 16.668 15.8333 17.0411 15.8333 17.5013C15.8333 17.9615 16.2064 18.3346 16.6666 18.3346Z"
+                                                        stroke="white" stroke-width="2" stroke-linecap="round"
+                                                        stroke-linejoin="round" />
+                                                    <path
+                                                        d="M0.833313 0.832031H4.16665L6.39998 11.9904C6.47618 12.374 6.6849 12.7187 6.9896 12.9639C7.2943 13.2092 7.67556 13.3395 8.06665 13.332H16.1666C16.5577 13.3395 16.939 13.2092 17.2437 12.9639C17.5484 12.7187 17.7571 12.374 17.8333 11.9904L19.1666 4.9987H4.99998"
+                                                        stroke="white" stroke-width="2" stroke-linecap="round"
+                                                        stroke-linejoin="round" />
+                                                </g>
+                                                <defs>
+                                                    <clipPath id="clip0_53_867">
+                                                        <rect width="20" height="20" fill="white" />
+                                                    </clipPath>
+                                                </defs>
+                                            </svg>
+
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="mobile_left mobile_left_m">
+                                <figure class="deal_img">
+                                    <a href="#" class="mobile_img_ancher">
+                                        <img src="./images/mobile2.png" alt="">
+                                    </a>
+                                    <a class="mobile_heart blue_heart" href="#">
+                                        <svg class="blue_heart_fill" width="30" height="30" viewBox="0 0 30 30"
+                                            fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                d="M26.05 5.76088C25.4116 5.12213 24.6535 4.61543 23.8192 4.26973C22.9849 3.92403 22.0906 3.74609 21.1875 3.74609C20.2844 3.74609 19.3902 3.92403 18.5558 4.26973C17.7215 4.61543 16.9635 5.12213 16.325 5.76088L15 7.08588L13.675 5.76088C12.3854 4.47126 10.6363 3.74676 8.81253 3.74676C6.98874 3.74676 5.23964 4.47126 3.95003 5.76088C2.66041 7.05049 1.93591 8.79958 1.93591 10.6234C1.93591 12.4472 2.66041 14.1963 3.95003 15.4859L5.27503 16.8109L15 26.5359L24.725 16.8109L26.05 15.4859C26.6888 14.8474 27.1955 14.0894 27.5412 13.2551C27.8869 12.4207 28.0648 11.5265 28.0648 10.6234C28.0648 9.72027 27.8869 8.82601 27.5412 7.99168C27.1955 7.15736 26.6888 6.39932 26.05 5.76088Z"
+                                                stroke="#631096" stroke-width="2" stroke-linecap="round"
+                                                stroke-linejoin="round" />
+                                        </svg>
+                                    </a>
+                                </figure>
+                                <div class="mobile_img_sec_text">
+                                    <a href="#" class="product_text">
+                                        <h4>VIVO T1 X</h4>
+                                    </a>
+                                    <div class="swiper_deal_flex">
+                                        <h5>₹16,490<span>₹20,990</span></h5>
+                                        <a href="#" class="swiper_deal_btn"><svg width="20" height="20"
+                                                viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <g clip-path="url(#clip0_53_867)">
+                                                    <path
+                                                        d="M7.50002 18.3346C7.96026 18.3346 8.33335 17.9615 8.33335 17.5013C8.33335 17.0411 7.96026 16.668 7.50002 16.668C7.03978 16.668 6.66669 17.0411 6.66669 17.5013C6.66669 17.9615 7.03978 18.3346 7.50002 18.3346Z"
+                                                        stroke="white" stroke-width="2" stroke-linecap="round"
+                                                        stroke-linejoin="round" />
+                                                    <path
+                                                        d="M16.6666 18.3346C17.1269 18.3346 17.5 17.9615 17.5 17.5013C17.5 17.0411 17.1269 16.668 16.6666 16.668C16.2064 16.668 15.8333 17.0411 15.8333 17.5013C15.8333 17.9615 16.2064 18.3346 16.6666 18.3346Z"
+                                                        stroke="white" stroke-width="2" stroke-linecap="round"
+                                                        stroke-linejoin="round" />
+                                                    <path
+                                                        d="M0.833313 0.832031H4.16665L6.39998 11.9904C6.47618 12.374 6.6849 12.7187 6.9896 12.9639C7.2943 13.2092 7.67556 13.3395 8.06665 13.332H16.1666C16.5577 13.3395 16.939 13.2092 17.2437 12.9639C17.5484 12.7187 17.7571 12.374 17.8333 11.9904L19.1666 4.9987H4.99998"
+                                                        stroke="white" stroke-width="2" stroke-linecap="round"
+                                                        stroke-linejoin="round" />
+                                                </g>
+                                                <defs>
+                                                    <clipPath id="clip0_53_867">
+                                                        <rect width="20" height="20" fill="white" />
+                                                    </clipPath>
+                                                </defs>
+                                            </svg>
+
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="mobile_left">
+                                <figure class="deal_img">
+                                    <a href="#" class="mobile_img_ancher">
+                                        <img src="./images/mobile3.png" alt="">
+                                    </a>
+                                    <a class=" mobile_heart blue_heart" href="#">
+                                        <svg class="blue_heart_fill" width="30" height="30" viewBox="0 0 30 30"
+                                            fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                d="M26.05 5.76088C25.4116 5.12213 24.6535 4.61543 23.8192 4.26973C22.9849 3.92403 22.0906 3.74609 21.1875 3.74609C20.2844 3.74609 19.3902 3.92403 18.5558 4.26973C17.7215 4.61543 16.9635 5.12213 16.325 5.76088L15 7.08588L13.675 5.76088C12.3854 4.47126 10.6363 3.74676 8.81253 3.74676C6.98874 3.74676 5.23964 4.47126 3.95003 5.76088C2.66041 7.05049 1.93591 8.79958 1.93591 10.6234C1.93591 12.4472 2.66041 14.1963 3.95003 15.4859L5.27503 16.8109L15 26.5359L24.725 16.8109L26.05 15.4859C26.6888 14.8474 27.1955 14.0894 27.5412 13.2551C27.8869 12.4207 28.0648 11.5265 28.0648 10.6234C28.0648 9.72027 27.8869 8.82601 27.5412 7.99168C27.1955 7.15736 26.6888 6.39932 26.05 5.76088Z"
+                                                stroke="#631096" stroke-width="2" stroke-linecap="round"
+                                                stroke-linejoin="round" />
+                                        </svg>
+                                    </a>
+                                </figure>
+                                <div class="mobile_img_sec_text">
+                                    <a href="#" class="product_text">
+                                        <h4>Vivo V29e</h4>
+                                    </a>
+                                    <div class="swiper_deal_flex">
+                                        <h5>₹22,999<span>₹31,999</span></h5>
+                                        <a href="#" class="swiper_deal_btn"><svg width="20" height="20"
+                                                viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <g clip-path="url(#clip0_53_867)">
+                                                    <path
+                                                        d="M7.50002 18.3346C7.96026 18.3346 8.33335 17.9615 8.33335 17.5013C8.33335 17.0411 7.96026 16.668 7.50002 16.668C7.03978 16.668 6.66669 17.0411 6.66669 17.5013C6.66669 17.9615 7.03978 18.3346 7.50002 18.3346Z"
+                                                        stroke="white" stroke-width="2" stroke-linecap="round"
+                                                        stroke-linejoin="round" />
+                                                    <path
+                                                        d="M16.6666 18.3346C17.1269 18.3346 17.5 17.9615 17.5 17.5013C17.5 17.0411 17.1269 16.668 16.6666 16.668C16.2064 16.668 15.8333 17.0411 15.8333 17.5013C15.8333 17.9615 16.2064 18.3346 16.6666 18.3346Z"
+                                                        stroke="white" stroke-width="2" stroke-linecap="round"
+                                                        stroke-linejoin="round" />
+                                                    <path
+                                                        d="M0.833313 0.832031H4.16665L6.39998 11.9904C6.47618 12.374 6.6849 12.7187 6.9896 12.9639C7.2943 13.2092 7.67556 13.3395 8.06665 13.332H16.1666C16.5577 13.3395 16.939 13.2092 17.2437 12.9639C17.5484 12.7187 17.7571 12.374 17.8333 11.9904L19.1666 4.9987H4.99998"
+                                                        stroke="white" stroke-width="2" stroke-linecap="round"
+                                                        stroke-linejoin="round" />
+                                                </g>
+                                                <defs>
+                                                    <clipPath id="clip0_53_867">
+                                                        <rect width="20" height="20" fill="white" />
+                                                    </clipPath>
+                                                </defs>
+                                            </svg>
+
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="mobile_left">
+                                <figure class="deal_img">
+                                    <a href="#" class="mobile_img_ancher">
+                                        <img src="./images/mobile4.png" alt="">
+                                    </a>
+                                    <a class=" mobile_heart blue_heart" href="#">
+                                        <svg class="blue_heart_fill" width="30" height="30" viewBox="0 0 30 30"
+                                            fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                d="M26.05 5.76088C25.4116 5.12213 24.6535 4.61543 23.8192 4.26973C22.9849 3.92403 22.0906 3.74609 21.1875 3.74609C20.2844 3.74609 19.3902 3.92403 18.5558 4.26973C17.7215 4.61543 16.9635 5.12213 16.325 5.76088L15 7.08588L13.675 5.76088C12.3854 4.47126 10.6363 3.74676 8.81253 3.74676C6.98874 3.74676 5.23964 4.47126 3.95003 5.76088C2.66041 7.05049 1.93591 8.79958 1.93591 10.6234C1.93591 12.4472 2.66041 14.1963 3.95003 15.4859L5.27503 16.8109L15 26.5359L24.725 16.8109L26.05 15.4859C26.6888 14.8474 27.1955 14.0894 27.5412 13.2551C27.8869 12.4207 28.0648 11.5265 28.0648 10.6234C28.0648 9.72027 27.8869 8.82601 27.5412 7.99168C27.1955 7.15736 26.6888 6.39932 26.05 5.76088Z"
+                                                stroke="#631096" stroke-width="2" stroke-linecap="round"
+                                                stroke-linejoin="round" />
+                                        </svg>
+                                    </a>
+                                </figure>
+                                <div class="mobile_img_sec_text">
+                                    <a href="#" class="product_text">
+                                        <h4>Vivo V29 5G 128 GB</h4>
+                                    </a>
+                                    <div class="swiper_deal_flex">
+                                        <h5>₹10,490<span>₹20,990</span></h5>
+                                        <a href="#" class="swiper_deal_btn"><svg width="20" height="20"
+                                                viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <g clip-path="url(#clip0_53_867)">
+                                                    <path
+                                                        d="M7.50002 18.3346C7.96026 18.3346 8.33335 17.9615 8.33335 17.5013C8.33335 17.0411 7.96026 16.668 7.50002 16.668C7.03978 16.668 6.66669 17.0411 6.66669 17.5013C6.66669 17.9615 7.03978 18.3346 7.50002 18.3346Z"
+                                                        stroke="white" stroke-width="2" stroke-linecap="round"
+                                                        stroke-linejoin="round" />
+                                                    <path
+                                                        d="M16.6666 18.3346C17.1269 18.3346 17.5 17.9615 17.5 17.5013C17.5 17.0411 17.1269 16.668 16.6666 16.668C16.2064 16.668 15.8333 17.0411 15.8333 17.5013C15.8333 17.9615 16.2064 18.3346 16.6666 18.3346Z"
+                                                        stroke="white" stroke-width="2" stroke-linecap="round"
+                                                        stroke-linejoin="round" />
+                                                    <path
+                                                        d="M0.833313 0.832031H4.16665L6.39998 11.9904C6.47618 12.374 6.6849 12.7187 6.9896 12.9639C7.2943 13.2092 7.67556 13.3395 8.06665 13.332H16.1666C16.5577 13.3395 16.939 13.2092 17.2437 12.9639C17.5484 12.7187 17.7571 12.374 17.8333 11.9904L19.1666 4.9987H4.99998"
+                                                        stroke="white" stroke-width="2" stroke-linecap="round"
+                                                        stroke-linejoin="round" />
+                                                </g>
+                                                <defs>
+                                                    <clipPath id="clip0_53_867">
+                                                        <rect width="20" height="20" fill="white" />
+                                                    </clipPath>
+                                                </defs>
+                                            </svg>
+
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="mobile_one">
+                        <div class="m_logo_text">
+                            <div class="m_logo">
+                                <a href="#" class="mobile_img_ancher"></a>
+                                <img src="./images/OPPO_LOGO_2019 1.png" alt="">
+                            </div>
+                            <div class="m_text">
+                                <p>
+                                    Up To <span>60% OFF</span> on
+                                    Oppo Mobile Phones
+                                </p>
+                            </div>
+                        </div>
+                        <div class="mobile_oppo_img">
+                            <a href="#" class="mobileone_img_ancher">
+                                <img src="./images/1801 1.png" alt="">
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <footer class="top_footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="footer_text">
+                        <h4>About LUX Industries</h4>
+                        <p>
+                            Founded in 1957 by Mr. Giridhari Lal Todi as Biswanath Hosiery Mills, Lux Industries Ltd.
+                            came into being in 1995 and a new era began when Mr Girdharilal Todi ji's sons took over the
+                            rein of the company. Lux eventually became the most preferred innerwear brand in the country
+                            for everyone.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="footer_text">
+                        <h4>Useful Links</h4>
+                        <ul class="footer_text_menu">
+                            <li><a href="#">My Account</a></li>
+                            <li><a href="#">Privacy Policy</a></li>
+                            <li><a href="#">Term & Conditions</a></li>
+                            <li><a href="#">Customer Care</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <footer class="footer_bottom">
+        <div class="container">
+            <p>&copy;2024Lux Industries Ltd. All Rights Reserved.</p>
+        </div>
+    </footer>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="./js/custom.js"></script>
+</body>
+
+</html>
