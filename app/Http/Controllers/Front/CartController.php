@@ -130,29 +130,42 @@ class CartController extends Controller
 
     public function updateQuantity(Request $request)
     {
-        $cart = Cart::find($request->cart_id);
+        $cart = Cart::with('variation', 'productDetails')->find($request->cart_id);
 
-        if ($cart) {
-            if ($request->type == 'increment') {
-                if ($cart->qty < 10) {
-                    $cart->qty += 1;
-                }
-            } elseif ($request->type == 'decrement') {
-                if ($cart->qty > 1) {
-                    $cart->qty -= 1;
-                }
-            }
-
-            $cart->save();
-
-            return response()->json([
-                'success' => true,
-                'updated_qty' => $cart->qty,
-            ]);
+        if (!$cart) {
+            return response()->json(['success' => false, 'message' => 'Cart item not found.'], 404);
         }
 
-        return response()->json(['success' => false], 404);
+        // Get stock: use variation stock if exists, otherwise product stock
+        $stock = $cart->variation ? $cart->variation->stock : $cart->productDetails->stock;
+        $currentQty = $cart->qty;
+
+        if ($request->type === 'increment') {
+            $newQty = $currentQty + 1;
+
+            // Check if requested qty exceeds stock
+            if ($newQty > $stock) {
+                return response()->json([
+                    'success' => false,
+                    'message' => "Only {$stock} item(s) available.",
+                    'updated_qty' => $currentQty,
+                ]);
+            }
+
+            $cart->qty = $newQty;
+        } elseif ($request->type === 'decrement') {
+            $newQty = max($currentQty - 1, 1); // don't go below 1
+            $cart->qty = $newQty;
+        }
+
+        $cart->save();
+
+        return response()->json([
+            'success' => true,
+            'updated_qty' => $cart->qty,
+        ]);
     }
+
 
 
     public function removeQuantity(Request $request)
