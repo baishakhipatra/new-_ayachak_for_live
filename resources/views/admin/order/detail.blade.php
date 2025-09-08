@@ -116,15 +116,15 @@
                         <h5>Product status</h5>
                         <p class="small text-muted">Update status for this Product only</p>
                         <div class="btn-group" role="group">
-                            <a href="javascript: void(0)" onclick="productStatusUpdate({{$productValue->id}}, 1)" type="button" class="status_1 btn btn-outline-primary btn-sm {{($productValue->status == 1) ? 'active' : ''}}">New</a>
+                            <a href="javascript: void(0)" onclick="productStatusUpdate({{$productValue->id}}, 1)" type="button" class="status_1 btn btn-outline-primary btn-sm {{($productValue->status == 1) ? 'active' : ''}} {{($productValue->status == 5) ? 'disabled' : ''}}">New</a>
 
-                            <a href="javascript: void(0)" onclick="productStatusUpdate({{$productValue->id}}, 2)" type="button" class="status_2 btn btn-outline-primary btn-sm {{($productValue->status == 2) ? 'active' : ''}}">Confirm</a>
+                            <a href="javascript: void(0)" onclick="productStatusUpdate({{$productValue->id}}, 2)" type="button" class="status_2 btn btn-outline-primary btn-sm {{($productValue->status == 2) ? 'active' : ''}} {{($productValue->status == 5) ? 'disabled' : ''}}">Confirm</a>
 
-                            <a href="javascript: void(0)" onclick="productStatusUpdate({{$productValue->id}}, 3)" type="button" class="status_3 btn btn-outline-primary btn-sm {{($productValue->status == 3) ? 'active' : ''}}">Shipped</a>
+                            <a href="javascript: void(0)" onclick="productStatusUpdate({{$productValue->id}}, 3)" type="button" class="status_3 btn btn-outline-primary btn-sm {{($productValue->status == 3) ? 'active' : ''}} {{($productValue->status == 5) ? 'disabled' : ''}}">Shipped</a>
 
-                            <a href="javascript: void(0)" onclick="productStatusUpdate({{$productValue->id}}, 4)" type="button" class="status_4 btn btn-outline-success btn-sm {{($productValue->status == 4) ? 'active' : ''}}">Delivered</a>
+                            <a href="javascript: void(0)" onclick="productStatusUpdate({{$productValue->id}}, 4)" type="button" class="status_4 btn btn-outline-success btn-sm {{($productValue->status == 4) ? 'active' : ''}} {{($productValue->status == 5) ? 'disabled' : ''}}">Delivered</a>
 
-                            <a href="javascript: void(0)" onclick="productStatusUpdate({{$productValue->id}}, 5)" type="button" class="status_5 btn btn-outline-danger btn-sm {{($productValue->status == 5) ? 'active' : ''}}">Cancelled</a>
+                            <a href="javascript: void(0)" onclick="productStatusUpdate({{$productValue->id}}, 5)" type="button" class="status_5 btn btn-outline-danger btn-sm {{($productValue->status == 5) ? 'active' : ''}} ">Cancelled</a>
                         </div>
 
                         {{-- return options will be active once customer asks for refund --}}
@@ -178,10 +178,10 @@
                     <h5>Entire Order status</h5>
                     <p class="small text-muted">Update status for entire order from here</p>
                     <div class="btn-group" role="group">
-                        <a href="javascript: void(0)" onclick="statusUpdate({{$data->id}}, 1)" type="button" class="status_1 btn btn-outline-primary btn-sm {{($data->status == 1) ? 'active' : ''}}">New</a>
-                        <a href="javascript: void(0)" onclick="statusUpdate({{$data->id}}, 2)" type="button" class="status_2 btn btn-outline-primary btn-sm {{($data->status == 2) ? 'active' : ''}}">Confirm</a>
-                        <a href="javascript: void(0)" onclick="statusUpdate({{$data->id}}, 3)" type="button" class="status_3 btn btn-outline-primary btn-sm {{($data->status == 3) ? 'active' : ''}}">Shipped</a>
-                        <a href="javascript: void(0)" onclick="statusUpdate({{$data->id}}, 4)" type="button" class="status_4 btn btn-outline-success btn-sm {{($data->status == 4) ? 'active' : ''}}">Delivered</a>
+                        <a href="javascript: void(0)" onclick="statusUpdate({{$data->id}}, 1)" type="button" class="status_1 btn btn-outline-primary btn-sm {{($data->status == 1) ? 'active' : ''}} {{ ($data->status == 5) ? 'disabled' : '' }}">New</a>
+                        <a href="javascript: void(0)" onclick="statusUpdate({{$data->id}}, 2)" type="button" class="status_2 btn btn-outline-primary btn-sm {{($data->status == 2) ? 'active' : ''}} {{ ($data->status == 5) ? 'disabled' : '' }}">Confirm</a>
+                        <a href="javascript: void(0)" onclick="statusUpdate({{$data->id}}, 3)" type="button" class="status_3 btn btn-outline-primary btn-sm {{($data->status == 3) ? 'active' : ''}} {{ ($data->status == 5) ? 'disabled' : '' }}">Shipped</a>
+                        <a href="javascript: void(0)" onclick="statusUpdate({{$data->id}}, 4)" type="button" class="status_4 btn btn-outline-success btn-sm {{($data->status == 4) ? 'active' : ''}} {{ ($data->status == 5) ? 'disabled' : '' }}">Delivered</a>
                         <a href="javascript: void(0)" onclick="statusUpdate({{$data->id}}, 5)" type="button" class="status_5 btn btn-outline-danger btn-sm {{($data->status == 5) ? 'active' : ''}}">Cancelled</a>
                     </div>
 
@@ -360,6 +360,9 @@
                             toastFire('success', resp.message);
                         } else {
                             toastFire('warning', resp.message);
+                            if(resp.message == 'Order status cannot be changed after cancellation.'){
+                                $('.btn-group .status_'+status).addClass('active').removeClass('disabled');
+                            }
                         }
                     }
                 });
@@ -388,6 +391,9 @@
                             toastFire('success', resp.message);
                         } else {
                             toastFire('warning', resp.message);
+                            if(resp.message == 'Order status cannot be changed after cancellation.'){
+                                $('.btn-group .status_'+status).addClass('active').removeClass('disabled');
+                            }
                         }
                     }
                 });

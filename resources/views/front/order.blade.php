@@ -44,6 +44,14 @@
                                                                         <span>Quantity:</span> 
                                                                         {{ $item->qty ?? 'N/A' }}
                                                                     </div>
+                                                                     <div class="pro-meta">
+                                                                        <span>Status:</span> 
+                                                                        @if ($item->status == 1) <span class="text-primary">{{'Processing'}}</span>
+                                                                        @elseif ($item->status == 2) <span class="text-primary">{{'Confirmed'}}</span>
+                                                                        @elseif ($item->status == 3) <span class="text-primary">{{'Shipped'}}</span>
+                                                                        @elseif ($item->status == 1) <span class="text-success">{{'Delivered'}}</span>
+                                                                        @endif
+                                                                    </div>
 
                                                                     @if(!empty($item->productDetails->variation->weight))
                                                                         <div class="pro-meta">
@@ -168,9 +176,9 @@
                                         <h3 class="mb-5">Order Tracking</h3>
                                         <div class="tracking-wrap">
                                             <ul>
-                                                <li class="{{ $checkout->status == 1 ? 'active' : '' }}"><span>Processing</span></li>
-                                                <li class="{{ $checkout->status == 2 ? 'active' : '' }}"><span>Packing</span></li>
-                                                <li class="{{ $checkout->status == 3 ? 'active' : '' }}"><span>Shipping</span></li>
+                                                <li class="{{ $checkout->status >= 1 ? 'active' : '' }}"><span>Processing</span></li>
+                                                <li class="{{ $checkout->status >= 2 ? 'active' : '' }}"><span>Packing</span></li>
+                                                <li class="{{ $checkout->status >= 3 ? 'active' : '' }}"><span>Shipping</span></li>
                                                 <li class="{{ $checkout->status == 4 ? 'active' : '' }}"><span>Delivered</span></li>
                                             </ul>
                                         </div>
