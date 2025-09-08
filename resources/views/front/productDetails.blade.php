@@ -106,7 +106,7 @@
                                     $firstVariation = $productVariations->first();
                                 @endphp
                                 @if($firstVariation->stock > 0)
-                                    <span class="text-success">In Stock: {{ $firstVariation->stock }}</span>
+                                    <span class="text-success">In Stock</span>
                                 @else
                                     <span class="text-danger">Out of Stock</span>
                                 @endif
@@ -247,7 +247,7 @@
 
         function updateStock(stock) {
             if (stock > 0) {
-                stockDiv.innerHTML = `<span class="text-success">In Stock: ${stock}</span>`;
+                stockDiv.innerHTML = `<span class="text-success">In Stock</span>`;
                 addToCartBtn.disabled = false;
                 qtyBtn.disabled = false;
                 incBtn.disabled = false;
@@ -402,26 +402,78 @@
         }
     });
 
-    $(document).on('change', 'input[name="variation"]', function () {
-        const selectedVariationId = $(this).val();
-        $('#selectedVariation').val(selectedVariationId);
-    });
+    $(document).ready(function () {
 
-    $(document).on('click', '.increment', function (e) {
-        e.preventDefault();
-        let qtyInput = $(this).siblings('.quantity');
-        let currentQty = parseInt(qtyInput.val()) || 1;
-        qtyInput.val(currentQty + 1);
-    });
-
-    $(document).on('click', '.decrement', function (e) {
-        e.preventDefault();
-        let qtyInput = $(this).siblings('.quantity');
-        let currentQty = parseInt(qtyInput.val()) || 1;
-        if (currentQty > 1) {
-            qtyInput.val(currentQty - 1);
+        if (!$('.quantity-group').find('.stock-error').length) {
+            $('.quantity-group').append('<div class="stock-error text-danger mt-2" style="font-size: 14px;"></div>');
         }
+    
+        let selectedStock = parseInt($('input[name="variation"]:checked').data('stock')) || 0;
+
+        
+        $(document).on('change', 'input[name="variation"]', function () {
+            selectedStock = parseInt($(this).data('stock')) || 0;
+            $('#selectedVariation').val($(this).val());
+            $('.quantity').val(1);
+            $('.stock-error').text(''); 
+        });
+
+       
+        $(document).on('click', '.increment', function (e) {
+            e.preventDefault();
+            let qtyInput = $(this).siblings('.quantity');
+            let currentQty = parseInt(qtyInput.val()) || 1;
+
+            if (currentQty < selectedStock) {
+                qtyInput.val(currentQty + 1);
+                $('.stock-error').text('');
+            } else {
+                $('.stock-error').text(`Only ${selectedStock} items available in stock`);
+            }
+        });
+
+        
+        $(document).on('click', '.decrement', function (e) {
+            e.preventDefault();
+            let qtyInput = $(this).siblings('.quantity');
+            let currentQty = parseInt(qtyInput.val()) || 1;
+            if (currentQty > 1) {
+                qtyInput.val(currentQty - 1);
+                $('.stock-error').text('');
+            }
+        });
+
+        
+        $('#addToCartForm').on('submit', function (e) {
+            let qty = parseInt($('.quantity').val()) || 1;
+            if (qty > selectedStock) {
+                e.preventDefault();
+                $('.stock-error').text(`Cannot add more than ${selectedStock} items to cart`);
+            }
+        });
     });
+
+
+    // $(document).on('change', 'input[name="variation"]', function () {
+    //     const selectedVariationId = $(this).val();
+    //     $('#selectedVariation').val(selectedVariationId);
+    // });
+
+    // $(document).on('click', '.increment', function (e) {
+    //     e.preventDefault();
+    //     let qtyInput = $(this).siblings('.quantity');
+    //     let currentQty = parseInt(qtyInput.val()) || 1;
+    //     qtyInput.val(currentQty + 1);
+    // });
+
+    // $(document).on('click', '.decrement', function (e) {
+    //     e.preventDefault();
+    //     let qtyInput = $(this).siblings('.quantity');
+    //     let currentQty = parseInt(qtyInput.val()) || 1;
+    //     if (currentQty > 1) {
+    //         qtyInput.val(currentQty - 1);
+    //     }
+    // });
 
   </script>
 

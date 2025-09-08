@@ -208,25 +208,25 @@
     // });
 
 
-    document.addEventListener("DOMContentLoaded", () => {
-        // Handle increment buttons
-        document.querySelectorAll(".increment").forEach(button => {
-            button.addEventListener("click", (e) => {
-                e.preventDefault();
-                const input = button.closest('.number-input').querySelector(".quantity");
-                input.stepUp();
-            });
-        });
+    // document.addEventListener("DOMContentLoaded", () => {
+    //     // Handle increment buttons
+    //     document.querySelectorAll(".increment").forEach(button => {
+    //         button.addEventListener("click", (e) => {
+    //             e.preventDefault();
+    //             const input = button.closest('.number-input').querySelector(".quantity");
+    //             input.stepUp();
+    //         });
+    //     });
 
         
-        document.querySelectorAll(".decrement").forEach(button => {
-            button.addEventListener("click", (e) => {
-                e.preventDefault();
-                const input = button.closest('.number-input').querySelector(".quantity");
-                input.stepDown();
-            });
-        });
-    });
+    //     document.querySelectorAll(".decrement").forEach(button => {
+    //         button.addEventListener("click", (e) => {
+    //             e.preventDefault();
+    //             const input = button.closest('.number-input').querySelector(".quantity");
+    //             input.stepDown();
+    //         });
+    //     });
+    // });
 
     function recalculateCartTotals() {
         let subtotal = 0;
@@ -280,15 +280,26 @@
     }
 
 
-
     $(document).ready(function () {
         $(document).on('click', '.increment, .decrement', function () {
             let parent = $(this).closest('.number-input');
             let input = parent.find('.quantity');
+            let stock = parseInt(parent.data('stock')) || 0;
             let itemId = parent.data('id');
             let unitPrice = parseFloat(parent.data('price'));
-
+            let stockWarning = parent.siblings('.stock-warning');
             let type = $(this).hasClass('increment') ? 'increment' : 'decrement';
+
+            // Current quantity
+            let currentQty = parseInt(input.val()) || 1;
+
+            // Stock check
+            if (type === 'increment' && currentQty >= stock) {
+                stockWarning.show().text(`Can't add more than ${stock} items.`);
+                return;
+            } else {
+                stockWarning.hide();
+            }
 
             $.ajax({
                 url: "{{ route('front.cart.update-quantity') }}",
@@ -305,7 +316,7 @@
                         parent.closest('figcaption').find('.price-amount').text(newTotal.toFixed(2));
                         recalculateCartTotals();
                     } else {
-                        toastr.warning("Could not update quantity");
+                        toastr.warning(res.message || "Could not update quantity");
                     }
                 },
                 error: function () {
@@ -343,6 +354,7 @@
             });
         });
     });
+
 
 
 
