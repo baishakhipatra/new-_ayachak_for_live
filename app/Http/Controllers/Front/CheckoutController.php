@@ -221,8 +221,6 @@ class CheckoutController extends Controller
             $checkoutId = Checkout::create($checkoutData)->id;
         }
 
-        
-
         return response()->json([
             'success' => true,
             'redirect_url' => route('front.checkout.payment', [

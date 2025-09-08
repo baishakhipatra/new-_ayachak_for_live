@@ -31,21 +31,6 @@
                     {{-- Big slider --}}
                     <div class="slider-big swiper">
                         <div class="swiper-wrapper" id="default-big-slider">
-                            {{-- @if($images && count($images))
-                                @foreach($images as $image)
-                                    <div class="swiper-slide">
-                                        <div class="single-image-big">
-                                            <img src="{{ asset($image->image_path) }}" alt="{{ $data->name }}">
-                                        </div>
-                                    </div>
-                                @endforeach
-                            @else
-                                <div class="swiper-slide">
-                                    <div class="single-image-big">
-                                        <img src="{{ asset('assets/images/placeholder-product.jpg') }}" alt="{{ $data->name }}">
-                                    </div>
-                                </div>
-                            @endif --}}
                             <div class="swiper-slide">
                                 <div class="single-image-big">
                                     <img src="{{ asset('assets/images/placeholder-product.jpg') }}" alt="{{ $data->name }}">
@@ -58,21 +43,6 @@
                     {{-- Thumb slider --}}
                     <div thumbsSlider="" class="slider-thumb swiper">
                         <div class="swiper-wrapper" id="default-thumb-slider">
-                            {{-- @if($images && count($images))
-                                @foreach($images as $image)
-                                    <div class="swiper-slide">
-                                        <div class="single-image-thumb">
-                                            <img src="{{ asset($image->image_path) }}" alt="{{ $data->name }}">
-                                        </div>
-                                    </div>
-                                @endforeach
-                            @else
-                                <div class="swiper-slide">
-                                    <div class="single-image-thumb">
-                                        <img src="{{ asset('assets/images/placeholder-product.jpg') }}" alt="{{ $data->name }}">
-                                    </div>
-                                </div>
-                            @endif --}}
                             <div class="swiper-slide">
                                 <div class="single-image-thumb">
                                     <img src="{{ asset('assets/images/placeholder-product.jpg') }}" alt="{{ $data->name }}">
@@ -124,22 +94,39 @@
                                             value="{{ $variation->id }}"
                                             data-price="{{ $variation->price }}"
                                             data-offer-price="{{ $variation->offer_price }}"
+                                            data-stock="{{ $variation->stock }}"
                                             data-images="@json($variation->images)"
                                             {{ $key == 0 ? 'checked' : '' }}>
                                         <span></span>
                                     </label>
                                 @endforeach
                             </div>
+                            <div class="variation-stock mt-2 fw-bold">
+                                @php
+                                    $firstVariation = $productVariations->first();
+                                @endphp
+                                @if($firstVariation->stock > 0)
+                                    <span class="text-success">In Stock: {{ $firstVariation->stock }}</span>
+                                @else
+                                    <span class="text-danger">Out of Stock</span>
+                                @endif
+                            </div>
                         @endif
 
-                        <div class="quantity-group">
-                            <div class="number-input">
-                                <button type="button" class="decrement">-</button>
-                                <input type="number" class="quantity" name="quantity" min="1" max="10" value="1" step="1" readonly>
-                                <button type="button" class="increment">+</button>
+                        @if($hasStock)
+                            <div class="quantity-group">
+                                <div class="number-input">
+                                    <button type="button" class="decrement">-</button>
+                                    <input type="number" class="quantity" name="quantity" min="1" max="10" value="1" step="1" readonly>
+                                    <button type="button" class="increment">+</button>
+                                </div>
+                                <input type="submit" class="bton btn-fill add-to-cart-btn" value="Add to Cart">
                             </div>
-                            <input type="submit" class="bton btn-fill" value="Add to Cart">
-                        </div>
+                        @else
+                            <div class="alert alert-danger mt-3">
+                                This product is currently out of stock
+                            </div>
+                        @endif
                     </form>
                     
                     <div class="description">
@@ -249,6 +236,48 @@
         // });
         // });
     });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const variationRadios = document.querySelectorAll('input[name="variation"]');
+        const stockDiv = document.querySelector('.variation-stock');
+        const addToCartBtn = document.querySelector('.add-to-cart-btn');
+        const qtyBtn = document.querySelector('.quantity');
+        const incBtn = document.querySelector('.increment');
+        const decBtn = document.querySelector('.decrement');
+
+        function updateStock(stock) {
+            if (stock > 0) {
+                stockDiv.innerHTML = `<span class="text-success">In Stock: ${stock}</span>`;
+                addToCartBtn.disabled = false;
+                qtyBtn.disabled = false;
+                incBtn.disabled = false;
+                decBtn.disabled = false;
+                addToCartBtn.value = "Add To Cart";
+                addToCartBtn.classList.remove('disabled');
+            } else {
+                stockDiv.innerHTML = `<span class="text-danger">Out of Stock</span>`;
+                addToCartBtn.disabled = true;
+                qtyBtn.disabled = true;
+                incBtn.disabled = true;
+                decBtn.disabled = true;
+                addToCartBtn.value = "Out of stock";
+                addToCartBtn.classList.add('disabled');
+            }
+        }
+
+        variationRadios.forEach(radio => {
+            radio.addEventListener('change', function () {
+                const stock = parseInt(this.dataset.stock, 10);
+                updateStock(stock);
+            });
+        });
+
+        // Initialize based on first selected variation
+        const firstStock = parseInt(document.querySelector('input[name="variation"]:checked')?.dataset.stock || 0, 10);
+        updateStock(firstStock);
+    });
+
+
 
     // quantity jquery
     document.addEventListener("DOMContentLoaded", () => {

@@ -105,13 +105,9 @@ class ProductController extends Controller
             $productVariations = $this->productRepository->listVariationById($data->id);
             $relatedProducts = $this->productRepository->relatedProducts($data->id);
             $wishlistCheck = $this->productRepository->wishlistCheck($data->id);
-            $primaryColorSizes = $this->productRepository->primaryColorSizes($data->id);    
-
-            // if ($slug == "test-product-2") {
-            //     return view('front.product.detail-updated', compact('data', 'images', 'relatedProducts', 'wishlistCheck', 'primaryColorSizes'));
-            // } else {
-                return view('front.productDetails', compact('data', 'images', 'productVariations', 'relatedProducts', 'wishlistCheck', 'primaryColorSizes',));
-            // }
+            $primaryColorSizes = $this->productRepository->primaryColorSizes($data->id); 
+            $hasStock = $productVariations->where('stock', '>', 0)->count() > 0;   
+            return view('front.productDetails', compact('data', 'images', 'productVariations', 'relatedProducts', 'wishlistCheck', 'primaryColorSizes','hasStock'));
         } else {
             return view('front.404');
         }

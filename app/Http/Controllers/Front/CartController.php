@@ -92,6 +92,16 @@ class CartController extends Controller
         $userId = auth()->id(); 
         $cartItems = Cart::where('user_id', $userId)->with(['productDetails','variation'])->get();
 
+        foreach($cartItems as $item){
+            $item->is_out_of_stock = $item->variation->stock <= 0;
+        }
+
+        $subtotal = $cartItems->filter(fn($item) => !$item->is_out_of_stock)
+            ->sum(function ($item) {
+                $price = $item->offer_price > 0 ? $item->offer_price : $item->price;
+                return $item->qty * $price;
+            }); 
+
         $categories = $cartItems->pluck('productDetails.category.name')->unique()->toArray();
         $Books = in_array('Book', $categories);
         $Medicines = in_array('Medicine', $categories);
@@ -102,7 +112,7 @@ class CartController extends Controller
             $checkoutRestricted = true;
         }
 
-        return view('front.cartList', compact('cartItems','checkoutRestricted'));
+        return view('front.cartList', compact('cartItems','checkoutRestricted','subtotal'));
     }
 
     private function checkRestrictedCategories()
