@@ -234,7 +234,6 @@
             subtotal += parseFloat($(this).text().replace(/,/g, '')) || 0;
         });
 
-        // read applied coupon info
         const cType  = ($('#applied_coupon_type').val() || '').toString(); // "1" or "2"
         const cValue = parseFloat($('#applied_coupon_value').val()) || 0;
 
