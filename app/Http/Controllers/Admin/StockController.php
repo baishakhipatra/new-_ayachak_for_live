@@ -81,10 +81,13 @@ class StockController extends Controller
                 'SKU_code'   => 'required',
                 'available_stock'  => 'required',
             ]);
-
-            ProductVariation::where('code', $data['SKU_code'])->update([
-                'stock' => $data['available_stock'] + $data['required_stock'],
-            ]);
+            $already_stock=ProductVariation::where('code', $data['SKU_code'])->first();
+            // dd($already_stock->stock);
+            if($data['required_stock']!=''){
+                ProductVariation::where('code', $data['SKU_code'])->update([
+                    'stock' => $already_stock->stock + $data['required_stock'],
+                ]);
+            }
 
         }
 
