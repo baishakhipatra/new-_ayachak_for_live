@@ -49,7 +49,8 @@
                                                                         @if ($item->status == 1) <span class="text-primary">{{'Processing'}}</span>
                                                                         @elseif ($item->status == 2) <span class="text-primary">{{'Confirmed'}}</span>
                                                                         @elseif ($item->status == 3) <span class="text-primary">{{'Shipped'}}</span>
-                                                                        @elseif ($item->status == 1) <span class="text-success">{{'Delivered'}}</span>
+                                                                        @elseif ($item->status == 4) <span class="text-success">{{'Delivered'}}</span>
+                                                                        @elseif ($item->status == 5) <span class="text-danger">{{'Cancelled'}}</span>
                                                                         @endif
                                                                     </div>
 
