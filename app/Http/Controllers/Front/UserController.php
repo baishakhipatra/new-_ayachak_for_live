@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use PDF;
+use DB;
 
 class UserController extends Controller
 {
@@ -47,6 +48,7 @@ class UserController extends Controller
         $request->validate([
                     'name' => 'required|string|max:255',
                     'mobile' => 'required|numeric|digits:10|unique:users,mobile',
+                    'email' => 'nullable|email|unique:users,email',
                     'password' => 'required|min:6|max:12',
                     'confirm_password' => 'required_with:password|same:password',
                 ], [
@@ -173,27 +175,6 @@ class UserController extends Controller
 
         return back()->with('failure', 'Mobile number not found.');
     }
-
-    // public function order(Request $request)
-    // {
-    //     $userId = Auth::id();
-
-    //     $checkout = Checkout::where('user_id', $userId)
-    //         ->latest()
-    //         ->first();
-
-    //     $checkoutProducts->collect();
-
-    //     if($checkout){
-    //         $checkoutProducts = CheckoutProduct::with(['product.category', 'product.variations'])
-    //         ->where('checkout_id', $checkout->id)
-    //         ->get();
-    //     }
-
-        
-
-    //     return view('front.order', compact('checkout','checkoutProducts'));
-    // }
 
     public function order(Request $request)
     {
@@ -339,59 +320,145 @@ class UserController extends Controller
     public function orderCancel(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            "orderId" => "required | integer",
-            "cancellationReason" => "required | string"
+            "orderId" => "required|integer",
+            "cancellationReason" => "required|string"
         ]);
 
-        if (!$validator->fails()) {
-            $order = Order::findOrFail($request->orderId);
-            $order->status = 5;
-            $order->orderCancelledBy = auth()->guard('web')->user()->id;
+        if ($validator->fails()) {
+            return redirect()->back()->with('failure', $validator->errors()->first());
+        }
+
+        DB::beginTransaction();
+
+        try {
+            $order = Order::with(['orderProducts.productDetails', 'orderProducts.productVariationDetails'])
+                ->findOrFail($request->orderId);
+
+           
+            if ($order->status == 5) {
+                return redirect()->back()->with('warning', 'This order is already cancelled.');
+            }
+
+       
+            if (in_array($order->status, [2, 3])) { 
+               
+                return redirect()->back()->with('warning', 'This order cannot be cancelled as it has already been shipped or delivered.');
+            }
+
+          
+            foreach ($order->orderProducts as $item) {
+                if ($item->productVariationDetails) {
+                    $item->productVariationDetails->stock += $item->qty;
+                    $item->productVariationDetails->save();
+                } else {
+                    $item->productDetails->stock += $item->qty;
+                    $item->productDetails->save();
+                }
+            }
+
+            $order->status = 5; 
+            $order->orderCancelledBy = auth()->id();
             $order->orderCancelledReason = $request->cancellationReason;
             $order->save();
 
-            // send cancellation email 1
-            // fetching ordered products
-            $orderedProducts = OrderProduct::findOrFail($order->id);
+            // 6️⃣ Send cancellation emails
+            // $email_data = [
+            //     'name' => auth()->user()->fname.' '.auth()->user()->lname,
+            //     'subject' => 'ONN - Order update for #'.$order->order_no,
+            //     'email' => auth()->user()->email,
+            //     'orderId' => $order->id,
+            //     'orderNo' => $order->order_no,
+            //     'orderAmount' => $order->final_amount,
+            //     'status' => $order->status,
+            //     'statusTitle' => 'Cancelled',
+            //     'statusDesc' => 'Your order is cancelled',
+            //     'orderProducts' => $order->orderProducts,
+            //     'blade_file' => 'front/mail/order-update',
+            // ];
+            // SendMail($email_data);
 
-            $email_data = [
-                'name' => auth()->guard('web')->user()->fname.' '.auth()->guard('web')->user()->lname,
-                'subject' => 'Onn - Order update for #'.$order->order_no,
-                'email' => auth()->guard('web')->user()->email,
-                'orderId' => $order->id,
-                'orderNo' => $order->order_no,
-                'orderAmount' => $order->final_amount,
-                'status' => $order->status,
-                'statusTitle' => 'Cancelled',
-                'statusDesc' => 'Your order is cancelled',
-                'orderProducts' => $orderedProducts,
-                'blade_file' => 'front/mail/order-update',
-            ];
+            // $email_data2 = [
+            //     'name' => 'ONN ADMIN',
+            //     'subject' => 'ONN - Order cancel for #'.$order->order_no,
+            //     'email' => 'ecom.cozyworld@luxinnerwear.com',
+            //     'orderId' => $order->id,
+            //     'orderNo' => $order->order_no,
+            //     'orderAmount' => $order->final_amount,
+            //     'status' => $order->status,
+            //     'statusTitle' => 'Cancelled',
+            //     'statusDesc' => 'This order is cancelled',
+            //     'orderProducts' => $order->orderProducts,
+            //     'blade_file' => 'front/mail/order-cancel-admin',
+            // ];
+            // SendMail($email_data2);
 
-            SendMail($email_data);
+            DB::commit();
 
-            // send cancellation email 2
-            $email_data2 = [
-                'name' => 'ONN ADMIN',
-                'subject' => 'ONN - Order cancel for #'.$order->order_no,
-                'email' => 'ecom.cozyworld@luxinnerwear.com',
-                'orderId' => $order->id,
-                'orderNo' => $order->order_no,
-                'orderAmount' => $order->final_amount,
-                'status' => $order->status,
-                'statusTitle' => 'Cancelled',
-                'statusDesc' => 'This order is cancelled',
-                'orderProducts' => $orderedProducts,
-                'blade_file' => 'front/mail/order-cancel-admin',
-            ];
+            return redirect()->back()->with('success', 'Order cancelled and stock restored successfully.');
 
-            SendMail($email_data2);
-
-            return redirect()->back()->with('success', 'You have cancelled your order');
-        } else {
-            return redirect()->back()->with('failure', $validator->errors()->first());
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Something went wrong while cancelling order: ' . $e->getMessage());
         }
     }
+
+
+    // public function orderCancel(Request $request)
+    // {
+    //     $validator = Validator::make($request->all(), [
+    //         "orderId" => "required | integer",
+    //         "cancellationReason" => "required | string"
+    //     ]);
+
+    //     if (!$validator->fails()) {
+    //         $order = Order::findOrFail($request->orderId);
+    //         $order->status = 5;
+    //         $order->orderCancelledBy = auth()->guard('web')->user()->id;
+    //         $order->orderCancelledReason = $request->cancellationReason;
+    //         $order->save();
+
+    //         // send cancellation email 1
+    //         // fetching ordered products
+    //         $orderedProducts = OrderProduct::findOrFail($order->id);
+
+    //         $email_data = [
+    //             'name' => auth()->guard('web')->user()->fname.' '.auth()->guard('web')->user()->lname,
+    //             'subject' => 'Onn - Order update for #'.$order->order_no,
+    //             'email' => auth()->guard('web')->user()->email,
+    //             'orderId' => $order->id,
+    //             'orderNo' => $order->order_no,
+    //             'orderAmount' => $order->final_amount,
+    //             'status' => $order->status,
+    //             'statusTitle' => 'Cancelled',
+    //             'statusDesc' => 'Your order is cancelled',
+    //             'orderProducts' => $orderedProducts,
+    //             'blade_file' => 'front/mail/order-update',
+    //         ];
+
+    //         SendMail($email_data);
+
+    //         // send cancellation email 2
+    //         $email_data2 = [
+    //             'name' => 'ONN ADMIN',
+    //             'subject' => 'ONN - Order cancel for #'.$order->order_no,
+    //             'email' => 'ecom.cozyworld@luxinnerwear.com',
+    //             'orderId' => $order->id,
+    //             'orderNo' => $order->order_no,
+    //             'orderAmount' => $order->final_amount,
+    //             'status' => $order->status,
+    //             'statusTitle' => 'Cancelled',
+    //             'statusDesc' => 'This order is cancelled',
+    //             'orderProducts' => $orderedProducts,
+    //             'blade_file' => 'front/mail/order-cancel-admin',
+    //         ];
+
+    //         SendMail($email_data2);
+
+    //         return redirect()->back()->with('success', 'You have cancelled your order');
+    //     } else {
+    //         return redirect()->back()->with('failure', $validator->errors()->first());
+    //     }
+    // }
 
     public function orderReturn(Request $request)
     {

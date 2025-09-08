@@ -21,56 +21,86 @@
                                 <div class="col-lg-6">
                                     <div class="summery-list">
                                         <ul class="cart-item-list">
-                                                @foreach($checkoutProducts as $item)
-                                                    <li>
-                                                        <div class="inner-wrap">
-                                                            <figure>
-                                                                <img src="{{ $item->productDetails->image 
-                                                                            ? asset($item->productDetails->image) 
-                                                                            : asset('assets/images/placeholder-product.jpg') }}" 
-                                                                    alt="{{ $item->productDetails->name }}">
-                                                            </figure>
-                                                            <figcaption>
-                                                                <div class="product-details-cart">
-                                                                    <a href="#">
-                                                                        <h3>{{ ucwords($item->productDetails->name) }}</h3>
-                                                                    </a>
-                                                                    <div class="pro-meta">
-                                                                        <span>Category:</span> 
-                                                                        {{ $item->productDetails->category->name ?? 'N/A' }}
-                                                                    </div>
-
-                                                                    <div class="pro-meta">
-                                                                        <span>Quantity:</span> 
-                                                                        {{ $item->qty ?? 'N/A' }}
-                                                                    </div>
-
-                                                                    @if(!empty($item->productDetails->variation->weight))
-                                                                        <div class="pro-meta">
-                                                                            <span>Weight:</span> 
-                                                                            {{ $item->productDetails->variation->weight }}
-                                                                        </div>
-                                                                    @endif
+                                            @foreach($checkoutProducts as $item)
+                                                <li>
+                                                    <div class="inner-wrap">
+                                                        <figure>
+                                                            <img src="{{ $item->productDetails->image 
+                                                                        ? asset($item->productDetails->image) 
+                                                                        : asset('assets/images/placeholder-product.jpg') }}" 
+                                                                alt="{{ $item->productDetails->name }}">
+                                                        </figure>
+                                                        <figcaption>
+                                                            <div class="product-details-cart">
+                                                                <a href="#">
+                                                                    <h3>{{ ucwords($item->productDetails->name) }}</h3>
+                                                                </a>
+                                                                <div class="pro-meta">
+                                                                    <span>Category:</span> 
+                                                                    {{ $item->productDetails->category->name ?? 'N/A' }}
                                                                 </div>
-                                                                {{-- <span class="cart-price">
-                                                                    ₹{{ number_format($item->offer_price * $item->qty, 2) }}
-                                                                </span> --}}
-                                                                <span class="cart-price">
-                                                                    ₹{{ number_format((!empty($item->offer_price) && $item->offer_price > 0 
-                                                                        ? $item->offer_price 
-                                                                        : $item->price) * $item->qty, 2) }}
-                                                                </span>
-                                                            </figcaption>
-                                                        </div>
-                                                    </li>
-                                                @endforeach
-                                            {{-- @endif --}}
+
+                                                                <div class="pro-meta">
+                                                                    <span>Quantity:</span> 
+                                                                    {{ $item->qty ?? 'N/A' }}
+                                                                </div>
+
+                                                                @if(!empty($item->productVariationDetails->weight))
+                                                                    <div class="pro-meta">
+                                                                        <span>Weight:</span> 
+                                                                        {{ $item->productVariationDetails->weight }}
+                                                                    </div>
+                                                                @endif
+                                                            </div>
+                                                            <span class="cart-price">
+                                                                ₹{{ number_format((!empty($item->offer_price) && $item->offer_price > 0 
+                                                                    ? $item->offer_price 
+                                                                    : $item->price) * $item->qty, 2) }}
+                                                            </span>
+                                                        </figcaption>
+                                                    </div>
+                                                </li>
+                                            @endforeach
                                         </ul>
+                                        @if(!in_array($item->status, [3,4,5])) 
+                                            <button type="button" class="btn btn-danger mb-3" data-bs-toggle="modal" data-bs-target="#cancelOrderModal">
+                                                Cancel Order
+                                            </button>
+                                        @elseif($item->status == 5)
+                                            <p class="text-danger mt-3">This order has been cancelled.</p>
+                                        @else
+                                            <p class="text-success mt-3">This order cannot be cancelled (already shipped).</p>
+                                        @endif
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="modal fade" id="cancelOrderModal" tabindex="-1" aria-labelledby="cancelOrderModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="cancelOrderModalLabel">Cancel Order #{{ $item->order_no }}</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <form action="{{ route('front.order.cancel') }}" method="POST">
+                                            @csrf
+                                            <input type="hidden" name="orderId" value="{{ $item->id }}">
+                                            <div class="modal-body">
+                                                <div class="mb-3">
+                                                    <label for="cancellationReason" class="form-label">Cancellation Reason</label>
+                                                    <textarea name="cancellationReason" id="cancellationReason" class="form-control" rows="3" required></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-danger">Confirm Cancel</button>
+                                            </div>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
 
-                            {{-- @if($checkout) --}}
                             <div class="row mb-2">
                                 <div class="col-lg-9">
                                     <div class="detail-summery">
@@ -107,10 +137,6 @@
                                     </div>
                                 </div>
                             </div>
-                            {{-- @else
-                                <p>No checkout found for this user.</p>
-                            @endif --}}
-
                             <div class="row mb-2">
                                 <div class="col-lg-9">
                                     <div class="detail-summery">
@@ -123,37 +149,37 @@
                                             <span>Payment</span>
                                             {{ $checkout->payment_method }}
                                         </div>
-                                        {{-- <div class="cart-row">
-                                            <span>Deliver to</span>
-                                            <div class="address"></div>
-                                        </div> --}}
                                         <div class="cart-row">
                                             <span>Deliver to</span>
                                             <div class="address">
                                                 @if($checkout->shippingSameAsBilling)
                                                     {{-- If shipping = billing --}}
-                                                    {{ $checkout->billing_address }},
-                                                    {{ $checkout->billing_city }},
-                                                    {{ $checkout->billing_state }},
-                                                    {{ $checkout->billing_country }}
+                                                    {{ ucwords($checkout->billing_address) }},
+                                                    {{ ucwords($checkout->billing_city) }},
+                                                    {{ ucwords($checkout->billing_state) }},
+                                                    {{ ucwords($checkout->billing_country) }}
                                                     {{ $checkout->billing_pin }}
+                                                    <br><strong>Landmark:</strong> {{ ucwords($checkout->billing_landmark) }}
                                                     <br><strong>Phone:</strong> {{ $checkout->mobile }}
                                                 @else
                                                     {{-- Show billing address --}}
                                                     <strong>Billing:</strong> 
-                                                    {{ $checkout->billing_address }},
-                                                    {{ $checkout->billing_city }},
-                                                    {{ $checkout->billing_state }},
-                                                    {{ $checkout->billing_country }} - {{ $checkout->billing_pin }}
+                                                    {{ ucwords($checkout->billing_address) }},
+                                                    {{ ucwords($checkout->billing_city) }},
+                                                    {{ ucwords($checkout->billing_state) }},
+                                                    {{ ucwords($checkout->billing_country) }} - {{ $checkout->billing_pin }}
+                                                    <br><strong>Landmark:</strong> {{ ucwords($checkout->billing_landmark) }}
                                                     <br><strong>Phone:</strong> {{ $checkout->mobile }}
 
                                                     <br><br>
                                                     {{-- Show shipping address --}}
                                                     <strong>Shipping:</strong> 
-                                                    {{ $checkout->shipping_address }},
-                                                    {{ $checkout->shipping_city }},
-                                                    {{ $checkout->shipping_state }},
-                                                    {{ $checkout->shipping_country }} - {{ $checkout->shipping_pin }}
+                                                    {{ ucwords($checkout->shipping_address) }},
+                                                    {{ ucwords($checkout->shipping_city) }},
+                                                    {{ ucwords($checkout->shipping_state) }},
+                                                    {{ ucwords($checkout->shipping_country) }} - {{ $checkout->shipping_pin }}
+                                                    <br><strong>Landmark:</strong> {{ ucwords($checkout->shipping_landmark) }}
+                                                    <br><strong>Phone:</strong> {{ $checkout->alt_mobile }}
                                                 @endif
                                             </div>
                                         </div>
@@ -177,7 +203,6 @@
                                     </div>
                                 </div>
                             </div>
-
                         </div>
                     </div>
                 @else

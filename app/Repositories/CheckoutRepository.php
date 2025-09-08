@@ -166,6 +166,7 @@ class CheckoutRepository implements CheckoutInterface
             $data['billing_state']   = $billing['state'] ?? null;
             $data['billing_country'] = $billing['country'] ?? null;
             $data['billing_pin']     = $billing['pin'] ?? null;
+            $data['billing_landmark'] = $billing['billing_landmark'] ?? null;
 
             $shipping = json_decode($data['shipping_address'], true);
             $data['shipping_address'] = $shipping['address'] ?? null;
@@ -173,6 +174,8 @@ class CheckoutRepository implements CheckoutInterface
             $data['shipping_state']   = $shipping['state'] ?? null;
             $data['shipping_country'] = $shipping['country'] ?? null;
             $data['shipping_pin']     = $shipping['pin'] ?? null;
+            $data['shipping_landmark'] = $shipping['shipping_landmark'] ?? null;
+            $data['alt_mobile'] = $shipping['alt_mobile'] ?? null;
 
             $order = Order::create([
                 'order_sequence_int' => 0,                      
@@ -189,11 +192,13 @@ class CheckoutRepository implements CheckoutInterface
                 'billing_address_id' => 0,
                 'address_type' => null,
                 'billing_address' => $data['billing_address'] ?? null,
-                'billing_landmark' => null,
+                'billing_landmark' => $data['billing_landmark'] ?? null,
                 'billing_country' => $data['billing_country'] ?? null,
                 'billing_state' => $data['billing_state'] ?? null,
                 'billing_city' => $data['billing_city'] ?? null,
+                'billing_landmark' => $data['billing_landmark'] ?? null,
                 'billing_pin' => $data['billing_pin'] ?? null,
+                
 
                 'shippingSameAsBilling' => $sameAddress ? 1 : 0,
 
@@ -203,7 +208,9 @@ class CheckoutRepository implements CheckoutInterface
                 'shipping_country' => $sameAddress ? ($data['billing_country'] ?? null) : ($data['shipping_country'] ?? null),
                 'shipping_state' => $sameAddress ? ($data['billing_state'] ?? null) : ($data['shipping_state'] ?? null),
                 'shipping_city' => $sameAddress ? ($data['billing_city'] ?? null) : ($data['shipping_city'] ?? null),
+                'shipping_landmark' => $sameAddress ? ($data['billing_landmark'] ?? null) : ($data['shipping_landmark'] ?? null),
                 'shipping_pin' => $sameAddress ? ($data['billing_pin'] ?? null) : ($data['shipping_pin'] ?? null),
+                'alt_mobile' => $sameAddress ? ($data['mobile'] ?? null) : ($data['alt_mobile'] ?? null),
 
                 'shipping_charges' => $shippingCharges,
                 'shipping_method' => $data['shipping_method'] ?? 'standard',
@@ -216,7 +223,7 @@ class CheckoutRepository implements CheckoutInterface
                 'discount_amount' => $discount,
                 'tax_amount' => $taxTotal,
                 'final_amount' => $finalAmount,
-                'payment_method' => 'cash_on_delivery',
+                'payment_method' => 'Cash On Delivery',
                 'is_paid' => 0,
                 'txn_id' => 0,
                 'status' => 1,
@@ -224,7 +231,7 @@ class CheckoutRepository implements CheckoutInterface
                 'orderCancelledBy' => 0,
                 'orderCancelledReason' => null,
             ]);
-            //dd($order);
+           // dd($order);
             $orderNo = 'ORD-' . str_pad($order->id, 6, '0', STR_PAD_LEFT); 
             $order->update(['order_no' => $orderNo]);
 

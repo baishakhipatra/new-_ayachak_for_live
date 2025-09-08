@@ -144,6 +144,7 @@ class CheckoutController extends Controller
             'billing_city' => 'required|string|max:255',
             'billing_state' => 'required|string|max:255',
             'billing_pin' => 'required|string|max:6',
+            'billing_landmark' => 'required|string|max:255',
 
             'address_option' => 'required|in:same,different',
             'shipping_country' => 'nullable|string|max:255',
@@ -153,7 +154,8 @@ class CheckoutController extends Controller
             'shipping_city' => 'nullable|string|max:255',
             'shipping_state' => 'nullable|string|max:255',
             'shipping_pin' => 'nullable|string|max:6',
-            'shipping_mobile' => 'nullable|digits:10',
+            'shipping_landmark' => 'nullable|string|max:255',
+            'alt_mobile' => 'nullable|digits:10',
         ];
 
         $messages = [
@@ -185,6 +187,7 @@ class CheckoutController extends Controller
             'address' => $request->billing_address,
             'city' => $request->billing_city,
             'state' => $request->billing_state,
+            'billing_landmark' => $request->billing_landmark,
             'pin' => $request->billing_pin,
         ];
 
@@ -200,7 +203,9 @@ class CheckoutController extends Controller
                 'address' => $request->shipping_address,
                 'city' => $request->shipping_city,
                 'state' => $request->shipping_state,
+                'shipping_landmark' => $request->shipping_landmark,
                 'pin' => $request->shipping_pin,
+                'alt_mobile' => $request->alt_mobile,
             ];
         }
 

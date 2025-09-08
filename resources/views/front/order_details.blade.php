@@ -7,11 +7,6 @@
             </div>
             <div class="row">
                 <div class="col-sm-5 col-lg-3">
-                    <!-- <div class="profile_name">
-                        <h4>Lux</h4>
-                        <h5>Example@gmail.com</h5>
-                        <h5>1234567890</h5>
-                    </div> -->
                     <div class="profile_details">
                     <ul class="account-list">
                             <li>

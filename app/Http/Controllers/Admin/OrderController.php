@@ -131,6 +131,7 @@ class OrderController extends Controller
 
             }
         }
+        
         DB::table('order_products')->where('order_id', $request->id)->update([
             'status' => $request->status
         ]);
@@ -141,48 +142,48 @@ class OrderController extends Controller
         // fetching ordered products
         $orderedProducts = OrderProduct::where('order_id', $updatedEntry->id)->get()->toArray();
 
-        switch ($updatedEntry->status) {
-            case 1:
-                $statusTitle = 'New';
-                $statusDesc = 'We are currently processing your order';
-                break;
-            case 2:
-                $statusTitle = 'Confirmed';
-                $statusDesc = 'Your order is confirmed';
-                break;
-            case 3:
-                $statusTitle = 'Shipped';
-                $statusDesc = 'Your order is Shipped. It will reach you soon';
-                break;
-            case 4:
-                $statusTitle = 'Delivered';
-                $statusDesc = 'Your order is delivered';
-                break;
-            case 5:
-                $statusTitle = 'Cancelled';
-                $statusDesc = 'Your order is cancelled';
-                break;
-            default:
-                $statusTitle = 'New';
-                $statusDesc = 'We are currently processing your order';
-                break;
-        }
+        // switch ($updatedEntry->status) {
+        //     case 1:
+        //         $statusTitle = 'New';
+        //         $statusDesc = 'We are currently processing your order';
+        //         break;
+        //     case 2:
+        //         $statusTitle = 'Confirmed';
+        //         $statusDesc = 'Your order is confirmed';
+        //         break;
+        //     case 3:
+        //         $statusTitle = 'Shipped';
+        //         $statusDesc = 'Your order is Shipped. It will reach you soon';
+        //         break;
+        //     case 4:
+        //         $statusTitle = 'Delivered';
+        //         $statusDesc = 'Your order is delivered';
+        //         break;
+        //     case 5:
+        //         $statusTitle = 'Cancelled';
+        //         $statusDesc = 'Your order is cancelled';
+        //         break;
+        //     default:
+        //         $statusTitle = 'New';
+        //         $statusDesc = 'We are currently processing your order';
+        //         break;
+        // }
 
-        $email_data = [
-            'name' => $updatedEntry->fname.' '.$updatedEntry->lname,
-            'subject' => 'Onn - Order update for #'.$updatedEntry->order_no,
-            'email' => $updatedEntry->email,
-            'orderId' => $updatedEntry->id,
-            'orderNo' => $updatedEntry->order_no,
-            'orderAmount' => $updatedEntry->final_amount,
-            'status' => $updatedEntry->status,
-            'statusTitle' => $statusTitle,
-            'statusDesc' => $statusDesc,
-            'orderProducts' => $orderedProducts,
-            'blade_file' => 'front/mail/order-update',
-        ];
+        // $email_data = [
+        //     'name' => $updatedEntry->fname.' '.$updatedEntry->lname,
+        //     'subject' => 'Onn - Order update for #'.$updatedEntry->order_no,
+        //     'email' => $updatedEntry->email,
+        //     'orderId' => $updatedEntry->id,
+        //     'orderNo' => $updatedEntry->order_no,
+        //     'orderAmount' => $updatedEntry->final_amount,
+        //     'status' => $updatedEntry->status,
+        //     'statusTitle' => $statusTitle,
+        //     'statusDesc' => $statusDesc,
+        //     'orderProducts' => $orderedProducts,
+        //     'blade_file' => 'front/mail/order-update',
+        // ];
 
-        SendMail($email_data);
+        // SendMail($email_data);
 
         if ($updatedEntry) {
             return response()->json(['error' => false, 'message' => 'Order status updated']);
