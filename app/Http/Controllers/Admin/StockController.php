@@ -30,7 +30,7 @@ class StockController extends Controller
             "Expires"             => "0"
         ];
 
-        $columns = ['SKU_code', 'available_stock', 'required_stock'];
+        $columns = ['SKU_code', 'available_stock', 'current_stock'];
 
         $callback = function () use ($variations, $columns) {
             $file = fopen('php://output', 'w');
