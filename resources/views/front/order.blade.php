@@ -168,10 +168,10 @@
                                         <h3 class="mb-5">Order Tracking</h3>
                                         <div class="tracking-wrap">
                                             <ul>
-                                                <li class="active"><span>Processing</span></li>
-                                                <li><span>Packing</span></li>
-                                                <li><span>Shipping</span></li>
-                                                <li><span>Delivered</span></li>
+                                                <li class="{{ $checkout->status == 1 ? 'active' : '' }}"><span>Processing</span></li>
+                                                <li class="{{ $checkout->status == 2 ? 'active' : '' }}"><span>Packing</span></li>
+                                                <li class="{{ $checkout->status == 3 ? 'active' : '' }}"><span>Shipping</span></li>
+                                                <li class="{{ $checkout->status == 4 ? 'active' : '' }}"><span>Delivered</span></li>
                                             </ul>
                                         </div>
                                     </div>
