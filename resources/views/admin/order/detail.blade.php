@@ -355,15 +355,17 @@
                     },
                     success: function(resp) {
                         if (resp.error === false) {
-                            $('.btn-group .btn').removeClass('active').removeClass('disabled');
-                            $('.btn-group .status_'+status).addClass('active');
+                            // $('.btn-group .btn').removeClass('active').removeClass('disabled');
+                            // $('.btn-group .status_'+status).addClass('active');
                             toastFire('success', resp.message);
+
                         } else {
                             toastFire('warning', resp.message);
-                            if(resp.message == 'Order status cannot be changed after cancellation.'){
-                                $('.btn-group .status_'+status).addClass('active').removeClass('disabled');
-                            }
+                            
                         }
+                        setTimeout(() => {
+                                window.location.reload();
+                        }, 500);
                     }
                 });
             } else {
@@ -386,15 +388,16 @@
                     },
                     success: function(resp) {
                         if (resp.error === false) {
-                            $('.btn-group .btn').removeClass('active').removeClass('disabled');
-                            $('.btn-group .status_'+status).addClass('active');
+                            // $('.btn-group .btn').removeClass('active').removeClass('disabled');
+                            // $('.btn-group .status_'+status).addClass('active');
                             toastFire('success', resp.message);
                         } else {
                             toastFire('warning', resp.message);
-                            if(resp.message == 'Order status cannot be changed after cancellation.'){
-                                $('.btn-group .status_'+status).addClass('active').removeClass('disabled');
-                            }
+                            
                         }
+                          setTimeout(() => {
+                                window.location.reload();
+                        }, 500);
                     }
                 });
             } else {
