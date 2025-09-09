@@ -16,7 +16,6 @@
                                 <h2 class="mb-0">Order Summery</h2>
                                 <a href="{{ route('front.order.invoice', $checkout->id) }}" class="bton btn-fill">Download Invoice</a>
                             </div>
-
                             <div class="row">
                                 <div class="col-lg-6">
                                     <div class="summery-list">
@@ -39,16 +38,24 @@
                                                                     <span>Category:</span> 
                                                                     {{ $item->productDetails->category->name ?? 'N/A' }}
                                                                 </div>
-
                                                                 <div class="pro-meta">
                                                                     <span>Quantity:</span> 
                                                                     {{ $item->qty ?? 'N/A' }}
                                                                 </div>
+                                                                <div class="pro-meta">
+                                                                    <span>Status:</span> 
+                                                                    @if ($item->status == 1) <span class="text-primary">Processing</span>
+                                                                    @elseif ($item->status == 2) <span class="text-primary">Confirmed</span>
+                                                                    @elseif ($item->status == 3) <span class="text-primary">Shipped</span>
+                                                                    @elseif ($item->status == 4) <span class="text-success">Delivered</span>
+                                                                    @elseif ($item->status == 5) <span class="text-danger">Cancelled</span>
+                                                                    @endif
+                                                                </div>
 
-                                                                @if(!empty($item->productVariationDetails->weight))
+                                                                @if(!empty($item->productDetails->variation->weight))
                                                                     <div class="pro-meta">
                                                                         <span>Weight:</span> 
-                                                                        {{ $item->productVariationDetails->weight }}
+                                                                        {{ $item->productDetails->variation->weight }}
                                                                     </div>
                                                                 @endif
                                                             </div>
@@ -59,47 +66,87 @@
                                                             </span>
                                                         </figcaption>
                                                     </div>
+
+                                                    {{-- Cancel button for each product --}}
+                                                    @if(!in_array($item->status, [3,4,5]))
+                                                        <button type="button" 
+                                                                class="btn btn-warning btn-sm mt-2" 
+                                                                data-bs-toggle="modal" 
+                                                                data-bs-target="#cancelProductModal-{{ $item->id }}">
+                                                            Cancel This Product
+                                                        </button>
+                                                    @endif
                                                 </li>
+
+                                                {{-- Modal for product cancel --}}
+                                                <div class="modal fade" id="cancelProductModal-{{ $item->id }}" tabindex="-1" aria-labelledby="cancelProductModalLabel-{{ $item->id }}" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="cancelProductModalLabel-{{ $item->id }}">Cancel Product: {{ ucwords($item->productDetails->name) }}</h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <form action="{{ route('front.product.cancel') }}" method="POST">
+                                                                @csrf
+                                                                <input type="hidden" name="productId" value="{{ $item->id }}">
+                                                                <div class="modal-body">
+                                                                    <div class="mb-3">
+                                                                        <label for="cancellationReason" class="form-label">Cancellation Reason</label>
+                                                                        <textarea name="cancellationReason" class="form-control" rows="3" required></textarea>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                                    <button type="submit" class="btn btn-danger">Confirm Cancel</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             @endforeach
                                         </ul>
-                                        @if(!in_array($item->status, [3,4,5])) 
+
+                                        {{-- Whole Order Cancel Button --}}
+                                        @php $firstItem = $checkoutProducts->first(); @endphp
+                                        @if($firstItem && !in_array($firstItem->status, [3,4,5])) 
                                             <button type="button" class="btn btn-danger mb-3" data-bs-toggle="modal" data-bs-target="#cancelOrderModal">
-                                                Cancel Order
+                                                Cancel Entire Order
                                             </button>
-                                        @elseif($item->status == 5)
+                                        @elseif($firstItem && $firstItem->status == 5)
                                             <p class="text-danger mt-3">This order has been cancelled.</p>
                                         @else
                                             <p class="text-success mt-3">This order cannot be cancelled (already shipped).</p>
                                         @endif
                                     </div>
-
                                 </div>
                             </div>
 
+                            {{-- Whole Order Cancel Modal --}}
                             <div class="modal fade" id="cancelOrderModal" tabindex="-1" aria-labelledby="cancelOrderModalLabel" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="cancelOrderModalLabel">Cancel Order #{{ $item->order_no }}</h5>
+                                            <h5 class="modal-title" id="cancelOrderModalLabel">Cancel Entire Order</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <form action="{{ route('front.order.cancel') }}" method="POST">
                                             @csrf
-                                            <input type="hidden" name="orderId" value="{{ $item->id }}">
+                                            <input type="hidden" name="orderId" value="{{ $firstItem->order_id ?? '' }}">
                                             <div class="modal-body">
                                                 <div class="mb-3">
                                                     <label for="cancellationReason" class="form-label">Cancellation Reason</label>
-                                                    <textarea name="cancellationReason" id="cancellationReason" class="form-control" rows="3" required></textarea>
+                                                    <textarea name="cancellationReason" class="form-control" rows="3" required></textarea>
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                            <button type="submit" class="btn btn-danger">Confirm Cancel</button>
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-danger">Confirm Cancel</button>
                                             </div>
                                         </form>
                                     </div>
                                 </div>
                             </div>
+
 
                             <div class="row mb-2">
                                 <div class="col-lg-9">
@@ -194,9 +241,9 @@
                                         <h3 class="mb-5">Order Tracking</h3>
                                         <div class="tracking-wrap">
                                             <ul>
-                                                <li class="{{ $checkout->status == 1 ? 'active' : '' }}"><span>Processing</span></li>
-                                                <li class="{{ $checkout->status == 2 ? 'active' : '' }}"><span>Packing</span></li>
-                                                <li class="{{ $checkout->status == 3 ? 'active' : '' }}"><span>Shipping</span></li>
+                                                <li class="{{ $checkout->status >= 1 ? 'active' : '' }}"><span>Processing</span></li>
+                                                <li class="{{ $checkout->status >= 2 ? 'active' : '' }}"><span>Packing</span></li>
+                                                <li class="{{ $checkout->status >= 3 ? 'active' : '' }}"><span>Shipping</span></li>
                                                 <li class="{{ $checkout->status == 4 ? 'active' : '' }}"><span>Delivered</span></li>
                                             </ul>
                                         </div>

@@ -9,6 +9,7 @@ use App\Models\Collection;
 use App\Models\Category;
 use App\Models\Coupon;
 use App\Models\Product;
+use App\Models\ProductVariation;
 use App\Models\ProductColorSize;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -116,169 +117,196 @@ class OrderController extends Controller
     public function statusPost(Request $request)
     {
         // order update
-        $updatedEntry = Order::findOrFail($request->id);
-        $updatedEntry->status = $request->status;
-        $updatedEntry->save();
-		if (!empty($updatedEntry->coupon_code_id) || $updatedEntry->coupon_code_id != 0) {
-            if($updatedEntry->status == 5)
-            {
-                $couponDetails = Coupon::findOrFail($updatedEntry->coupon_code_id);
-                $old_no_of_usage = $couponDetails->no_of_usage;
-                $new_no_of_usage = $old_no_of_usage - 1;
-                $couponDetails->no_of_usage = $new_no_of_usage;
-                if ($new_no_of_usage == $couponDetails->max_time_of_use) $couponDetails->status = 0;
-                $couponDetails->save();
-
-            }
-        }
         
-        DB::table('order_products')->where('order_id', $request->id)->update([
-            'status' => $request->status
-        ]);
+        $updatedEntry = Order::findOrFail($request->id);
+        if($updatedEntry->status != 5){
+            $updatedEntry->status = $request->status;
+            $updatedEntry->save();
+            if (!empty($updatedEntry->coupon_code_id) || $updatedEntry->coupon_code_id != 0) {
+                if($updatedEntry->status == 5)
+                {
+                    $couponDetails = Coupon::findOrFail($updatedEntry->coupon_code_id);
+                    $old_no_of_usage = $couponDetails->no_of_usage;
+                    $new_no_of_usage = $old_no_of_usage - 1;
+                    $couponDetails->no_of_usage = $new_no_of_usage;
+                    if ($new_no_of_usage == $couponDetails->max_time_of_use) $couponDetails->status = 0;
+                    $couponDetails->save();
 
-        // dd($updatedEntry);
+                }
+            }
+            if($request->status == 5){
+                $order_product = OrderProduct::where('order_id', $request->id)->get();
+                // dd($order_product);
+                foreach ($order_product as $key => $ord_product) {
+                    $pro_stock=ProductVariation::where('id', $ord_product->product_variation_id)->first();
+                    $stock=$pro_stock->stock + number_format($ord_product->qty,0);
+                    ProductVariation::where('id', $ord_product->product_variation_id)->update([
+                        'stock' => $stock 
+                    ]);
+                }
+            }
+            DB::table('order_products')->where('order_id', $request->id)->update([
+                'status' => $request->status
+            ]);
 
-        // send email
-        // fetching ordered products
-        $orderedProducts = OrderProduct::where('order_id', $updatedEntry->id)->get()->toArray();
+            // dd($updatedEntry);
 
-        // switch ($updatedEntry->status) {
-        //     case 1:
-        //         $statusTitle = 'New';
-        //         $statusDesc = 'We are currently processing your order';
-        //         break;
-        //     case 2:
-        //         $statusTitle = 'Confirmed';
-        //         $statusDesc = 'Your order is confirmed';
-        //         break;
-        //     case 3:
-        //         $statusTitle = 'Shipped';
-        //         $statusDesc = 'Your order is Shipped. It will reach you soon';
-        //         break;
-        //     case 4:
-        //         $statusTitle = 'Delivered';
-        //         $statusDesc = 'Your order is delivered';
-        //         break;
-        //     case 5:
-        //         $statusTitle = 'Cancelled';
-        //         $statusDesc = 'Your order is cancelled';
-        //         break;
-        //     default:
-        //         $statusTitle = 'New';
-        //         $statusDesc = 'We are currently processing your order';
-        //         break;
-        // }
+            // send email
+            // fetching ordered products
+            $orderedProducts = OrderProduct::where('order_id', $updatedEntry->id)->get()->toArray();
 
-        // $email_data = [
-        //     'name' => $updatedEntry->fname.' '.$updatedEntry->lname,
-        //     'subject' => 'Onn - Order update for #'.$updatedEntry->order_no,
-        //     'email' => $updatedEntry->email,
-        //     'orderId' => $updatedEntry->id,
-        //     'orderNo' => $updatedEntry->order_no,
-        //     'orderAmount' => $updatedEntry->final_amount,
-        //     'status' => $updatedEntry->status,
-        //     'statusTitle' => $statusTitle,
-        //     'statusDesc' => $statusDesc,
-        //     'orderProducts' => $orderedProducts,
-        //     'blade_file' => 'front/mail/order-update',
-        // ];
+            // switch ($updatedEntry->status) {
+            //     case 1:
+            //         $statusTitle = 'New';
+            //         $statusDesc = 'We are currently processing your order';
+            //         break;
+            //     case 2:
+            //         $statusTitle = 'Confirmed';
+            //         $statusDesc = 'Your order is confirmed';
+            //         break;
+            //     case 3:
+            //         $statusTitle = 'Shipped';
+            //         $statusDesc = 'Your order is Shipped. It will reach you soon';
+            //         break;
+            //     case 4:
+            //         $statusTitle = 'Delivered';
+            //         $statusDesc = 'Your order is delivered';
+            //         break;
+            //     case 5:
+            //         $statusTitle = 'Cancelled';
+            //         $statusDesc = 'Your order is cancelled';
+            //         break;
+            //     default:
+            //         $statusTitle = 'New';
+            //         $statusDesc = 'We are currently processing your order';
+            //         break;
+            // }
 
-        // SendMail($email_data);
+            // $email_data = [
+            //     'name' => $updatedEntry->fname.' '.$updatedEntry->lname,
+            //     'subject' => 'Onn - Order update for #'.$updatedEntry->order_no,
+            //     'email' => $updatedEntry->email,
+            //     'orderId' => $updatedEntry->id,
+            //     'orderNo' => $updatedEntry->order_no,
+            //     'orderAmount' => $updatedEntry->final_amount,
+            //     'status' => $updatedEntry->status,
+            //     'statusTitle' => $statusTitle,
+            //     'statusDesc' => $statusDesc,
+            //     'orderProducts' => $orderedProducts,
+            //     'blade_file' => 'front/mail/order-update',
+            // ];
 
-        if ($updatedEntry) {
-            return response()->json(['error' => false, 'message' => 'Order status updated']);
-        } else {
-            return response()->json(['error' => true, 'message' => 'Something happened']);
+            // SendMail($email_data);
+
+            if ($updatedEntry) {
+                return response()->json(['error' => false, 'message' => 'Order status updated']);
+            } else {
+                return response()->json(['error' => true, 'message' => 'Something happened']);
+            }
+        }else{
+            return response()->json(['error' => true, 'message' => 'Order status cannot be changed after cancellation.']);
         }
     }
 
     public function orderProductStatus(Request $request)
     {
-        $statusUpdate = DB::table('order_products')->where('id', $request->id)->update([
-            'status' => $request->status
-        ]);
+        $ord_product = OrderProduct::where('id', $request->id)->first();
+        if($ord_product->status!=5){
+            $statusUpdate = OrderProduct::where('id', $request->id)->update([
+                'status' => $request->status
+            ]);
 
-        // send email
-        // fetching ordered products
-        $orderedProducts = OrderProduct::findOrFail($request->id);
+            if($request->status == 5){
+                    $pro_stock=ProductVariation::where('id', $ord_product->product_variation_id)->first();
+                    $stock=$pro_stock->stock + number_format($ord_product->qty,0);
+                    ProductVariation::where('id', $ord_product->product_variation_id)->update([
+                        'stock' => $stock 
+                    ]);
+            }
+            // send email
+            // fetching ordered products
+            $orderedProducts = OrderProduct::findOrFail($request->id);
 
-        switch ($request->status) {
-            case 1:
-                $statusTitle = 'New';
-                $statusDesc = 'We are currently processing your order';
-                break;
-            case 2:
-                $statusTitle = 'Confirmed';
-                $statusDesc = 'Your order is confirmed';
-                break;
-            case 3:
-                $statusTitle = 'Shipped';
-                $statusDesc = 'Your order is Shipped. It will reach you soon';
-                break;
-            case 4:
-                $statusTitle = 'Delivered';
-                $statusDesc = 'Your order is delivered';
-                break;
-            case 5:
-                $statusTitle = 'Cancelled';
-                $statusDesc = 'Your order is cancelled';
-                break;
-            case 6:
-                $statusTitle = 'Return request';
-                $statusDesc = 'You have requested return for the product';
-                break;
-            case 7:
-                $statusTitle = 'Return approved';
-                $statusDesc = 'You return request is approved';
-                break;
-            case 8:
-                $statusTitle = 'Return declined';
-                $statusDesc = 'You return request is declined';
-                break;
-            case 9:
-                $statusTitle = 'Products Returned';
-                $statusDesc = 'You have returned old products';
-                break;
-            case 10:
-                $statusTitle = 'Products Received';
-                $statusDesc = 'Your returned products are received';
-                break;
-            case 11:
-                $statusTitle = 'Products Shipped';
-                $statusDesc = 'Your new products are shipped';
-                break;
-            case 12:
-                $statusTitle = 'Products Delivered';
-                $statusDesc = 'Your new products are delivered';
-                break;
-            default:
-                $statusTitle = 'New';
-                $statusDesc = 'We are currently processing your order';
-                break;
-        }
+            // switch ($request->status) {
+            //     case 1:
+            //         $statusTitle = 'New';
+            //         $statusDesc = 'We are currently processing your order';
+            //         break;
+            //     case 2:
+            //         $statusTitle = 'Confirmed';
+            //         $statusDesc = 'Your order is confirmed';
+            //         break;
+            //     case 3:
+            //         $statusTitle = 'Shipped';
+            //         $statusDesc = 'Your order is Shipped. It will reach you soon';
+            //         break;
+            //     case 4:
+            //         $statusTitle = 'Delivered';
+            //         $statusDesc = 'Your order is delivered';
+            //         break;
+            //     case 5:
+            //         $statusTitle = 'Cancelled';
+            //         $statusDesc = 'Your order is cancelled';
+            //         break;
+            //     case 6:
+            //         $statusTitle = 'Return request';
+            //         $statusDesc = 'You have requested return for the product';
+            //         break;
+            //     case 7:
+            //         $statusTitle = 'Return approved';
+            //         $statusDesc = 'You return request is approved';
+            //         break;
+            //     case 8:
+            //         $statusTitle = 'Return declined';
+            //         $statusDesc = 'You return request is declined';
+            //         break;
+            //     case 9:
+            //         $statusTitle = 'Products Returned';
+            //         $statusDesc = 'You have returned old products';
+            //         break;
+            //     case 10:
+            //         $statusTitle = 'Products Received';
+            //         $statusDesc = 'Your returned products are received';
+            //         break;
+            //     case 11:
+            //         $statusTitle = 'Products Shipped';
+            //         $statusDesc = 'Your new products are shipped';
+            //         break;
+            //     case 12:
+            //         $statusTitle = 'Products Delivered';
+            //         $statusDesc = 'Your new products are delivered';
+            //         break;
+            //     default:
+            //         $statusTitle = 'New';
+            //         $statusDesc = 'We are currently processing your order';
+            //         break;
+            // }
 
-        $email_data = [
-            'name' => $orderedProducts->orderDetails->fname.' '.$orderedProducts->orderDetails->lname,
-            'subject' => 'Onn - Order update for #'.$orderedProducts->orderDetails->order_no,
-            'email' => $orderedProducts->orderDetails->email,
-            'orderId' => $orderedProducts->orderDetails->id,
-            'orderNo' => $orderedProducts->orderDetails->order_no,
-            'orderAmount' => $orderedProducts->orderDetails->final_amount,
-            'status' => $orderedProducts->orderDetails->status,
-            'statusTitle' => $statusTitle,
-            'statusDesc' => $statusDesc,
-            'orderProducts' => $orderedProducts,
-            'blade_file' => 'front/mail/order-update',
-        ];
+            // $email_data = [
+            //     'name' => $orderedProducts->orderDetails->fname.' '.$orderedProducts->orderDetails->lname,
+            //     'subject' => 'Onn - Order update for #'.$orderedProducts->orderDetails->order_no,
+            //     'email' => $orderedProducts->orderDetails->email,
+            //     'orderId' => $orderedProducts->orderDetails->id,
+            //     'orderNo' => $orderedProducts->orderDetails->order_no,
+            //     'orderAmount' => $orderedProducts->orderDetails->final_amount,
+            //     'status' => $orderedProducts->orderDetails->status,
+            //     'statusTitle' => $statusTitle,
+            //     'statusDesc' => $statusDesc,
+            //     'orderProducts' => $orderedProducts,
+            //     'blade_file' => 'front/mail/order-update',
+            // ];
 
-        // dd($email_data);
+            // dd($email_data);
 
-        SendMail($email_data);
+            // SendMail($email_data);
 
-        if ($statusUpdate) {
-            return response()->json(['error' => false, 'message' => 'Order status updated']);
-        } else {
-            return response()->json(['error' => true, 'message' => 'Something happened']);
+            if ($statusUpdate) {
+                return response()->json(['error' => false, 'message' => 'Order status updated']);
+            } else {
+                return response()->json(['error' => true, 'message' => 'Something happened']);
+            }
+        }else{
+            return response()->json(['error' => true, 'message' => 'Order status cannot be changed after cancellation.']);
         }
     }
 

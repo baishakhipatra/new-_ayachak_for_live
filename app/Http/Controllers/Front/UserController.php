@@ -354,10 +354,16 @@ class UserController extends Controller
                     $item->productDetails->stock += $item->qty;
                     $item->productDetails->save();
                 }
+
+                // Cancel the product
+                $order->status = 5; 
+                $order->orderCancelledBy = 1;
+                $order->orderCancelledReason = $request->cancellationReason;
+                $order->save();
             }
 
             $order->status = 5; 
-            $order->orderCancelledBy = auth()->id();
+            $order->orderCancelledBy = 1;
             $order->orderCancelledReason = $request->cancellationReason;
             $order->save();
 
@@ -397,10 +403,70 @@ class UserController extends Controller
             return redirect()->back()->with('success', 'Order cancelled and stock restored successfully.');
 
         } catch (\Exception $e) {
+            dd($e->getMessage());
             DB::rollBack();
             return redirect()->back()->with('error', 'Something went wrong while cancelling order: ' . $e->getMessage());
         }
     }
+
+    public function productCancel(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            "productId" => "required|integer",
+            "cancellationReason" => "required|string"
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->with('failure', $validator->errors()->first());
+        }
+
+        DB::beginTransaction();
+
+        try {
+       
+            $orderProduct = OrderProduct::with(['productDetails', 'productVariationDetails', 'orderDetails'])
+                ->findOrFail($request->productId);
+
+            $order = $orderProduct->orderDetails;
+
+           
+            if (in_array($orderProduct->status, [3, 4, 5])) {
+                return redirect()->back()->with('warning', 'This product cannot be cancelled as it has already been shipped, delivered, or cancelled.');
+            }
+
+         
+            if ($orderProduct->productVariationDetails) {
+                $orderProduct->productVariationDetails->stock += $orderProduct->qty;
+                $orderProduct->productVariationDetails->save();
+            } else {
+                $orderProduct->productDetails->stock += $orderProduct->qty;
+                $orderProduct->productDetails->save();
+            }
+
+           
+            $orderProduct->status = 5; 
+            $orderProduct->save();
+
+            $order->orderCancelledBy = 1;
+            $order->orderCancelledReason = $request->cancellationReason;
+            $order->save();
+
+            $remaining = $order->orderProducts()->whereNotIn('status', [5])->count();
+            if ($remaining == 0) {
+                $order->status = 5;
+                $order->save();
+            }
+
+            DB::commit();
+            return redirect()->back()->with('success', 'Product cancelled and stock restored successfully.');
+
+        } catch (\Exception $e) {
+            dd($e->getMessage());
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Something went wrong while cancelling product: ' . $e->getMessage());
+        }
+    }
+
 
 
     // public function orderCancel(Request $request)
