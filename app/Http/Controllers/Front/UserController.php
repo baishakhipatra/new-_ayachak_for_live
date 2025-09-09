@@ -332,82 +332,78 @@ class UserController extends Controller
 
         try {
             $order = Order::with(['orderProducts.productDetails', 'orderProducts.productVariationDetails'])
-                ->findOrFail($request->orderId);
+                        ->findOrFail($request->orderId);
 
-           
             if ($order->status == 5) {
                 return redirect()->back()->with('warning', 'This order is already cancelled.');
             }
 
-       
-            if (in_array($order->status, [2, 3])) { 
-               
+            if (in_array($order->status, [3, 4])) {
                 return redirect()->back()->with('warning', 'This order cannot be cancelled as it has already been shipped or delivered.');
             }
 
-          
             foreach ($order->orderProducts as $item) {
                 if ($item->productVariationDetails) {
                     $item->productVariationDetails->stock += $item->qty;
                     $item->productVariationDetails->save();
-                } else {
+                } elseif ($item->productDetails) {
                     $item->productDetails->stock += $item->qty;
                     $item->productDetails->save();
                 }
 
-                // Cancel the product
-                $order->status = 5; 
-                $order->orderCancelledBy = 1;
-                $order->orderCancelledReason = $request->cancellationReason;
-                $order->save();
+                $item->status = 5;
+                $item->save();
             }
 
-            $order->status = 5; 
+            $order->status = 5;
             $order->orderCancelledBy = 1;
             $order->orderCancelledReason = $request->cancellationReason;
             $order->save();
 
-            // 6️⃣ Send cancellation emails
-            // $email_data = [
-            //     'name' => auth()->user()->fname.' '.auth()->user()->lname,
-            //     'subject' => 'ONN - Order update for #'.$order->order_no,
-            //     'email' => auth()->user()->email,
-            //     'orderId' => $order->id,
-            //     'orderNo' => $order->order_no,
-            //     'orderAmount' => $order->final_amount,
-            //     'status' => $order->status,
-            //     'statusTitle' => 'Cancelled',
-            //     'statusDesc' => 'Your order is cancelled',
-            //     'orderProducts' => $order->orderProducts,
-            //     'blade_file' => 'front/mail/order-update',
-            // ];
-            // SendMail($email_data);
+            // Optionally send emails
+            /*
+            $email_data = [
+                'name' => auth()->user()->fname . ' ' . auth()->user()->lname,
+                'subject' => 'ONN - Order update for #' . $order->order_no,
+                'email' => auth()->user()->email,
+                'orderId' => $order->id,
+                'orderNo' => $order->order_no,
+                'orderAmount' => $order->final_amount,
+                'status' => $order->status,
+                'statusTitle' => 'Cancelled',
+                'statusDesc' => 'Your order is cancelled',
+                'orderProducts' => $order->orderProducts,
+                'blade_file' => 'front/mail/order-update',
+            ];
+            SendMail($email_data);
 
-            // $email_data2 = [
-            //     'name' => 'ONN ADMIN',
-            //     'subject' => 'ONN - Order cancel for #'.$order->order_no,
-            //     'email' => 'ecom.cozyworld@luxinnerwear.com',
-            //     'orderId' => $order->id,
-            //     'orderNo' => $order->order_no,
-            //     'orderAmount' => $order->final_amount,
-            //     'status' => $order->status,
-            //     'statusTitle' => 'Cancelled',
-            //     'statusDesc' => 'This order is cancelled',
-            //     'orderProducts' => $order->orderProducts,
-            //     'blade_file' => 'front/mail/order-cancel-admin',
-            // ];
-            // SendMail($email_data2);
+            $email_data2 = [
+                'name' => 'ONN ADMIN',
+                'subject' => 'ONN - Order cancel for #' . $order->order_no,
+                'email' => 'ecom.cozyworld@luxinnerwear.com',
+                'orderId' => $order->id,
+                'orderNo' => $order->order_no,
+                'orderAmount' => $order->final_amount,
+                'status' => $order->status,
+                'statusTitle' => 'Cancelled',
+                'statusDesc' => 'This order is cancelled',
+                'orderProducts' => $order->orderProducts,
+                'blade_file' => 'front/mail/order-cancel-admin',
+            ];
+            SendMail($email_data2);
+            */
 
             DB::commit();
 
             return redirect()->back()->with('success', 'Order cancelled and stock restored successfully.');
 
         } catch (\Exception $e) {
-            dd($e->getMessage());
             DB::rollBack();
-            return redirect()->back()->with('error', 'Something went wrong while cancelling order: ' . $e->getMessage());
+            \Log::error('Order cancellation failed', ['error' => $e->getMessage()]);
+            return redirect()->back()->with('error', 'Something went wrong while cancelling order.');
         }
     }
+
 
     public function productCancel(Request $request)
     {
