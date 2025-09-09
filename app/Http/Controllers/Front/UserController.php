@@ -356,10 +356,8 @@ class UserController extends Controller
                 }
 
                 // Cancel the product
-                $order->status = 5; 
-                $order->orderCancelledBy = 1;
-                $order->orderCancelledReason = $request->cancellationReason;
-                $order->save();
+                $item->status = 5;
+                $item->save();
             }
 
             $order->status = 5; 
