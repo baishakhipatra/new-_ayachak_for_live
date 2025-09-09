@@ -103,6 +103,14 @@
                             @if ($productValue->productVariationDetails)
                             <div class="row align-items-center">
                                 <div class="col-5">
+                                    <label for="inputPassword6" class="col-form-label text-muted">Weight :</label>
+                                </div>
+                                <div class="col-auto">
+                                    {{$productValue->productVariationDetails->weight}}
+                                </div>
+                            </div>
+                            <div class="row align-items-center">
+                                <div class="col-5">
                                     <label for="inputPassword6" class="col-form-label text-muted">SKU :</label>
                                 </div>
                                 <div class="col-auto">
@@ -219,16 +227,16 @@
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <p class="small text-dark mb-2"> <span class="text-muted">Billing address</span></p>
-                            <p class="small text-dark mb-0"> <span class="text-muted">Address : </span> {{$data->billing_address}}</p>
-                            <p class="small text-dark mb-0"> <span class="text-muted">Landmark : </span> {{$data->billing_landmark}}</p>
+                            <p class="small text-dark mb-0"> <span class="text-muted">Address : </span> {{ucwords($data->billing_address)}}</p>
+                            <p class="small text-dark mb-0"> <span class="text-muted">Landmark : </span> {{ucwords($data->billing_landmark)}}</p>
                             <p class="small text-dark mb-0"> {{$data->billing_pin.', '.$data->billing_city.', '.$data->billing_state.', '.$data->billing_country}}</p>
                         </div>
 
                         <div class="col-md-6 border-start">
                             <p class="small text-dark mb-2"> <span class="text-muted">Shipping address</span></p>
                             @if ($data->shippingSameAsBilling == 1) <p class="small text-dark mb-2"> <span class="text-muted"> <i class="fi fi-br-info"></i> Same as Billing address </span></p>@endif
-                            <p class="small text-dark mb-0"> <span class="text-muted">Address : </span> {{$data->shipping_address}}</p>
-                            <p class="small text-dark mb-0"> <span class="text-muted">Landmark : </span> {{$data->shipping_landmark}}</p>
+                            <p class="small text-dark mb-0"> <span class="text-muted">Address : </span> {{ucwords($data->shipping_address)}}</p>
+                            <p class="small text-dark mb-0"> <span class="text-muted">Landmark : </span> {{ucwords($data->shipping_landmark)}}</p>
                             <p class="small text-dark mb-0"> {{$data->shipping_pin.', '.$data->shipping_city.', '.$data->shipping_state.', '.$data->shipping_country}}</p>
                         </div>
                     </div>

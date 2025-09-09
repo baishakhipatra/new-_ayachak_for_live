@@ -124,6 +124,7 @@
                                             </select>
                                         </div>
                                     </div>
+                                
                                     <div class="col-lg-4">
                                         <div class="form-group"> 
                                             <input type="text" class="form-control input-style" name="billing_pin">
@@ -131,7 +132,12 @@
                                         </div> 
                                     </div>
                                 </div>
-
+                               
+                                <div class="form-group"> 
+                                    <input type="text" class="form-control input-style" name="billing_landmark">
+                                    <label class="placeholder-text">Billing Landmark</label>
+                                </div>
+                             
                                 <div class="form-group"> 
                                     <input type="tel" class="form-control input-style" name="mobile" value="{{ auth()->user()->mobile ?? '' }}">
                                     <label class="placeholder-text">Phone Number</label>
@@ -226,10 +232,14 @@
                                         </div> 
                                     </div>
                                 </div>
+                                <div class="form-group"> 
+                                    <input type="text" class="form-control input-style" name="shipping_landmark">
+                                    <label class="placeholder-text">Shipping Landmark</label>
+                                </div>
 
                                 <div class="form-group"> 
-                                    <input type="tel" class="form-control input-style" name="shipping_mobile">
-                                    <label class="placeholder-text">Phone Number</label>
+                                    <input type="tel" class="form-control input-style" name="alt_mobile">
+                                    <label class="placeholder-text">Alternative Phone Number</label>
                                 </div>
                             </div>
 
@@ -457,7 +467,7 @@
                 let sCity = $('input[name="shipping_city"]').val().trim();
                 let sState = $('select[name="shipping_state"]').val();
                 let sPin = $('input[name="shipping_pin"]').val().trim();
-                let sPhone = $('input[name="shipping_mobile"]').val().trim();
+                let sPhone = $('input[name="alt_mobile"]').val().trim();
 
                 if (!sFname) {
                     $('input[name="shipping_first_name"]').addClass('is-invalid')
@@ -490,7 +500,7 @@
                     isValid = false;
                 }
                 if (!sPhone || !/^\d{10}$/.test(sPhone)) {
-                    $('input[name="shipping_mobile"]').addClass('is-invalid')
+                    $('input[name="alt_mobile"]').addClass('is-invalid')
                         .after('<span class="error-message text-danger">Please enter a valid 10-digit phone number.</span>');
                     isValid = false;
                 }

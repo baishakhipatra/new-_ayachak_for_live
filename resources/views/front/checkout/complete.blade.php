@@ -32,9 +32,9 @@
                                             <div class="pro-meta">
                                                 <span>Category:</span> {{ $item->productDetails->category->name ?? 'N/A' }}
                                             </div>
-                                            @if(!empty($item->productDetails->weight))
+                                            @if(!empty($item->productVariationDetails->weight))
                                                 <div class="pro-meta">
-                                                    <span>Weight:</span> {{ $item->productDetails->weight }}
+                                                    <span>Weight:</span> {{ $item->productVariationDetails->weight }}
                                                 </div>
                                             @endif
                                         </div>
