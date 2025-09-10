@@ -47,7 +47,7 @@ Route::name('front.')->group(function () {
 
     // profile login & registration - guard
     Route::middleware(['auth:web'])->group(function () {
-    // Route::prefix('user/')->name('user.')->group(function () {
+        // Route::prefix('user/')->name('user.')->group(function () {
         Route::view('profile', 'front.profile')->name('profile');
         Route::view('manage', 'front.profile.edit')->name('manage');
         Route::post('manage/update', 'Front\UserController@updateProfile')->name('manage.update');
@@ -115,8 +115,9 @@ Route::name('front.')->group(function () {
     Route::name('donation.')->group(function () {
         Route::get('/donation', 'Front\DonationController@DonationForm')->name('form');
         Route::post('/store', 'Front\DonationController@store')->name('store');
-        Route::get('/list', 'Front\DonationController@donationList')->name('list');
+        Route::get('/donation-list', 'Front\DonationController@donationList')->name('list');
         Route::get('/show/{id}', 'Front\DonationController@show')->name('show');
+        route::get('/donation/{id}/invoice', 'Front\DonationController@donationInvoice')->name('donation-invoice');
     });
 
     Route::prefix('events')->group(function () {

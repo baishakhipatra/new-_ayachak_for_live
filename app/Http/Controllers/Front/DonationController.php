@@ -70,7 +70,12 @@ class DonationController extends Controller
     public function show($id)
     {
         $donation = Donation::findOrFail($id);
-        return response()->json($donation);
+        return view('front.donation.show',compact('donation'));
+    }
+
+    public function donationInvoice($id){
+        $donation = Donation::findOrFail($id);
+        return view('front.donation.donation-invoice',compact('donation'));
     }
 
 }

@@ -92,9 +92,19 @@ class CartController extends Controller
         $userId = auth()->id(); 
         $cartItems = Cart::where('user_id', $userId)->with(['productDetails','variation'])->get();
 
-        foreach($cartItems as $item){
-            $item->is_out_of_stock = $item->variation->stock <= 0;
+        // foreach($cartItems as $item){
+        //     $item->is_out_of_stock = $item->variation->stock < $item->qty;
+        // }
+        $hasOutOfStock = false;
+        foreach ($cartItems as $item) {
+            $item->is_out_of_stock = $item->variation->stock <= 0 || $item->qty > $item->variation->stock;
+            $item->stock_left = $item->variation->stock; 
+
+            if ($item->is_out_of_stock) {
+                $hasOutOfStock = true;
+            }
         }
+
 
         $subtotal = $cartItems->filter(fn($item) => !$item->is_out_of_stock)
             ->sum(function ($item) {
@@ -112,7 +122,7 @@ class CartController extends Controller
             $checkoutRestricted = true;
         }
 
-        return view('front.cartList', compact('cartItems','checkoutRestricted','subtotal'));
+        return view('front.cartList', compact('cartItems','checkoutRestricted','subtotal','hasOutOfStock'));
     }
 
     private function checkRestrictedCategories()
@@ -311,6 +321,7 @@ class CartController extends Controller
             return redirect()->route('front.checkout.index')
                 ->with('success', 'Items successfully added.');
         } catch (\Exception $e) {
+            dd($e->getMessage());
             DB::rollBack();
             return back()->with('error', 'Something went wrong: ' . $e->getMessage());
         }

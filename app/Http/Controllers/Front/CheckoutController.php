@@ -37,6 +37,13 @@ class CheckoutController extends Controller
             return redirect()->route('front.cart.index')->with('warning', 'Your cart is empty.');
         }
 
+        foreach ($cartItems as $item) {
+            if (!$item->variation || $item->variation->stock < $item->qty) {
+                return redirect()->route('front.cart.index')->with('error',
+                    "Sorry, '{$item->productDetails->name}' is out of stock or quantity is insufficient."
+                );
+            }
+        }
 
         $subtotal = 0;
         foreach ($cartItems as $item) {
@@ -100,17 +107,6 @@ class CheckoutController extends Controller
         $discount = round($discount, 2);
         $total = round($total, 2);
 
-        // $api = new Api(env('RAZORPAY_KEY_ID'), env('RAZORPAY_KEY_SECRET'));
-
-        // $razorpayOrder = $api->order->create([
-        //     'receipt'         => 'order_' . uniqid(),
-        //     'amount'          => $total  * 100,
-        //     'currency'        => 'INR',
-        //     'payment_capture' => 1 
-        // ]);
-
-        // $razorpayOrderId = $razorpayOrder['id']; 
-
         return view('front.checkout.index', compact(
             'cartItems',
             'subtotal',
@@ -119,7 +115,6 @@ class CheckoutController extends Controller
             'total',
             'coupon',
             'checkoutId'
-            //'razorpayOrderId'
         ));
     }
 

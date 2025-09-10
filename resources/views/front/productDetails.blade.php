@@ -318,7 +318,6 @@
     }
 
     $(document).ready(function () {
-
         // variation price + image change
         $('input[name="variation"]').on('change', function () {
             let price = parseFloat($(this).data('price')).toFixed(2);
