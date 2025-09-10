@@ -176,12 +176,21 @@ class UserController extends Controller
         return back()->with('failure', 'Mobile number not found.');
     }
 
-    public function order(Request $request)
+    public function orderSummary(){
+        $userId = Auth::id();
+
+        $orders = Order::where('user_id', $userId)->orderBy('id', 'desc')->get();
+
+        return view('front.order-summary', compact('orders'));
+
+    }
+
+    public function order(Request $request,$id)
     {
         $userId = Auth::id();
 
         $checkout = Order::where('user_id', $userId)
-            ->latest()
+            ->where('id',$id)
             ->first();
 
         $checkoutProducts = collect();

@@ -58,7 +58,7 @@
                 </td> 
                 <td>{{ $item->product->style_no }}</td>
                 <td>{{ $item->weight}}</td>
-                <td>{{ $item->stock }}</td>
+                <td>@if($item->stock >=0) {{ $item->stock }} @else 0 @endif</td>
                 <td>{{ number_format($item->price, 2) }}</td>
                 <td>{{ number_format($item->offer_price, 2) }}</td>
                 <td>
@@ -155,11 +155,6 @@
             </div>
 
             <div class="modal-body">
-                <p>
-                    <strong>Sample Format:</strong> <br>
-                    <code>SKU_code,available_stock,required_stock</code>
-                </p>
-
                 <!-- <a href="{{route('admin.stock.sample_csv')}}" target="_blank" class="text-decoration-underline">
                     Download sample file
                 </a> -->
