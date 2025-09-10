@@ -235,17 +235,33 @@
                                 </div>
                             </div>
 
+                            @php
+                                $progressWidth = match(true) {
+                                    $checkout->status == 1 => '0%',
+                                    $checkout->status == 2 => '25%',
+                                    $checkout->status == 3 => '55%',
+                                    $checkout->status == 4 => '85%',
+                                    $checkout->status == 5 => '85%',
+                                    default => '0%',
+                                };
+                            @endphp
                             <div class="row mb-2">
                                 <div class="col-lg-9">
                                     <div class="detail-summery">
                                         <h3 class="mb-5">Order Tracking</h3>
                                         <div class="tracking-wrap">
                                             <ul>
-                                                <li class="{{ $checkout->status >= 1 ? 'active' : '' }}"><span>Processing</span></li>
-                                                <li class="{{ $checkout->status >= 2 ? 'active' : '' }}"><span>Packing</span></li>
-                                                <li class="{{ $checkout->status >= 3 ? 'active' : '' }}"><span>Shipping</span></li>
-                                                <li class="{{ $checkout->status == 4 ? 'active' : '' }}"><span>Delivered</span></li>
+                                                <div class="progress-active" style="width: {{ $progressWidth }};"></div>
+                                                <li class="{{ $checkout->status >= 1 ? 'active' : '' }} active"><span>Processing</span></li>
+                                                @if($checkout->status != 5)
+                                                <li class="{{ $checkout->status >= 2 ? 'active' : '' }} "><span>Packing</span></li>
+                                                <li class="{{ $checkout->status >= 3 ? 'active' : '' }} "><span>Shipping</span></li>
+                                                <li class="{{ $checkout->status == 4 ? 'active' : '' }} "><span>Delivered</span></li>
+                                                @else
+                                                <li class="{{ $checkout->status == 5 ? 'danger' : '' }} "><span>Cancelled</span></li>
+                                                @endif
                                             </ul>
+
                                         </div>
                                     </div>
                                 </div>

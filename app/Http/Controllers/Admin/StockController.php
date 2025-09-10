@@ -52,8 +52,10 @@ class StockController extends Controller
 
     public function stock_import(Request $request)
     {
-        $request->validate([
-            'csv_file' => 'required|file|mimes:xlsx,xls,csv|max:10240',
+        try{
+            
+           $request->validate([
+            'csv_file' => 'required|file|mimetypes:text/plain,text/csv,application/csv,text/comma-separated-values,application/vnd.ms-excel',
         ]);
 
         $file = $request->file('csv_file');
@@ -82,16 +84,21 @@ class StockController extends Controller
                 'available_stock'  => 'required',
             ]);
             $already_stock=ProductVariation::where('code', $data['SKU_code'])->first();
-            // dd($already_stock->stock);
-            if($data['required_stock']!=''){
+            // dd($already_stock);
+            if($data['current_stock']!=''){
                 ProductVariation::where('code', $data['SKU_code'])->update([
-                    'stock' => $already_stock->stock + $data['required_stock'],
+                    'stock' => $already_stock->stock + $data['current_stock'],
                 ]);
             }
 
         }
 
         return redirect()->back()->with('success', "Stock updated Successfully");
+        }
+        catch (\Exception $e) {
+            // dd($e->getMessage());
+            return redirect()->back()->with('error', "Something went wrong: " . $e->getMessage());
+        }
     }
 }
 
