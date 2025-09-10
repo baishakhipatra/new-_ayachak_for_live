@@ -93,7 +93,7 @@ class CartController extends Controller
         $cartItems = Cart::where('user_id', $userId)->with(['productDetails','variation'])->get();
 
         foreach($cartItems as $item){
-            $item->is_out_of_stock = $item->variation->stock <= 0;
+            $item->is_out_of_stock = $item->variation->stock < $item->qty;
         }
 
         $subtotal = $cartItems->filter(fn($item) => !$item->is_out_of_stock)
