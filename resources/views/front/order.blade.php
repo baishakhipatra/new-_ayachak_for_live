@@ -428,7 +428,7 @@
                                             </li>
                                             <li class="all_order_li_viiew all_order_li_c"><span class="mobile_product">
                                                     <h5>View:</h5>
-                                                </span><a href="{{route('front.user.order.details',$item->id)}}" class="order_product_viwe"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#858585" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg></a></li>
+                                                </span><a href="{{route('front.user.order.details',$item->order_no)}}" class="order_product_viwe"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#858585" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg></a></li>
                                         </ul>
                                     </div>
                                     @endforeach

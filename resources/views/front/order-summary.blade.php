@@ -38,7 +38,7 @@
                                                     @endif
                                                 </td>
                                                 <td>
-                                                    <a href="{{route('front.order',$orders->id)}}" class="view"><i class="fa fa-eye" aria-hidden="true"></i></a>
+                                                    <a href="{{route('front.order',$orders->order_no)}}" class="view"><i class="fa fa-eye" aria-hidden="true"></i></a>
                                                 </td>
                                             </tr>
                                             @endforeach

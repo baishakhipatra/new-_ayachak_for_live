@@ -185,13 +185,13 @@ class UserController extends Controller
 
     }
 
-    public function order(Request $request,$id)
+    public function order(Request $request,$order_no)
     {
         $userId = Auth::id();
 
         $checkout = Order::where('user_id', $userId)
-            ->where('id',$id)
-            ->first();
+            ->where('order_no',$order_no)
+            ->firstOrFail();
 
         $checkoutProducts = collect();
 

@@ -113,50 +113,6 @@ Route::prefix('admin')->name('admin.')->middleware('prevent-back-history')->grou
             Route::get('/bulkDelete', 'Admin\CategoryController@bulkDestroy')->name('bulkDestroy');
         });
 
-        // sub-category
-        Route::prefix('subcategory')->name('subcategory.')->group(function () {
-            Route::get('/', 'Admin\SubCategoryController@index')->name('index');
-            Route::post('/store', 'Admin\SubCategoryController@store')->name('store');
-            Route::get('/{id}/view', 'Admin\SubCategoryController@show')->name('view');
-            Route::post('/{id}/update', 'Admin\SubCategoryController@update')->name('update');
-            Route::get('/{id}/status', 'Admin\SubCategoryController@status')->name('status');
-            Route::get('/{id}/delete', 'Admin\SubCategoryController@destroy')->name('delete');
-            Route::get('/bulkDelete', 'Admin\SubCategoryController@bulkDestroy')->name('bulkDestroy');
-        });
-
-        // collection
-        Route::prefix('collection')->name('collection.')->group(function () {
-            Route::get('/', 'Admin\CollectionController@index')->name('index');
-            Route::post('/store', 'Admin\CollectionController@store')->name('store');
-            Route::get('/{id}/view', 'Admin\CollectionController@show')->name('view');
-            Route::post('/{id}/update', 'Admin\CollectionController@update')->name('update');
-            Route::get('/{id}/status', 'Admin\CollectionController@status')->name('status');
-            Route::get('/{id}/delete', 'Admin\CollectionController@destroy')->name('delete');
-            Route::get('/bulkDelete', 'Admin\CollectionController@bulkDestroy')->name('bulkDestroy');
-        });
-
-		// color
-        Route::prefix('color')->name('color.')->group(function () {
-            Route::get('/', 'Admin\ColorController@index')->name('index');
-			Route::get('/create', 'Admin\ColorController@create')->name('create');
-            Route::post('/store', 'Admin\ColorController@store')->name('store');
-            Route::get('/{id}/view', 'Admin\ColorController@show')->name('view');
-			Route::get('/{id}/edit', 'Admin\ColorController@edit')->name('edit');
-            Route::post('/{id}/update', 'Admin\ColorController@update')->name('update');
-            Route::get('/{id}/status', 'Admin\ColorController@status')->name('status');
-        });
-
-		// size
-        Route::prefix('size')->name('size.')->group(function () {
-            Route::get('/', 'Admin\SizeController@index')->name('index');
-			Route::get('/create', 'Admin\SizeController@create')->name('create');
-            Route::post('/store', 'Admin\SizeController@store')->name('store');
-            Route::get('/{id}/view', 'Admin\SizeController@show')->name('view');
-			Route::get('/{id}/edit', 'Admin\SizeController@edit')->name('edit');
-            Route::post('/{id}/update', 'Admin\SizeController@update')->name('update');
-            Route::get('/{id}/status', 'Admin\SizeController@status')->name('status');
-        });
-
         // coupon
         Route::prefix('coupon')->name('coupon.')->group(function () {
             Route::get('/', 'Admin\CouponController@index')->name('index');
@@ -169,19 +125,6 @@ Route::prefix('admin')->name('admin.')->middleware('prevent-back-history')->grou
 			Route::post('/csv/upload', 'Admin\CouponController@CSVUpload')->name('csv.upload');
         });
 
-        // voucher
-        Route::prefix('voucher')->name('voucher.')->group(function () {
-            Route::get('/', 'Admin\VoucherController@index')->name('index');
-            Route::get('/create', 'Admin\VoucherController@create')->name('create');
-            Route::get('/csv/export', 'Admin\VoucherController@csvExport')->name('csv.export');
-            Route::get('{slug}/csv/export', 'Admin\VoucherController@csvExportSlug')->name('detail.csv.export');
-            Route::post('/store', 'Admin\VoucherController@store')->name('store');
-            Route::get('/{id}/view', 'Admin\VoucherController@show')->name('view');
-            Route::post('/{id}/update', 'Admin\VoucherController@update')->name('update');
-            Route::get('/{id}/status', 'Admin\VoucherController@status')->name('status');
-            Route::get('/{id}/delete', 'Admin\VoucherController@destroy')->name('delete');
-            Route::get('/bulkDelete', 'Admin\VoucherController@bulkDestroy')->name('bulkDestroy');
-        });
 
         // customer
         Route::prefix('customer')->name('customer.')->group(function () {
@@ -267,15 +210,6 @@ Route::prefix('admin')->name('admin.')->middleware('prevent-back-history')->grou
             Route::get('/bulkDelete', 'Admin\AddressController@bulkDestroy')->name('bulkDestroy');
         });
 
-        // faq
-        Route::prefix('faq')->name('faq.')->group(function () {
-            Route::get('/', 'Admin\FaqController@index')->name('index');
-            Route::post('/store', 'Admin\FaqController@store')->name('store');
-            Route::get('/{id}/view', 'Admin\FaqController@show')->name('view');
-            Route::post('/{id}/update', 'Admin\FaqController@update')->name('update');
-            Route::get('/{id}/status', 'Admin\FaqController@status')->name('status');
-            Route::get('/{id}/delete', 'Admin\FaqController@destroy')->name('delete');
-        });
 
 		// banner
         Route::prefix('banner')->name('banner.')->group(function () {
@@ -337,100 +271,7 @@ Route::prefix('admin')->name('admin.')->middleware('prevent-back-history')->grou
             Route::get('/{id}/delete', 'Admin\GalleryController@destroy')->name('delete');
         });
 
-        // mail
-        Route::prefix('subscription/mail')->name('subscription.mail.')->group(function () {
-            Route::get('/', 'Admin\SubscriptionMailController@index')->name('index');
-            Route::post('/comment/add', 'Admin\SubscriptionMailController@comment')->name('comment.add');
-        });
-
-        // franchise
-        Route::prefix('franchise')->name('franchise.')->group(function () {
-            Route::get('/', 'Admin\FranchiseController@index')->name('index');
-            Route::get('/{id}/details', 'Admin\FranchiseController@details')->name('details');
-            Route::post('/comment/add', 'Admin\FranchiseController@comment')->name('comment.add');
-        });
-
-        // Promotions
-        Route::prefix('promotions')->name('promotion.')->group(function(){
-            Route::get('/', 'Admin\PromotionController@index')->name('index');
-        });
-		
-		// product
-        Route::prefix('/scanandwin/Qr')->name('scanandwin.')->group(function () {
-            Route::get('/', 'Admin\QRcodeController@index')->name('index');
-            Route::get('/create', 'Admin\QRcodeController@create')->name('create');
-            Route::get('/csv/export', 'Admin\QRcodeController@csvExport')->name('csv.export');
-            Route::get('{slug}/csv/export', 'Admin\QRcodeController@csvExportSlug')->name('detail.csv.export');
-            Route::post('/store', 'Admin\QRcodeController@store')->name('store');
-            Route::get('/{id}/view', 'Admin\QRcodeController@show')->name('view');
-		    Route::get('/{id}/detail', 'Admin\QRcodeController@view')->name('show');
-			Route::get('/{id}/used/gift', 'Admin\QRcodeController@useqrcode')->name('useqrcode');
-			Route::get('/{id}/edit', 'Admin\QRcodeController@edit')->name('edit');
-            Route::post('/{id}/update', 'Admin\QRcodeController@update')->name('update');
-            Route::get('/{id}/status', 'Admin\QRcodeController@status')->name('status');
-            Route::get('/{id}/delete', 'Admin\QRcodeController@destroy')->name('delete');
-            Route::get('/bulkDelete', 'Admin\QRcodeController@bulkDestroy')->name('bulkDestroy');
-
-        });
-		
-		
-		Route::prefix('/scanandwin/gift')->name('gift.')->group(function () {
-            Route::get('/', 'Admin\GiftController@index')->name('index');
-            Route::get('/create', 'Admin\GiftController@create')->name('create');
-            Route::get('/csv/export', 'Admin\GiftController@csvExport')->name('csv.export');
-            Route::get('{slug}/csv/export', 'Admin\GiftController@csvExportSlug')->name('detail.csv.export');
-            Route::post('/store', 'Admin\GiftController@store')->name('store');
-            Route::get('/{id}/view', 'Admin\GiftController@show')->name('view');
-		    Route::get('/{id}/detail', 'Admin\GiftController@view')->name('show');
-			Route::get('/{id}/used/gift', 'Admin\GiftController@useqrcode')->name('useqrcode');
-			Route::get('/{id}/edit', 'Admin\GiftController@edit')->name('edit');
-            Route::post('/{id}/update', 'Admin\GiftController@update')->name('update');
-            Route::get('/{id}/status', 'Admin\GiftController@status')->name('status');
-            Route::get('/{id}/delete', 'Admin\GiftController@destroy')->name('delete');
-            Route::post('/csv-upload', 'Admin\GiftController@CSVUpload')->name('csvupload');
-
-        });
-		
-		
-		Route::prefix('/scanandwin/customers')->name('customers.')->group(function () {
-            Route::get('/', 'Admin\CustomerController@index')->name('index');
-            Route::get('/create', 'Admin\CustomerController@create')->name('create');
-            Route::get('/csv/export', 'Admin\CustomerController@csvExport')->name('csv.export');
-            Route::get('{slug}/csv/export', 'Admin\CustomerController@csvExportSlug')->name('detail.csv.export');
-            Route::post('/store', 'Admin\CustomerController@store')->name('store');
-            Route::get('/{id}/view', 'Admin\CustomerController@show')->name('view');
-		    Route::get('/{id}/detail', 'Admin\CustomerController@view')->name('show');
-			Route::get('/{id}/used/gift', 'Admin\CustomerController@useqrcode')->name('useqrcode');
-			Route::get('/{id}/edit', 'Admin\CustomerController@edit')->name('edit');
-            Route::post('/{id}/update', 'Admin\CustomerController@update')->name('update');
-            Route::get('/{id}/status', 'Admin\CustomerController@status')->name('status');
-            Route::get('/{id}/delete', 'Admin\CustomerController@destroy')->name('delete');
-            Route::get('/bulkDelete', 'Admin\CustomerController@bulkDestroy')->name('bulkDestroy');
-			Route::get('/{id}/dispatch', 'Admin\CustomerController@dispatch')->name('dispatch');
-			Route::post('/dispatch/store', 'Admin\CustomerController@dispatchStore')->name('dispatch.store');
-            
-        });
-		
-		Route::prefix('/scanandwin/cms')->name('cms.')->group(function () {
-            Route::get('/', 'Admin\CustomerController@cms')->name('index');
-            Route::post('/edit', 'Admin\CustomerController@cmsstore')->name('store');
-
-        });
-		
-		Route::prefix('/scanandwin/terms')->name('terms.')->group(function () {
-            Route::get('/', 'Admin\CustomerController@terms')->name('index');
-            Route::post('/edit', 'Admin\CustomerController@termsstore')->name('store');
-           
-        });
-		
-		Route::prefix('/luxqr/cms')->name('luxqr.cms.')->group(function () {
-            Route::get('/', 'Admin\LuxQRController@qr')->name('qr');
-			 Route::get('/index', 'Admin\LuxQRController@index')->name('index');
-            Route::post('/edit', 'Admin\LuxQRController@termsstore')->name('store');
-           
-        });
-
-        Route::get('scanandwin/csv/export/ajax/', 'Admin\CustomerController@indexCSV')->name('index');
+     
 		
     });
 	

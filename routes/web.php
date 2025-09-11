@@ -28,7 +28,7 @@ Route::name('front.')->group(function () {
 
 
     // user login & registration - guard
-    Route::middleware(['guest:web'])->group(function () {
+   // Route::middleware(['guest:web'])->group(function () {
         // Route::prefix('user/')->name('user.')->group(function () {
             Route::get('/register', 'Front\UserController@register')->name('register');
             Route::post('/create', 'Front\UserController@create')->name('create');
@@ -38,7 +38,7 @@ Route::name('front.')->group(function () {
             Route::get('/forgot-password', 'Front\UserController@forgotPassword')->name('forgot.password');
             Route::post('/forgot-password/check', 'Front\UserController@forgotPasswordCheck')->name('forgot.password.check');
         //});
-    });
+   // });
 
     Route::middleware(['auth:web'])->group(function () {
         Route::post('/logout', 'Front\UserController@logout')->name('logout');
@@ -54,7 +54,7 @@ Route::name('front.')->group(function () {
         Route::get('password/change', 'Front\UserController@showChangePasswordForm')->name('password.change');
         Route::post('password/update', 'Front\UserController@updatePassword')->name('password.update');
         Route::get('order-summary', 'Front\UserController@orderSummary')->name('order-summary');
-        Route::get('order/{id}', 'Front\UserController@order')->name('order');
+        Route::get('order/{order_no}', 'Front\UserController@order')->name('order');
         Route::get('/order/details/{id}', 'Front\UserController@orderDetails')->name('order.details');
         Route::get('/order/invoice/{id}/download', 'Front\UserController@invoice')->name('order.invoice');
         Route::post('order/product-cancel', 'Front\UserController@productCancel')->name('product.cancel');
@@ -68,13 +68,6 @@ Route::name('front.')->group(function () {
         Route::get('wishlist', 'Front\UserController@wishlist')->name('wishlist');
         //});
 
-        // wishlist
-        Route::prefix('wishlist')->name('wishlist.')->group(function () {
-            Route::get('/', 'Front\WishlistController@viewByUserId')->name('index');
-            Route::get('/add/{id}', 'Front\WishlistController@add')->name('add');
-            Route::post('/remove', 'Front\WishlistController@remove')->name('remove');
-            Route::get('/delete/{id}', 'Front\WishlistController@delete')->name('delete');
-        });
 
         // cart
         Route::prefix('cart')->group(function () {
@@ -181,24 +174,13 @@ Route::name('front.')->group(function () {
     });
 
 
-
     // category detail
     Route::name('category.')->group(function () {
         Route::get('/category/{slug}', 'Front\CategoryController@detail')->name('detail');
         Route::post('/category/filter', 'Front\CategoryController@filter')->name('filter');
     });
 
-    // sale
-    Route::name('sale.')->group(function () {
-        Route::get('/sale', 'Front\SaleController@index')->name('index');
-    });
-
-    // collection detail
-    Route::name('collection.')->group(function () {
-        Route::get('/collection/{slug}', 'Front\CollectionController@detail')->name('detail');
-        Route::post('/collection/filter', 'Front\CollectionController@filter')->name('filter');
-    });
-
+  
     // product detail
     Route::name('product.')->group(function () {
         Route::post('/add-to-cart', 'Front\ProductController@AddToCart')->name('add.to.cart');
@@ -210,13 +192,6 @@ Route::name('front.')->group(function () {
         Route::get('/product/search', 'Front\ProductController@ProductSearch')->name('search');
     });
 
-    // wishlist
-    Route::prefix('wishlist')->name('wishlist.')->group(function () {
-        Route::get('/', 'Front\WishlistController@viewByUserId')->name('index');
-        Route::get('/add/{id}', 'Front\WishlistController@add')->name('add');
-        Route::post('/remove', 'Front\WishlistController@remove')->name('remove');
-        Route::get('/delete/{id}', 'Front\WishlistController@delete')->name('delete');
-    });
 
     // cart
     Route::prefix('cart')->name('cart.')->group(function () {
@@ -231,10 +206,6 @@ Route::name('front.')->group(function () {
     });
 
 
-    Route::prefix('phonepe')->name('phonepe.')->group(function () {
-        Route::post('/initiate-payment', 'Front\PhonePeController@initiatePayment')->name('payment.initiate')->middleware('throttle:10,1');
-        Route::post('/payment-callback', 'Front\PhonePeController@confirmPayment')->name('payment.callback');
-    });
     Route::prefix('payment')->name('payment.')->group(function () {
         Route::post('/order', 'Front\CheckoutController@createOrder')->name('createOrder');
         Route::get('/success', 'Front\CheckoutController@success')->name('success');
@@ -242,30 +213,6 @@ Route::name('front.')->group(function () {
         Route::post('/webhook', 'Front\CheckoutController@webhook')->name('webhook');
     });
 
-    // faq
-    Route::prefix('faq')->name('faq.')->group(function () {
-        Route::get('/', 'Front\FaqController@index')->name('index');
-    });
-
-    // offer
-    Route::prefix('offer')->name('offer.')->group(function () {
-        Route::get('/', 'Front\OfferController@index')->name('index');
-    });
-
-    // search
-    Route::prefix('search')->name('search.')->group(function () {
-        Route::get('/', 'Front\SearchController@index')->name('index');
-        Route::get('/suggestion', 'Front\SearchController@suggestion')->name('suggestion');
-    });
-
-	// franchise
-	Route::prefix('franchise')->name('franchise.')->group(function () {
-        Route::get('/', 'Front\FranchiseController@index')->name('index');
-        Route::post('/mail', 'Front\FranchiseController@mail')->name('mail');
-        Route::post('/partner', 'Front\FranchiseController@partner')->name('partner');
-        // Route::get('/thank-you', 'Front\FranchiseController@partner')->name('partner.success');
-        Route::view('/thank-you', 'front.franchise.success')->name('partner.success');
-    });
 
     // settings contents
     Route::name('content.')->group(function () {
@@ -299,74 +246,6 @@ Route::name('front.')->group(function () {
         Route::get('/global', 'Front\ContentController@global')->name('global');
     });
 
-    // user login & registration - guard
-    Route::middleware(['guest:web'])->group(function () {
-        Route::prefix('user/')->name('user.')->group(function () {
-            Route::get('/register', 'Front\UserController@register')->name('register');
-            Route::post('/create', 'Front\UserController@create')->name('create');
-            Route::get('/login', 'Front\UserController@login')->name('login');
-            Route::post('/logout', 'Front\UserController@logout')->name('logout');
-            Route::post('/check', 'Front\UserController@check')->name('check');
-            Route::get('/forgot-password', 'Front\UserController@forgotPassword')->name('forgot.password');
-            Route::post('/forgot-password/check', 'Front\UserController@forgotPasswordCheck')->name('forgot.password.check');
-        });
-    });
-
-    // profile login & registration - guard
-    Route::middleware(['auth:web'])->group(function () {
-        Route::prefix('user/')->name('user.')->group(function () {
-            Route::view('profile', 'front.profile')->name('profile');
-            Route::view('manage', 'front.profile.edit')->name('manage');
-            Route::post('manage/update', 'Front\UserController@updateProfile')->name('manage.update');
-            Route::post('password/update', 'Front\UserController@updatePassword')->name('password.update');
-            Route::get('order', 'Front\UserController@order')->name('order');
-            Route::get('/order/details/{id}', 'Front\UserController@orderDetails')->name('order.details');
-            Route::post('order/cancel', 'Front\UserController@orderCancel')->name('order.cancel');
-            Route::post('order/return', 'Front\UserController@orderReturn')->name('order.return');
-            Route::get('order/{id}/invoice', 'Front\UserController@invoice')->name('invoice');
-            Route::get('coupon', 'Front\UserController@coupon')->name('coupon');
-            Route::get('address', 'Front\UserController@address')->name('address');
-            Route::view('address/add', 'front.profile.address-add')->name('address.add');
-            Route::post('address/add', 'Front\UserController@addressCreate')->name('address.create');
-            Route::get('wishlist', 'Front\UserController@wishlist')->name('wishlist');
-        });
-    });
-
-	// promotion
-    Route::prefix('promotion')->name('promotion.')->group(function () {
-        Route::get('/', 'Front\PromotionController@index')->name('index');
-        Route::post('/store', 'Front\PromotionController@store')->name('store');
-		Route::view('/thank-you', 'front.promotion.success')->name('success');
-    });
-	
-	// gift
-    Route::prefix('scanandwin')->name('scanandwin.')->group(function () {
-        Route::get('/', 'Front\GiftController@index')->name('index');
-        Route::post('/store', 'Front\GiftController@store')->name('store');
-		Route::view('/thank-you', 'front.gift.detail')->name('success');
-		Route::view('/fail', 'front.gift.detail')->name('failure');
-		 Route::get('/tnc', 'Front\GiftController@tnc')->name('terms');
-		Route::get('/winners','Front\GiftController@winner')->name('winner');
-    });
-	
-	// festive offer
-    Route::prefix('festiveoffer')->name('festiveoffer.')->group(function () {
-        Route::get('/', 'Front\FestiveOfferController@index')->name('index');
-        Route::post('/store', 'Front\FestiveOfferController@store')->name('store');
-		Route::view('/thank-you', 'front.festiveoffer.detail')->name('detail');
-		Route::view('/mail', 'front.festiveoffer.mail')->name('mail');
-		Route::get('/tnc', 'Front\FestiveOfferController@tnc')->name('terms');
-    });
-	
-	// sitemap
-	Route::get('/products.xml', 'Front\SitemapController@product');
-
-	// city from state
-	Route::get('/state/{name}/detail', 'Front\StateController@detail')->name('state.detail');
-
-    // mail template test
-    Route::view('/mail/1', 'front.mail.register');
-    Route::view('/mail/2', 'front.mail.order-confirm');
 
 
 });
