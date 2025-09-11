@@ -138,11 +138,11 @@
                             <div class="checkout-warning-container">
                                 @if($hasOutOfStock)
                                     <div class="alert alert-warning mb-3">
-                                        Some items are out of stock. Please remove them to avoid issues.
+                                        Some items are out of stock. Please remove them from cart.
                                     </div>
                                 @endif
                             </div>
-                            <button type="submit" class="bton btn-full mt-5" {{ $checkoutRestricted ? 'disabled' : '' }}>Proceed to Checkout</button>
+                            <button type="submit" class="bton btn-full mt-5" {{ ($checkoutRestricted || $hasOutOfStock) ? 'disabled' : '' }}>Proceed to Checkout</button>
                         </form>
                     </div>
                 </div>

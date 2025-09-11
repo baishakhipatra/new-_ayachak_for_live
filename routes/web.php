@@ -371,35 +371,4 @@ Route::name('front.')->group(function () {
 
 });
 
-
-
-// // Auth::routes();
-
-// Route::get('login', 'Front\UserController@login')->name('login');
-// Route::get('declaration', 'Front\FrontController@declare')->name('declare');
-// Route::get('/one', 'Front\FrontController@one')->name('one');
-// Route::get('/two', 'Front\FrontController@two')->name('two');
-// Route::get('/three', 'Front\FrontController@three')->name('three');
-// Route::get('/four', 'Front\FrontController@four')->name('four');
-// Route::get('/five', 'Front\FrontController@five')->name('five');
-// Route::get('/six', 'Front\FrontController@six')->name('six');
-// Route::get('/seven', 'Front\FrontController@seven')->name('seven');
-// Route::get('/eight', 'Front\FrontController@eight')->name('eight');
-// Route::get('/nine', 'Front\FrontController@nine')->name('nine');
-// Route::get('/ten', 'Front\FrontController@ten')->name('ten');
-// Route::get('/eleven', 'Front\FrontController@eleven')->name('eleven');
-// Route::get('/twelve', 'Front\FrontController@twelve')->name('twelve');
-// Route::get('/thirteen', 'Front\FrontController@thirteen')->name('thirteen');
-// Route::get('/fourteen', 'Front\FrontController@fourteen')->name('fourteen');
-// Route::get('/fifteen', 'Front\FrontController@fifteen')->name('fifteen');
-// Route::get('/sixteen', 'Front\FrontController@sixteen')->name('sixteen');
-// Route::get('/seventeen', 'Front\FrontController@seventeen')->name('seventeen');
-// Route::get('/eighteen', 'Front\FrontController@eighteen')->name('eighteen');
-// Route::get('/nineteen', 'Front\FrontController@nineteen')->name('nineteen');
-// Route::get('/twenty', 'Front\FrontController@twenty')->name('twenty');
-// Route::get('/twentyone', 'Front\FrontController@twentyone')->name('twentyone');
-// Route::get('/twentytwo', 'Front\FrontController@twentytwo')->name('twentytwo');
-// Route::get('/twentythree', 'Front\FrontController@twentythree')->name('twentythree');
-// Route::get('/twentyfour', 'Front\FrontController@twentyfour')->name('twentyfour');
-// Route::get('/twentyfive', 'Front\FrontController@twentyfive')->name('twentyfive');
 require 'admin.php';

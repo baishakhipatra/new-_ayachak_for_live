@@ -246,11 +246,7 @@ Route::prefix('admin')->name('admin.')->middleware('prevent-back-history')->grou
             Route::post('/delete', [ProductController::class, 'ProductSkuDelete'])->name('variation.delete');
             Route::post('variation/import', 'Admin\ProductController@productSkuListImport')->name('variation.import');
             Route::get('/sku-list/export', 'Admin\ProductController@productSkuListExport')->name('sku_list.export');
-            // Route::get('/sku-list/sync/all', 'Admin\ProductController@productSkuListSyncAll')->name('sku_list.sync.all');
-            // Route::get('/sku-list/sync/all/start', 'Admin\UnicommerceController@syncAllStart')->name('sku_list.sync.all.start');
-            // Route::get('/sku-list/sync/all/report', 'Admin\UnicommerceController@syncAllreport')->name('sku_list.sync.all.report');
-            // Route::get('/sku-list/sync/all/report/{id}', 'Admin\UnicommerceController@syncAllreportDetail')->name('sku_list.sync.all.report.detail');
-            // Route::get('/sku-list/sync/all/report/{id}/export', 'Admin\UnicommerceController@syncAllreportDetailExport')->name('sku_list.sync.all.report.detail.export');
+
         });
 
           Route::prefix('stock')->name('stock.')->group(function () {

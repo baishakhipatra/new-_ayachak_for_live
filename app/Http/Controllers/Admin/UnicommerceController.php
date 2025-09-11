@@ -16,29 +16,7 @@ use Illuminate\Support\Facades\Session;
 
 class UnicommerceController extends Controller
 {
-    // sync all product inside a product
-    /*
-    public function sync(Request $request, $id)
-    {
-        $productId = $id;
-        $productvariation = ProductColorSize::where('product_id', $id)->get();
-        foreach ($productvariation as $key => $value) {
-            if (empty($value->code)) {
-                return redirect()->back()->with('failure', 'SKU code missing for '.$value->sizeDetails->name);
-            }
-
-            $data = [];
-
-            $data = [
-                'id' => $value->id,
-                'code' => $value->code,
-            ];
-
-            return $this->feedUnicommerce($data, $productId);
-        }
-    }
-    */
-
+   
     public function syncSingle(Request $request, $id)
     {
         // dd($id, $request->all());

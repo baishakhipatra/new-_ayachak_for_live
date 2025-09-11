@@ -65,17 +65,17 @@
 
 
                 <li class="@if(request()->is('admin/category*') || request()->is('admin/subcategory*') || request()->is('admin/collection*') || request()->is('admin/color*') || request()->is('admin/size*')) { {{'active'}} }  @endif">
-                    <a href="javascript: void(0)"><i class="fi fi-br-cube"></i> <span>Master</span></a>
+                    {{-- <a href="javascript: void(0)"><i class="fi fi-br-cube"></i> <span>Master</span></a> --}}
+                    <li class="{{ ( request()->is('admin/category*') ) ? 'active' : '' }}"><a href="{{ route('admin.category.index') }}"><i class="fi fi-br-database"></i> <span>Category</span></a></li>
                     <ul>
-                        <li class="{{ ( request()->is('admin/category*') ) ? 'active' : '' }}"><a href="{{ route('admin.category.index') }}"><i class="fi fi-br-database"></i> <span>Category</span></a></li>
-
+                        
                         {{-- <li class="{{ ( request()->is('admin/subcategory*') ) ? 'active' : '' }}"><a href="{{ route('admin.subcategory.index') }}"><i class="fi fi-br-database"></i> <span>Sub-category</span></a></li> --}}
 
                         {{-- <li class="{{ ( request()->is('admin/collection*') ) ? 'active' : '' }}"><a href="{{ route('admin.collection.index') }}"><i class="fi fi-br-database"></i> <span>Collection</span></a></li> --}}
 
-						<li class="{{ ( request()->is('admin/color*') ) ? 'active' : '' }}"><a href="{{ route('admin.color.index') }}"><i class="fi fi-br-database"></i> <span>Color</span></a></li>
+						{{-- <li class="{{ ( request()->is('admin/color*') ) ? 'active' : '' }}"><a href="{{ route('admin.color.index') }}"><i class="fi fi-br-database"></i> <span>Color</span></a></li> --}}
 
-						<li class="{{ ( request()->is('admin/size*') ) ? 'active' : '' }}"><a href="{{ route('admin.size.index') }}"><i class="fi fi-br-database"></i> <span>Size</span></a></li>
+						{{-- <li class="{{ ( request()->is('admin/size*') ) ? 'active' : '' }}"><a href="{{ route('admin.size.index') }}"><i class="fi fi-br-database"></i> <span>Size</span></a></li> --}}
                     </ul>
                 </li>
 
@@ -119,8 +119,8 @@
                 </li>
 
                 <li class="{{ ( request()->is('admin/coupon*') ) ? 'active' : '' }}"><a href="{{ route('admin.coupon.index') }}"><i class="fi fi-br-database"></i> <span>Coupon</span></a></li>
-                <li class="{{ ( request()->is('admin/transaction*') ) ? 'active' : '' }}"><a href="{{ route('admin.transaction.index') }}"><i class="fi fi-br-database"></i> <span>Online Transactions</span></a></li>
-                <li class="{{ ( request()->is('admin/transaction*') ) ? 'active' : '' }}"><a href="#"><i class="fi fi-br-database"></i> <span>Online Events</span></a></li>
+                {{-- <li class="{{ ( request()->is('admin/transaction*') ) ? 'active' : '' }}"><a href="{{ route('admin.transaction.index') }}"><i class="fi fi-br-database"></i> <span>Online Transactions</span></a></li> --}}
+                {{-- <li class="{{ ( request()->is('admin/transaction*') ) ? 'active' : '' }}"><a href="#"><i class="fi fi-br-database"></i> <span>Online Events</span></a></li> --}}
 
                 <li class="@if(request()->is('admin/settings*') || request()->is('admin/banner*') || request()->is('admin/faq*') || request()->is('admin/gallery*') || request()->is('admin/subscription*') || request()->is('admin/franchise*')) { {{'active'}} }  @endif">
                     <a href="javascript: void(0)"><i class="fi fi-br-cube"></i> <span>Settings</span></a>
@@ -129,13 +129,13 @@
 
                         <li class="{{ ( request()->is('admin/settings*') ) ? 'active' : '' }}"><a href="{{ route('admin.settings.index') }}"><i class="fi fi-br-database"></i> <span>Site Settings</span></a></li>
 
-                        <li class="{{ ( request()->is('admin/faq*') ) ? 'active' : '' }}"><a href="{{ route('admin.faq.index') }}"><i class="fi fi-br-database"></i> <span>FAQs</span></a></li>
+                        {{-- <li class="{{ ( request()->is('admin/faq*') ) ? 'active' : '' }}"><a href="{{ route('admin.faq.index') }}"><i class="fi fi-br-database"></i> <span>FAQs</span></a></li> --}}
 
                         <li class="{{ ( request()->is('admin/gallery*') ) ? 'active' : '' }}"><a href="{{ route('admin.gallery.index') }}"><i class="fi fi-br-database"></i> <span>Gallery</span></a></li>
 
-                        <li class="{{ ( request()->is('admin/mail*') ) ? 'active' : '' }}"><a href="{{ route('admin.subscription.mail.index') }}"><i class="fi fi-br-database"></i> <span>Subscription Mail</span></a></li>
+                        {{-- <li class="{{ ( request()->is('admin/mail*') ) ? 'active' : '' }}"><a href="{{ route('admin.subscription.mail.index') }}"><i class="fi fi-br-database"></i> <span>Subscription Mail</span></a></li> --}}
 
-                        <li class="{{ ( request()->is('admin/mail*') ) ? 'active' : '' }}"><a href="{{ route('admin.franchise.index') }}"><i class="fi fi-br-database"></i> <span>Franchise request</span></a></li>
+                        {{-- <li class="{{ ( request()->is('admin/mail*') ) ? 'active' : '' }}"><a href="{{ route('admin.franchise.index') }}"><i class="fi fi-br-database"></i> <span>Franchise request</span></a></li> --}}
                     </ul>
                 </li>
 

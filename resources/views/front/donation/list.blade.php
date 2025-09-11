@@ -41,15 +41,15 @@
                                                         </td>
                                                         <td>
                                                             @if($donation->status == 'success')
-                                                                <span class="badge bg-success">Success</span>
+                                                                <span class="label complete">Success</span>
                                                             @elseif($donation->status == 'pending')
-                                                                <span class="badge bg-warning text-dark">Pending</span>
+                                                                <span class="label complete">Pending</span>
                                                             @else
-                                                                <span class="badge bg-danger">Failed</span>
+                                                                <span class="label complete">Failed</span>
                                                             @endif
                                                         </td>
                                                         <td>{{ $donation->created_at->format('d M, Y h:i A') }}</td>
-                                                        <td><a href="{{route('front.donation.show', $donation->id)}}"><i class="fa fa-eye"></a></i></td>
+                                                        <td><a href="{{route('front.donation.show', $donation->id)}}" class="view"><i class="fa fa-eye" aria-hidden="true"></a></i></td>
                                                     </tr>
                                                 @endforeach
                                             </tbody>

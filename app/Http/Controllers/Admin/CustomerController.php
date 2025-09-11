@@ -404,24 +404,6 @@ class CustomerController extends Controller
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public function indexCSV(Request $request) {
         if(isset($request->date_from) || isset($request->date_to) ||isset($request->keyword)||isset($request->status)) 
             {
@@ -458,20 +440,10 @@ class CustomerController extends Controller
 
 
         if (count($data) > 0) {
-            // initializing vars
-            // $my_month =  explode("-",$month);
-            // $year_val = $my_month[0];
-            // $month_val = $my_month[1];
-            // $dates_month=dates_month($month_val,$year_val);
-            // $month_names = $dates_month['month_names'];
-            // $date_values = $dates_month['date_values'];
-            // $totaldays=count($dates_month['date_values']);
 
             // generating table head content
             $tableHead = ['SR', 'NAME', 'MOBILE', 'CODE', 'WIN STATUS', 'GIFT', 'DATETIME'];
-            // foreach($month_names as $months) {
-            //     array_push($tableHead, $months);
-            // }
+          
 
             // dd($tableHead);
 
@@ -491,47 +463,6 @@ class CustomerController extends Controller
                     $postal = $getLocation->postal ?? '';
                     $org = $getLocation->org ?? '';
                 }
-
-                /*
-                $monthlyDates = [];
-                foreach($date_values as $date) {
-                    $dates_attendance=dates_attendance($item->id, $date);
-
-                    if($dates_attendance[0][0]['date_wise_attendance'][0]['is_present']=='A') {
-                        $htmlRow = '<td class="redColor" style="background-color: red;color: #fff;padding: 15px;text-align: center;border: 1px solid #fff; vertical-align: middle;">'.
-                            $dates_attendance[0][0]['date_wise_attendance'][0]['is_present']
-                        .'</td>';
-                    }
-                    elseif($dates_attendance[0][0]['date_wise_attendance'][0]['is_present']=='P') {
-                        $htmlRow = '<td class="redColor" style="background-color: rgb(1, 134, 52); color:#fff;padding: 15px;text-align: center;border: 1px solid #fff; vertical-align: middle;">'.
-                            $dates_attendance[0][0]['date_wise_attendance'][0]['is_present']
-                        .'</td>';
-                    }
-                    elseif($dates_attendance[0][0]['date_wise_attendance'][0]['is_present']=='W') {
-                        $htmlRow = '<td class="redColor"  style="background-color: rgb(241, 225, 0); color:#fff; padding: 15px;text-align: center;border: 1px solid #fff; vertical-align: middle;">'.
-                            $dates_attendance[0][0]['date_wise_attendance'][0]['is_present']
-                        .'</td>';
-                    }
-                    else {
-                        $htmlRow = '<td class="redColor"  style="background-color: #294fa1da; color:#fff; padding: 15px;text-align: center;border: 1px solid #fff; vertical-align: middle;">'.
-                            $dates_attendance[0][0]['date_wise_attendance'][0]['is_present']
-                        .'</td>';
-                    }
-
-                    array_push($monthlyDates, $htmlRow);
-                }
-
-                if ($item->status == 1) {
-                    $empStatClass = 'success';
-                    $empStatType = 'Active';
-                } else {
-                    $empStatClass = 'danger';
-                    $empStatType = 'Inactive';
-                }
-                
-                $empStatus = '<span class="badge bg-'.$empStatClass.'">'.$empStatType.'</span>';
-                */
-
                 $tableBody[] = [
                     $item->order_sequence_int,
                     $item->name,

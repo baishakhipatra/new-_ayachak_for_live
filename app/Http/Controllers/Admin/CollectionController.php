@@ -60,7 +60,6 @@ class CollectionController extends Controller
     public function update(Request $request, $id)
     {
         // dd($request->all());
-
         $request->validate([
             "name" => "required|regex:/^[\pL\s\-]+$/u|max:255",
             "description" => "nullable|string",
