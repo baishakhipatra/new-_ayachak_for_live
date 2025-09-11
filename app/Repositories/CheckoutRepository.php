@@ -235,6 +235,23 @@ class CheckoutRepository implements CheckoutInterface
             $orderNo = 'ORD-' . str_pad($order->id, 6, '0', STR_PAD_LEFT); 
             $order->update(['order_no' => $orderNo]);
 
+            if ($couponId > 0) {
+                $coupon = Coupon::find($couponId);
+
+                CouponUsage::create([
+                    'coupon_code_id'        => $coupon->id,
+                    'coupon_code'           => $coupon->coupon_code,
+                    'discount'              => $discount,
+                    'total_checkout_amount' => $subtotal + $taxTotal + $shippingCharges,
+                    'final_amount'          => $finalAmount,
+                    'user_id'               => $userId ?? 0,
+                    'email'                 => $data['email'] ?? '',
+                    'ip'                    => $ipAddr,
+                    'order_id'              => $order->id,
+                    'usage_time'            => now()->toDateTimeString(),
+                ]);
+            }
+
             foreach ($cartItems as $item) {
                 $product = $item->productDetails;
                 $variation = $item->variation;

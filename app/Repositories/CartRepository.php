@@ -26,7 +26,10 @@ class CartRepository implements CartInterface
             return response()->json(['resp' => 200, 'type' => 'error', 'message' => 'Invalid code']);
         }
 
-        // usage count (existing logic)...
+        // Count total usage of this coupon
+        $totalUsageCount = CouponUsage::where('coupon_code_id', $couponData->id)->count();
+        //dd($totalUsageCount);
+
         if (Auth::guard('web')->check()) {
             $user = Auth::guard('web')->user();
             $couponUsageCount = CouponUsage::where('coupon_code_id', $couponData->id)
@@ -37,15 +40,25 @@ class CartRepository implements CartInterface
         }
 
         $is_coupon = ($couponData->is_coupon == 1) ? 'coupon' : 'voucher';
+        //dd($is_coupon);
 
-        // expiry / status check
         if ($couponData->end_date < \Carbon\Carbon::now() || $couponData->status == 0) {
             return response()->json(['resp' => 200, 'type' => 'warning', 'message' => $is_coupon.' expired']);
-        } elseif ($couponUsageCount >= $couponData->max_time_one_can_use) {
-            return response()->json(['resp' => 200, 'type' => 'warning', 'message' => 'You cannot use this '.$is_coupon.' anymore']);
+        } 
+        // elseif ($couponUsageCount >= $couponData->max_time_one_can_use) {
+        //     return response()->json(['resp' => 200, 'type' => 'warning', 'message' => 'You cannot use this '.$is_coupon.' anymore']);
+        // }
+        
+        if (!empty($couponData->max_time_of_use) && $couponData->max_time_of_use > 0 && $totalUsageCount >= $couponData->max_time_of_use) {
+            
+            return response()->json(['resp' => 200, 'type' => 'warning', 'message' => "This $is_coupon has reached its maximum usage limit"]);
+        }
+       
+        if (!empty($couponData->max_time_one_can_use) && $couponData->max_time_one_can_use > 0 && $couponUsageCount >= $couponData->max_time_one_can_use) {
+           
+            return response()->json(['resp' => 200, 'type' => 'warning', 'message' => "You cannot use this $is_coupon anymore"]);
         }
 
-        // compute cart total using same key as your cart pages
         if (Auth::guard('web')->check()) {
             $cartData = Cart::where('user_id', $user->id)->get();
         } else {

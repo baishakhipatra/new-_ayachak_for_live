@@ -55,7 +55,8 @@ class StockController extends Controller
         try{
             
            $request->validate([
-            'csv_file' => 'required|file|mimetypes:text/plain,text/csv,application/csv,text/comma-separated-values,application/vnd.ms-excel',
+            //'csv_file' => 'required|file|mimetypes:text/plain,text/csv,application/csv,text/comma-separated-values,application/vnd.ms-excel',
+            'csv_file' => 'required|file|mimes:csv,txt,xls,xlsx',
         ]);
 
         $file = $request->file('csv_file');

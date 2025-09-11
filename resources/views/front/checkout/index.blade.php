@@ -81,7 +81,6 @@
                                 <h3 class="checkout-heading mb-4">Billing information</h3>
                                 <div class="form-group">
                                     <select name="billing_country" class="form-select select-style">
-                                        <option value="">Select Country</option>
                                         <option value="India" selected>India</option>
                                     </select>
                                     <span class="text-danger error-text billing_country_error"></span>
@@ -182,8 +181,7 @@
 
                                 <div class="form-group">
                                     <select name="shipping_country" class="form-select select-style">
-                                        <option value="">Select Country</option>
-                                        <option value="India">India</option>
+                                        <option value="India" selected>India</option>
                                     </select>
                                     <span class="text-danger error-text shipping_country_error"></span>
                                 </div>

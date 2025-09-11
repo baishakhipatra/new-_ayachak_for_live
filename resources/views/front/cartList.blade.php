@@ -344,15 +344,13 @@
                 if (res && res.type === 'success') {
                     $('#coupon_message').html('<span class="text-success">'+res.message+'</span>');
 
-                    // set id, type, value
+                    
                     $('#applied_coupon_id').val(res.id || '');
                     $('#applied_coupon_type').val((res.coupon_type ?? '').toString());
                     $('#applied_coupon_value').val(res.coupon_value ?? 0);
 
-                    // show the row and recalc from live subtotal
-                   // $('#discount_row').show();
-                        let discount = parseFloat(res.coupon_discount) || 0;
-                        $('#applied_coupon_amount').val(discount.toFixed(2));
+                    let discount = parseFloat(res.coupon_discount) || 0;
+                    $('#applied_coupon_amount').val(discount.toFixed(2));
                     recalculateCartTotals();
                 } else {
                     $('#coupon_message').html('<span class="text-danger">'+(res?.message || 'Unable to apply coupon')+'</span>');
