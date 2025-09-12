@@ -232,8 +232,19 @@ class CheckoutRepository implements CheckoutInterface
                 'orderCancelledReason' => null,
             ]);
            // dd($order);
-            $orderNo = 'ORD-' . str_pad($order->id, 6, '0', STR_PAD_LEFT); 
+            // $orderNo = 'ORD-' . str_pad($order->id, 6, '0', STR_PAD_LEFT); 
+            // $order->update(['order_no' => $orderNo]);
+
+            do {
+                $orderNo = 'ORD-' . str_pad($order->id, 6, '0', STR_PAD_LEFT);
+                
+                if (Order::where('order_no', $orderNo)->exists()) {
+                    $orderNo = 'ORD-' . str_pad($order->id, 6, '0', STR_PAD_LEFT) . strtoupper(Str::random(1));
+                }
+            } while (Order::where('order_no', $orderNo)->exists());
+
             $order->update(['order_no' => $orderNo]);
+
 
             if ($couponId > 0) {
                 $coupon = Coupon::find($couponId);
@@ -369,7 +380,7 @@ class CheckoutRepository implements CheckoutInterface
             $order->discount_amount = $collectedData['discount_amount'];
             $order->tax_amount =  $collectedData['tax_amount'];
             $order->final_amount = $collectedData['final_amount'];
-            $order->payment_method = $collectedData['payment_method']?$collectedData['payment_method']:"cash_on_delivery";
+            $order->payment_method = $collectedData['payment_method']?$collectedData['payment_method']:"Cash On Delivery";
             $order->is_paid = 0;
             $order->save();
             if($order){
@@ -469,7 +480,7 @@ class CheckoutRepository implements CheckoutInterface
             if (isset($data['payment_method'])) {
                 $newEntry->payment_method = $collectedData['payment_method'];
             } else {
-                $newEntry->payment_method = "cash_on_delivery";
+                $newEntry->payment_method = "Cash On Delivery";
             }
             $newEntry->save();
 			

@@ -111,7 +111,7 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="form-group custom_radio">
-                                <input type="radio" name="paymentMethod" id="cod" value="cash_on_delivery" checked>
+                                <input type="radio" name="paymentMethod" id="cod" value="Cash On Delivery" checked>
                                 <label for="cod">Cash on delivery</label>
                             </div>
                         </div>
@@ -129,7 +129,7 @@
                         <div class="col-sm-12">
                             <input type="hidden" name="mobile" id="checkoutMobile" value="{{$data->mobile}}">
                             <input type="hidden" name="email" id="checkoutEmail" value="{{$data->email}}">
-                            <input type="hidden" name="payment_method" value="cash_on_delivery">
+                            <input type="hidden" name="payment_method" value="Cash On Delivery">
                             <input type="hidden" name="razorpay_payment_id" value="">
                             <input type="hidden" name="razorpay_amount" value="">
                             <input type="hidden" name="razorpay_method" value="">

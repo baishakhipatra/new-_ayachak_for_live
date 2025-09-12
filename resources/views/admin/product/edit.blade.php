@@ -389,7 +389,7 @@
             <div class="col-sm-3">
                 <div class="card shadow-sm">
                     <div class="card-header">
-                        Product Image
+                        Product Thumbnail Image
                     </div>
                     <div class="card-body">
                         <div class="w-100 product__thumb">

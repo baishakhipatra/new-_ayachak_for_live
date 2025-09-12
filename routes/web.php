@@ -28,7 +28,7 @@ Route::name('front.')->group(function () {
 
 
     // user login & registration - guard
-   // Route::middleware(['guest:web'])->group(function () {
+   Route::middleware(['guest.front'])->group(function () {
         // Route::prefix('user/')->name('user.')->group(function () {
             Route::get('/register', 'Front\UserController@register')->name('register');
             Route::post('/create', 'Front\UserController@create')->name('create');
@@ -38,7 +38,7 @@ Route::name('front.')->group(function () {
             Route::get('/forgot-password', 'Front\UserController@forgotPassword')->name('forgot.password');
             Route::post('/forgot-password/check', 'Front\UserController@forgotPasswordCheck')->name('forgot.password.check');
         //});
-   // });
+   });
 
     Route::middleware(['auth:web'])->group(function () {
         Route::post('/logout', 'Front\UserController@logout')->name('logout');

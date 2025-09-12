@@ -367,15 +367,7 @@
             });
         });
     });
-
-    // function stock_sample() {
-    //     let productData = document.getElementById('product_var').value;
-    //     let encodedData = encodeURIComponent(productData);
-
-    //     let downloadUrl = "{{ route('admin.stock.sample_csv') }}?product_var=" + encodedData;
-
-    //     window.location.href = downloadUrl;
-    // }
+    
     function stock_sample() {
         let productIds = JSON.parse(document.getElementById('product_var').value);
 

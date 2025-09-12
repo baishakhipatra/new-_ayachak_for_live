@@ -21,7 +21,7 @@
                             <label for="payment_type" class="small text-muted">Payment type</label>
                             <select name="payment_type" class="form-control" id="payment_type">
                                 <option value="">Select</option>
-                                <option value="cash_on_delivery" {{request()->input('payment_type') == 'cash_on_delivery' ? 'selected' : ''}}>Cash on delivery</option>
+                                <option value="Cash On Delivery" {{request()->input('payment_type') == 'Cash On Delivery' ? 'selected' : ''}}>Cash On delivery</option>
                                 <option value="online_payment" {{request()->input('payment_type') == 'online_payment' ? 'selected' : ''}}>Online Payment</option>
                             </select>
                         </div>
@@ -164,8 +164,8 @@
                         <td>
                         @if ($item->payment_method == "online_payment")
                           @if($item->transactionDetails)@if($final_amount == $paymentAmount) @if($paymentStatus=='captured') <a href="{{ route('admin.order.invoice', $item->id) }}" class="btn btn-sm btn-primary">Invoice</a> @endif @endif @endif
-                       
-                        @elseif($item->payment_method == "cash_on_delivery")
+                        
+                        @elseif($item->payment_method == "Cash On Delivery")
                        
                         <a href="{{ route('admin.order.invoice', $item->id) }}" class="btn btn-sm btn-primary">Invoice</a>
                         @endif
@@ -218,7 +218,7 @@
                                                 Online Payment
                                                  
                                              @else
-                                               Cash on Delivery
+                                               Cash On Delivery
                                              @endif
                                 </span>
                                 @if ($item->transactionDetails)

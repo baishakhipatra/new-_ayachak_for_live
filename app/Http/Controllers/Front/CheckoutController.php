@@ -253,7 +253,7 @@ class CheckoutController extends Controller
         $checkoutData = Checkout::where('id',$checkoutId)->firstOrFail()->toArray();
        // dd($checkoutData);
 
-        if($paymentMethod == 'cash_on_delivery')
+        if($paymentMethod == 'Cash On Delivery')
         {
             // $checkoutData = $request->except('_token');
             $order_id = $this->checkoutRepository->create($checkoutData);

@@ -15,7 +15,7 @@
             </svg>
         </a>
         <div class="search_area">
-            <form class="search_form" method="GET" action="{{ route('front.search.index') }}">
+            <form class="search_form" method="GET" action="">
                 <input type="search" name="query" class="search_box" placeholder="Search Product Here.." autofocus>
                 <button type="submit" class="search_btn">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"

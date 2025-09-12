@@ -1124,6 +1124,90 @@ class ProductController extends Controller
     }
 
 
+    // public function productSkuListImport(Request $request)
+    // {
+    //     $request->validate([
+    //         'csv_file' => 'required|file|mimes:xlsx,xls,csv|max:10240',
+    //     ]);
+
+    //     $file = $request->file('csv_file');
+    //     $extension = $file->getClientOriginalExtension();
+
+    //     if (in_array($extension, ['xlsx', 'xls'])) {
+    //         $spreadsheet = IOFactory::load($file->getRealPath());
+    //         $sheet = $spreadsheet->getActiveSheet();
+    //         $rows = $sheet->toArray();
+    //     } else {
+    //         // Fallback to CSV
+    //         $rows = array_map('str_getcsv', file($file->getRealPath()));
+    //     }
+
+    //     $header = array_map('trim', $rows[0]);
+    //     unset($rows[0]);
+
+    //     $imported = 0;
+    //     $skipped = 0;
+
+    //     foreach ($rows as $index => $row) {
+    //         if (count($row) < count($header)) {
+    //             $skipped++;
+    //             continue;
+    //         }
+
+    //         $data = array_combine($header, $row);
+    //        // dd($data);
+
+    //         $product = Product::where('style_no', $data['material_code'])->first();
+    //         //dd($product);
+
+    //         if (!$product) {
+    //             $skipped++;
+    //             continue;
+    //         }
+
+    //         // for duplicate check
+    //         $exists = ProductVariation::where('product_id', $product->id)
+    //             ->where('code', $data['code'])
+    //             ->where('weight', $data['weight'])
+    //             ->exists();
+
+    //         $duplicateCount = 0;
+    //         if ($exists) {
+    //             $skipped++;
+    //             $duplicateCount++;
+    //             continue;
+    //         }
+
+    //         $validator = Validator::make($data, [
+    //             'material_code'   => 'required',
+    //             'weight'       => 'required|string|max:255',
+    //             'code'         => 'required|string|max:255',
+    //             'price'        => 'required|numeric',
+    //             'offer_price'  => 'nullable|numeric',
+    //         ]);
+
+    //         if ($validator->fails()) {
+    //             $skipped++;
+    //             continue;
+    //         }
+
+    //         ProductVariation::create([
+    //             'product_id'   => $product->id,
+    //             'weight'       => $data['weight'],
+    //             'code'         => $data['code'],
+    //             'price'        => $data['price'],
+    //             'offer_price'  => $data['offer_price'] ?? null,
+    //             'position'     => 1,
+    //             'stock'        => 0,
+    //             'status'       => 1,
+    //         ]);
+
+    //         $imported++;
+    //     }
+
+    //     return redirect()->back()->with('success', "$imported variations imported, $skipped skipped. ($duplicateCount duplicates found)");
+    // }
+
     public function productSkuListImport(Request $request)
     {
         $request->validate([
@@ -1138,7 +1222,6 @@ class ProductController extends Controller
             $sheet = $spreadsheet->getActiveSheet();
             $rows = $sheet->toArray();
         } else {
-            // Fallback to CSV
             $rows = array_map('str_getcsv', file($file->getRealPath()));
         }
 
@@ -1147,6 +1230,7 @@ class ProductController extends Controller
 
         $imported = 0;
         $skipped = 0;
+        $duplicateCodes = []; 
 
         foreach ($rows as $index => $row) {
             if (count($row) < count($header)) {
@@ -1155,35 +1239,13 @@ class ProductController extends Controller
             }
 
             $data = array_combine($header, $row);
-           // dd($data);
-
-            $product = Product::where('style_no', $data['material_code'])->first();
-            //dd($product);
-
-            if (!$product) {
-                $skipped++;
-                continue;
-            }
-
-            // for duplicate check
-            $exists = ProductVariation::where('product_id', $product->id)
-                ->where('code', $data['code'])
-                ->where('weight', $data['weight'])
-                ->exists();
-
-            $duplicateCount = 0;
-            if ($exists) {
-                $skipped++;
-                $duplicateCount++;
-                continue;
-            }
 
             $validator = Validator::make($data, [
-                'material_code'   => 'required',
-                'weight'       => 'required|string|max:255',
-                'code'         => 'required|string|max:255',
-                'price'        => 'required|numeric',
-                'offer_price'  => 'nullable|numeric',
+                'material_code' => 'required',
+                'weight'        => 'required|string|max:255',
+                'code'          => 'required|string|max:255',
+                'price'         => 'required|numeric',
+                'offer_price'   => 'nullable|numeric',
             ]);
 
             if ($validator->fails()) {
@@ -1191,83 +1253,106 @@ class ProductController extends Controller
                 continue;
             }
 
+            $product = Product::where('style_no', $data['material_code'])->first();
+            if (!$product) {
+                $skipped++;
+                continue;
+            }
+
+            $existsInDb = ProductVariation::where('code', $data['code'])->exists();
+
+            if (in_array($data['code'], $duplicateCodes) || $existsInDb) {
+                $duplicateCodes[] = $data['code'];
+                $skipped++;
+                continue;
+            }
+
             ProductVariation::create([
-                'product_id'   => $product->id,
-                'weight'       => $data['weight'],
-                'code'         => $data['code'],
-                'price'        => $data['price'],
-                'offer_price'  => $data['offer_price'] ?? null,
-                'position'     => 1,
-                'stock'        => 0,
-                'status'       => 1,
+                'product_id'  => $product->id,
+                'weight'      => $data['weight'],
+                'code'        => $data['code'],
+                'price'       => $data['price'],
+                'offer_price' => $data['offer_price'] ?? null,
+                'position'    => 1,
+                'stock'       => 0,
+                'status'      => 1,
             ]);
 
             $imported++;
         }
 
-        return redirect()->back()->with('success', "$imported variations imported, $skipped skipped. ($duplicateCount duplicates found)");
+        $message = "$imported variations imported, $skipped skipped.";
+        if (!empty($duplicateCodes)) {
+            $message .= " Duplicate codes found: " . implode(', ', array_unique($duplicateCodes));
+        }
+        if($imported > 0){
+            return redirect()->back()->with('success', $message);
+        }else{
+            return redirect()->back()->with('failure', $message);
+        }
     }
 
-    public function productSkuListExport(Request $request){
-        $search = $request->input('search');
 
-        $query = ProductVariation::with('product:id,name,style_no');
+    // public function productSkuListExport(Request $request){
+    //     $search = $request->input('search');
 
-        if (!empty($search)) {
-            $query->where(function($q) use ($search) {
-                $q->where('code', 'like', "%{$search}%")
-                ->orWhereHas('product', function($qp) use ($search) {
-                    $qp->where('name', 'like', "%{$search}%")
-                        ->orWhere('style_no', 'like', "%{$search}%");
-                });
-            });
-        }
+    //     $query = ProductVariation::with('product:id,name,style_no');
 
-        $skus = $query->get();
-        // Build spreadsheet
-        $spreadsheet = new Spreadsheet();
-        $sheet = $spreadsheet->getActiveSheet();
+    //     if (!empty($search)) {
+    //         $query->where(function($q) use ($search) {
+    //             $q->where('code', 'like', "%{$search}%")
+    //             ->orWhereHas('product', function($qp) use ($search) {
+    //                 $qp->where('name', 'like', "%{$search}%")
+    //                     ->orWhere('style_no', 'like', "%{$search}%");
+    //             });
+    //         });
+    //     }
 
-        // Headings
-        $headings = [
-            'SKU Code',
-            'Product Name',
-            'Product No',
-            'Weight',
-            'Position',
-            'Price',
-            'Offer Price',
-            'Status',
-        ];
+    //     $skus = $query->get();
+    //     // Build spreadsheet
+    //     $spreadsheet = new Spreadsheet();
+    //     $sheet = $spreadsheet->getActiveSheet();
 
-        $sheet->fromArray($headings, null, 'A1');
+    //     // Headings
+    //     $headings = [
+    //         'SKU Code',
+    //         'Product Name',
+    //         'Product No',
+    //         'Weight',
+    //         'Position',
+    //         'Price',
+    //         'Offer Price',
+    //         'Status',
+    //     ];
 
-        // Data
-        $rowNum = 2;
-        foreach ($skus as $row) {
-            $sheet->fromArray([
-                $row->code,
-                optional($row->product)->name,
-                optional($row->product)->style_no,
-                $row->weight,
-                $row->position,
-                $row->price,
-                $row->offer_price,
-                $row->status ? 'Active' : 'Inactive',
-            ], null, 'A'.$rowNum);
-            $rowNum++;
-        }
+    //     $sheet->fromArray($headings, null, 'A1');
 
-        // File name
-        $fileName = 'product_sku_list_' . now()->format('Y_m_d_H_i_s') . '.xlsx';
+    //     // Data
+    //     $rowNum = 2;
+    //     foreach ($skus as $row) {
+    //         $sheet->fromArray([
+    //             $row->code,
+    //             optional($row->product)->name,
+    //             optional($row->product)->style_no,
+    //             $row->weight,
+    //             $row->position,
+    //             $row->price,
+    //             $row->offer_price,
+    //             $row->status ? 'Active' : 'Inactive',
+    //         ], null, 'A'.$rowNum);
+    //         $rowNum++;
+    //     }
 
-        // Output as download
-        $writer = new Xlsx($spreadsheet);
-        $temp_file = tempnam(sys_get_temp_dir(), $fileName);
-        $writer->save($temp_file);
+    //     // File name
+    //     $fileName = 'product_sku_list_' . now()->format('Y_m_d_H_i_s') . '.xlsx';
 
-        return response()->download($temp_file, $fileName)->deleteFileAfterSend(true);
-    }
+    //     // Output as download
+    //     $writer = new Xlsx($spreadsheet);
+    //     $temp_file = tempnam(sys_get_temp_dir(), $fileName);
+    //     $writer->save($temp_file);
+
+    //     return response()->download($temp_file, $fileName)->deleteFileAfterSend(true);
+    // }
 
 }
 
