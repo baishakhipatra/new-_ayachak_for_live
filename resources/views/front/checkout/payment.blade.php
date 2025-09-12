@@ -85,17 +85,10 @@
                                 <span id="shippingMore"></span>
                             </div>
                         </div>
-                        <div class="cart-total">
-                            <div class="cart-total-label">
-                                GST - &#8377;<strong>{{$data->gst_amount}}</strong><br/>
-                                <small>(Inclusive of all taxes)</small>
-                            </div>
-                            <div class="cart-total-value"></div>
-                        </div>
 
                         <div class="cart-total">
                             <div class="cart-total-label">
-                                Total
+                                Total (Inclusive all taxes)
                             </div>
                             <div class="cart-total-value">
                                 <input type="hidden"  name="grandTotalWithoutCoupon">
@@ -139,14 +132,6 @@
                                     Place order
                                 </button>
                             </div>
-                            @if($data->final_amount != 0)
-                            <!-- <strong>OR</strong> -->
-                            <div id="method2" class="method">
-                                <button type="button" id="rzp-button1" class="btn checkout-btn btn-secondary mt-2">
-                                    Pay Online
-                                </button>
-                            </div>
-                            @endif
                         </div>
                         <div class="col-sm-12 mt-3 mt-sm-0">
                             <a class="btn btn-danger mt-2" href="{{route('front.cart.index')}}">Return to Cart</a>

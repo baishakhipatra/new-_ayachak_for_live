@@ -4,7 +4,7 @@
 
 @section('content')
 
-    <div class="search_wrap">
+    {{-- <div class="search_wrap">
         <a href="javascript:void(0)" class="search_close">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                  viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -29,7 +29,7 @@
             </form>
             <div id="searchResp"></div>
         </div>
-    </div>
+    </div> --}}
 
     <div class="overlay">
         <div class="overlay__close">

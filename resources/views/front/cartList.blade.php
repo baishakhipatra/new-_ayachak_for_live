@@ -20,11 +20,14 @@
                                 <li>
                                     <div class="inner-wrap {{ $item->is_out_of_stock ? 'bg-light border-danger' : '' }}">
                                         <figure>
-                                            <img src="{{ asset($item->productDetails->image ?? 'assets/images/placeholder-product.jpg') }}" alt="">
+                                             <a href="{{ route('front.shop.detail', $item->productDetails->slug) }}">
+                                                <img src="{{ asset($item->productDetails->image ?? 'assets/images/placeholder-product.jpg') }}" alt="">
+                                            </a>
+                                            {{-- <img src="{{ asset($item->productDetails->image ?? 'assets/images/placeholder-product.jpg') }}" alt=""> --}}
                                         </figure>
                                         <figcaption>
                                             <div class="product-details-cart">
-                                                <a href="#"><h3>{{ ucwords($item->productDetails->name) }}</h3></a>
+                                                <a href="{{ route('front.shop.detail', $item->productDetails->slug) }}"><h3>{{ ucwords($item->productDetails->name) }}</h3></a>
                                                 <div class="pro-meta">
                                                     <span>Category:</span> {{ $item->productDetails->category->name ?? '-' }}
                                                 </div>

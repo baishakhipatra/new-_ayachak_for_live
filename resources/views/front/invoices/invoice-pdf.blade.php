@@ -63,7 +63,7 @@
                                     <table style=" width:75%; float: right;">
                                         <tr>
                                             <td style="color: #000; padding: 8px; margin-bottom: 5px;">Subtotal</td>
-                                            <td style="font-weight: 600; text-align: right;"><img style="margin-top:20px;" src="assets/images/rupee.png" height="15" alt="">{{ number_format($order->amount, 2) }}</td>
+                                            <td style="font-weight: 600; text-align: right;"><img style="margin-top:20px;" src="assets/images/rupee.png" height="15" alt="">{{ number_format($order->amount + $order->tax_amount, 2) }}</td>
                                         </tr>
                                         @if($order->discount_amount > 0)
                                         <tr>

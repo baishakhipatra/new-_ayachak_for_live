@@ -56,7 +56,7 @@ Route::name('front.')->group(function () {
         Route::get('order-summary', 'Front\UserController@orderSummary')->name('order-summary');
         Route::get('order/{order_no}', 'Front\UserController@order')->name('order');
         Route::get('/order/details/{id}', 'Front\UserController@orderDetails')->name('order.details');
-        Route::get('/order/invoice/{id}/download', 'Front\UserController@invoice')->name('order.invoice');
+        Route::get('/order/invoice/{order_no}/download', 'Front\UserController@invoice')->name('order.invoice');
         Route::post('order/product-cancel', 'Front\UserController@productCancel')->name('product.cancel');
         Route::post('order/cancel', 'Front\UserController@orderCancel')->name('order.cancel');
         Route::post('order/return', 'Front\UserController@orderReturn')->name('order.return');
@@ -87,7 +87,7 @@ Route::name('front.')->group(function () {
             Route::get('/', 'Front\CheckoutController@index')->name('index');
             // Route::post('/coupon/check', 'Front\CheckoutController@coupon')->name('coupon.check');
             Route::post('/store', 'Front\CheckoutController@store')->name('store');
-            Route::get('/payment/{checkoutId}', 'Front\CheckoutController@payment')->name('payment');
+            Route::get('/payment', 'Front\CheckoutController@payment')->name('payment');
             Route::post('/payment/complete', 'Front\CheckoutController@paymentStore')->name('payment.store');
             Route::view('/complete', 'front.checkout.complete')->name('complete');
         });
@@ -110,7 +110,7 @@ Route::name('front.')->group(function () {
         Route::get('/donation', 'Front\DonationController@DonationForm')->name('form');
         Route::post('/store', 'Front\DonationController@store')->name('store');
         Route::get('/donation-list', 'Front\DonationController@donationList')->name('list');
-        Route::get('/show/{id}', 'Front\DonationController@show')->name('show');
+        Route::post('/show', 'Front\DonationController@show')->name('show');
         route::get('/donation/{id}/invoice', 'Front\DonationController@donationInvoice')->name('donation-invoice');
     });
 

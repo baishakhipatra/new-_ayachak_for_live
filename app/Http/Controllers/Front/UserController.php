@@ -30,119 +30,146 @@ class UserController extends Controller
     public function login(Request $request)
     {
         //dd('hi');
-        // $recommendedProducts = $this->userRepository->recommendedProducts();
-        // return view('front.login', compact('recommendedProducts'));
         return view('front.login');
     }
 
     public function register(Request $request)
     {
-        // $recommendedProducts = $this->userRepository->recommendedProducts();
-        // return view('front.auth.register', compact('recommendedProducts'));
         return view('front.register');
     }
 
     public function create(Request $request)
     {
         //dd($request->all());
-        $request->validate([
-                    'name' => 'required|string|max:255',
-                    'mobile' => 'required|numeric|digits:10|unique:users,mobile',
-                    'email' => 'nullable|email|unique:users,email',
-                    'password' => 'required|min:6|max:12',
-                    'confirm_password' => 'required_with:password|same:password',
-                ], [
-                    'full_name.required' => 'The full name field is required.',
-                    'mobile.required' => 'The mobile number field is required.',
-                    'mobile.numeric' => 'The mobile number must be numeric.',
-                    'mobile.unique' => 'The mobile number has already been taken.',
-                    'mobile.digits' => 'The mobile number must be exactly 10 digits.',
-                    'password.required' => 'The password field is required.',
-                    'password.min' => 'The password should be at least 6 characters long.',
-                    'password.max' => 'The password should not exceed 12 characters.',
-                    'confirm_password.required_with' => 'The confirm password field is required when the password is present.',
-                    'confirm_password.same' => 'The confirm password must match the password.',
-                ]);
+        $request->validate
+        ([
+            'name' => 'required|string|max:255',
+            'mobile' => 'required|numeric|digits:10|unique:users,mobile',
+            'email' => 'nullable|email|unique:users,email',
+            'password' => 'required|min:6|max:12',
+            'confirm_password' => 'required_with:password|same:password',
+        ], [
+            'full_name.required' => 'The full name field is required.',
+            'mobile.required' => 'The mobile number field is required.',
+            'mobile.numeric' => 'The mobile number must be numeric.',
+            'mobile.unique' => 'The mobile number has already been taken.',
+            'mobile.digits' => 'The mobile number must be exactly 10 digits.',
+            'password.required' => 'The password field is required.',
+            'password.min' => 'The password should be at least 6 characters long.',
+            'password.max' => 'The password should not exceed 12 characters.',
+            'confirm_password.required_with' => 'The confirm password field is required when the password is present.',
+            'confirm_password.same' => 'The confirm password must match the password.',
+        ]);
 
-                // ✅ Split full_name into fname and lname
-                $nameParts = explode(' ', $request->name, 2);
-                $fname = $nameParts[0];
-                $lname = isset($nameParts[1]) ? $nameParts[1] : '';
+        $nameParts = explode(' ', $request->name, 2);
+        $fname = $nameParts[0];
+        $lname = isset($nameParts[1]) ? $nameParts[1] : '';
 
-                // Create a new user
-                    $user = new User();
-                    $user->fname = $fname;
-                    $user->lname = $lname;
-                    $user->name = $fname . ' ' . $lname;
-                    $user->email = $request->email;
-                    $user->mobile = $request->mobile;
-                    $user->password = Hash::make($request->password);
-                    $save = $user->save();
+        // Create a new user
+        $user = new User();
+        $user->fname = $fname;
+        $user->lname = $lname;
+        $user->name = $fname . ' ' . $lname;
+        $user->email = $request->email;
+        $user->mobile = $request->mobile;
+        $user->password = Hash::make($request->password);
+        $save = $user->save();
 
-                   // Log in the user
-                    if ($save) {
-                        $credentials = $request->only('mobile', 'password');
-                        if (Auth::attempt($credentials)) {
-                            $intendedUrl = Session::pull('url.intended', route('front.home'));
-                            return redirect()->intended($intendedUrl)->with('success', 'Registration successful');
-                        } else {
-                            return redirect()->route('front.login')->with('failure', 'Please enter valid credentials');
-                        }
-                    } else {
-                        return redirect()->back()->with('failure', 'Failed to create User')->withInput($request->all());
-                    }
-    }
-
-    public function check(Request $request)
-    {
-        // dd($request->all());
-        $existsNumber = User::where('mobile',$request->mobile)->first();
-        if(!$existsNumber){
-                $request->validate([
-                    'mobile' => 'required|numeric|digits:10|unique:users,mobile',
-                ],[
-                    'mobile.digits' => 'The mobile number must be exactly 10 digits.',
-                ]);
-                
-                    // Create a new user
-                    $user = new User();
-                    $user->mobile = $request->mobile;
-                    $user->password = Hash::make($request->password);
-                    $save = $user->save();
-                    if ($save) {
-                        $credentials = $request->only('mobile','password');
-                        if (Auth::attempt($credentials)) {
-                            $intendedUrl = Session::pull('url.intended', route('front.home'));
-                            return redirect()->intended($intendedUrl)->with('success', 'Registration successful');
-                        } else {
-                            return redirect()->route('front.login')->with('failure', 'Please enter valid credentials');
-                        }
-                    }else {
-                        return redirect()->back()->with('failure', 'Failed to create User')->withInput($request->all());
-                    }
-        }else{
-            if ($existsNumber->status == 0) {
-                return redirect()->route('front.login')
-                ->withInput($request->all())
-                ->with('failure', 'Your account is inactive. Please contact support.');
-            }
-
-            $request->validate([
-                'mobile' => 'required|numeric|exists:users,mobile',
-                // 'password' => 'required|string|min:2|max:100',
-            ]);
-            // $user = User::where('mobile',$request->mobile)->first();
-            // // $password =Hash::check($user->password);
+        // Log in the user
+        if ($save) {
             $credentials = $request->only('mobile', 'password');
-
             if (Auth::attempt($credentials)) {
                 $intendedUrl = Session::pull('url.intended', route('front.home'));
-                return redirect()->intended($intendedUrl)->with('success', 'Login successful');
+                return redirect()->intended($intendedUrl)->with('success', 'Registration successful');
             } else {
-                return redirect()->route('front.login')->withInput($request->all())->with('failure', 'Please enter valid credentials');
+                return redirect()->route('front.login')->with('failure', 'Please enter valid credentials');
             }
+        } else {
+            return redirect()->back()->with('failure', 'Failed to create User')->withInput($request->all());
         }
     }
+    public function check(Request $request)
+    {
+        $request->validate([
+            'mobile' => 'required|numeric|digits:10',
+            'password' => 'required|string|min:6|max:12',
+        ]);
+
+        $existsNumber = User::where('mobile', $request->mobile)->first();
+
+        // If no account found
+        if (!$existsNumber) {
+            return redirect()->route('front.login')
+                ->withInput($request->only('mobile'))
+                ->with('failure', 'No account found with this mobile number. Please register first.');
+        }
+
+        // If account is inactive
+        if ($existsNumber->status == 0) {
+            return redirect()->route('front.login')
+                ->withInput($request->only('mobile'))
+                ->with('failure', 'Your account is inactive. Please contact support.');
+        }
+
+        // Attempt login
+        $credentials = $request->only('mobile', 'password');
+        if (Auth::attempt($credentials)) {
+            $intendedUrl = Session::pull('url.intended', route('front.home'));
+            return redirect()->intended($intendedUrl)->with('success', 'Login successful');
+        } else {
+            return redirect()->route('front.login')
+                ->withInput($request->only('mobile'))
+                ->with('failure', 'Incorrect password. Please try again.');
+        }
+    }
+
+
+    // public function check(Request $request)
+    // {
+    //     // dd($request->all());
+    //     $existsNumber = User::where('mobile',$request->mobile)->first();
+    //     if(!$existsNumber){
+    //         $request->validate([
+    //             'mobile' => 'required|numeric|digits:10|unique:users,mobile',
+    //         ],[
+    //             'mobile.digits' => 'The mobile number must be exactly 10 digits.',
+    //         ]);
+    //             // Create a new user
+    //         $user = new User();
+    //         $user->mobile = $request->mobile;
+    //         $user->password = Hash::make($request->password);
+    //         $save = $user->save();
+    //         if ($save) {
+    //             $credentials = $request->only('mobile','password');
+    //             if (Auth::attempt($credentials)) {
+    //                 $intendedUrl = Session::pull('url.intended', route('front.home'));
+    //                 return redirect()->intended($intendedUrl)->with('success', 'Registration successful');
+    //             } else {
+    //                 return redirect()->route('front.login')->with('failure', 'Please enter valid credentials');
+    //             }
+    //         }else {
+    //             return redirect()->back()->with('failure', 'Failed to create User')->withInput($request->all());
+    //         }
+    //     }else{
+    //         if ($existsNumber->status == 0) {
+    //             return redirect()->route('front.login')
+    //             ->withInput($request->all())
+    //             ->with('failure', 'Your account is inactive. Please contact support.');
+    //         }
+
+    //         $request->validate([
+    //             'mobile' => 'required|numeric|exists:users,mobile',
+    //         ]);
+    //         $credentials = $request->only('mobile', 'password');
+
+    //         if (Auth::attempt($credentials)) {
+    //             $intendedUrl = Session::pull('url.intended', route('front.home'));
+    //             return redirect()->intended($intendedUrl)->with('success', 'Login successful');
+    //         } else {
+    //             return redirect()->route('front.login')->withInput($request->all())->with('failure', 'Please enter valid credentials');
+    //         }
+    //     }
+    // }
     
     public function logout(Request $request)
     {
@@ -205,9 +232,9 @@ class UserController extends Controller
     }
 
 
-    public function orderDetails($id)
+    public function orderDetails($order_no)
     {
-        $data = $this->userRepository->orderViewDetails($id);    
+        $data = $this->userRepository->orderViewDetails($order_no);    
         $order = $this->userRepository->orderDetails();
         return view('front.order_details', compact('data','order'));
     }
@@ -287,7 +314,6 @@ class UserController extends Controller
 
     public function updatePassword(Request $request)
     {
-        
         $request->validate([
             "old_password" => "nullable|string|max:255",
             "new_password" => "required|string|same:confirm_password",
@@ -301,29 +327,25 @@ class UserController extends Controller
             }
         }
 
+        if (Hash::check($request->new_password, $user->password)) {
+            return back()->withErrors(['new_password' => 'New password cannot be the same as your old password.']);
+        }
+
         $user->password = bcrypt($request->new_password);
         $user->save();
 
         return redirect()->route('front.profile')->with('success', 'Password updated successfully');
     }
 
-    public function wishlist(Request $request)
+    public function invoice(Request $request, $order_no)
     {
-        $data = $this->userRepository->wishlist();
-        if ($data) {
-            return view('front.profile.wishlist', compact('data'));
-        } else {
-            return view('front.404');
-        }
-    }
-
-    public function invoice(Request $request, $id)
-    {
-       $order = Order::with(['orderProducts.productDetails.category'])->findOrFail($id);
+       $order = Order::with(['orderProducts.productDetails.category'])->where('order_no',$order_no)->
+       firstOrFail();
 
        $pdf = PDF::loadview('front.invoices.invoice-pdf', compact('order'));
+       //dd($pdf);
 
-       return $pdf->download('invoice-'.$order->id.'.pdf');
+       return $pdf->stream('invoice-'.$order->order_no.'.pdf');
     }
 
     public function orderCancel(Request $request)

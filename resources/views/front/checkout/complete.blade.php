@@ -47,13 +47,10 @@
                     </ul>
                 </div>
                 <div class="cart-total">
-                    <span>Subtotal</span> ₹{{ number_format($order->amount, 2) }}
+                    <span>Subtotal</span> ₹{{ number_format($order->amount + $order->tax_amount, 2) }}
                 </div>
                 <div class="cart-total">
                     <span>Discount</span> ₹{{ number_format($order->discount_amount, 2) }}
-                </div>
-                <div class="cart-total">
-                    <span>Tax</span> ₹{{ number_format($order->tax_amount, 2) }}
                 </div>
                 <div class="cart-total">
                     <span>Total</span> ₹{{ number_format($order->final_amount, 2) }}

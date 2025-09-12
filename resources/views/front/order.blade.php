@@ -14,7 +14,7 @@
                         <div class="profile-right">
                             <div class="profile-heading-group">
                                 <h2 class="mb-0">Order Summery</h2>
-                                <a href="{{ route('front.order.invoice', $checkout->id) }}" class="bton btn-fill">Download Invoice</a>
+                                <a href="{{ route('front.order.invoice', $checkout->order_no) }}" class="bton btn-fill" target="_blank">Download Invoice</a>
                             </div>
                             <div class="row">
                                 <div class="col-lg-6">
@@ -68,7 +68,7 @@
                                                     </div>
 
                                                     {{-- Cancel button for each product --}}
-                                                    @if(!in_array($item->status, [3,4,5]))
+                                                    @if($checkoutProducts->count() > 1 && !in_array($item->status, [3,4,5]))
                                                         <button type="button" 
                                                                 class="btn btn-warning btn-sm mt-2" 
                                                                 data-bs-toggle="modal" 
@@ -155,7 +155,7 @@
 
                                         <div class="cart-row">
                                             <span>Subtotal</span>
-                                            ₹{{ number_format($checkout->amount, 2) }}
+                                            ₹{{ number_format($checkout->amount + $checkout->tax_amount, 2) }}
                                         </div>
 
                                         @if($checkout->discount_amount > 0)
@@ -168,11 +168,6 @@
                                         <div class="cart-row">
                                             <span>Shipping</span>
                                             FREE
-                                        </div>
-
-                                        <div class="cart-row">
-                                            <span>GST</span>
-                                            ₹{{ number_format($checkout->tax_amount, 2) }}
                                         </div>
 
                                         <div class="cart-total">

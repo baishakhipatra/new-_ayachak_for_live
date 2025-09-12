@@ -45,10 +45,16 @@ class CheckoutController extends Controller
             }
         }
 
-        $subtotal = 0;
+  
+        $subtotal = 0; 
+        $tax = 0;     
         foreach ($cartItems as $item) {
-            $price = $item->offer_price > 0 ? $item->offer_price : $item->price;
-            $subtotal += ($price * $item->qty);
+            $unitPrice = $item->offer_price > 0 ? $item->offer_price : $item->price;
+            $subtotal += $unitPrice * $item->qty;
+            $item->calc = [
+                'unitPrice' => $unitPrice,
+                'lineTotal' => $unitPrice * $item->qty,
+            ];
         }
 
     
@@ -69,41 +75,14 @@ class CheckoutController extends Controller
                     // Fixed amount coupon
                     $discount = floatval($coupon->amount);
                 } elseif ($couponType == 1) {
-                    // Percentage coupon -> compute currency discount on subtotal
                     $discount = ($subtotal * floatval($coupon->amount)) / 100;
                 }
             }
         }
 
-        $applyDiscountBeforeTax = false; 
+        $total = $subtotal - $discount;
 
-        $tax = 0;
-        if ($applyDiscountBeforeTax) {
-           
-            $discountPercent = $subtotal > 0 ? ($discount / $subtotal) : 0;
-            foreach ($cartItems as $item) {
-                $price = $item->offer_price > 0 ? $item->offer_price : $item->price;
-                $lineSubtotal = $price * $item->qty;
-                $lineDiscount = $lineSubtotal * $discountPercent;
-                $lineTaxable = $lineSubtotal - $lineDiscount;
-                $gstPercent = $item->productDetails->gst ?? 0;
-                $tax += ($lineTaxable * $gstPercent) / 100;
-            }
-            $total = $subtotal - $discount + $tax;
-        } else {
-            
-            foreach ($cartItems as $item) {
-                $price = $item->offer_price > 0 ? $item->offer_price : $item->price;
-                $lineSubtotal = $price * $item->qty;
-                $gstPercent = $item->productDetails->gst ?? 0;
-                $tax += ($lineSubtotal * $gstPercent) / 100;
-            }
-            $total = $subtotal + $tax - $discount;
-        }
-
-       
         $subtotal = round($subtotal, 2);
-        $tax = round($tax, 2);
         $discount = round($discount, 2);
         $total = round($total, 2);
 
@@ -139,7 +118,7 @@ class CheckoutController extends Controller
             'billing_city' => 'required|string|max:255',
             'billing_state' => 'required|string|max:255',
             'billing_pin' => 'required|string|max:6',
-            'billing_landmark' => 'required|string|max:255',
+            'billing_landmark' => 'nullable|string|max:255',
 
             'address_option' => 'required|in:same,different',
             'shipping_country' => 'nullable|string|max:255',
@@ -230,8 +209,9 @@ class CheckoutController extends Controller
     }
 
 
-    public function payment(Request $request,$checkoutId)
+    public function payment(Request $request)
     {
+        $checkoutId = $request->input('checkoutId');
         if (auth()->guard('web')->check()) {
             $data = Checkout::where('id',$checkoutId)->orderby('id','desc')->first();
         } else {

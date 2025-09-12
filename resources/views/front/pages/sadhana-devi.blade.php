@@ -21,7 +21,7 @@
                         <h3 class="section-sub-heading">{{$sub_heading}}</h3>
                     </div>
                     <div class="section-content-place">
-                        <p>{{$description}}</p>
+                        <p>{!!$description!!}</p>
                     </div>
                 </div>
             </div>

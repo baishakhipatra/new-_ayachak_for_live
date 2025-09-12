@@ -6,12 +6,6 @@
         <div class="content-holder-stack">
             <div class="row align-items-center justify-content-between">
                 <div class="col-md-12 col-lg-6 md-lg-6 order-lg-1 order-2">
-                    {{-- <div class="heading-group">
-                        <figure>
-                            <img src="{{asset('assets/images/divider.svg')}}" alt="">
-                        </figure>
-                        <h2 class="section-heading">Uniqueness of Principles of Sri Sri Babamoni</h2>
-                    </div> --}}
                     <ul class="content-list">
                         <li>
                             <figure>
@@ -19,7 +13,7 @@
                             </figure>
                             <figcaption>
                                 <h4>{{$page_heading}}</h4>
-                                <p>{{$description}}</p>
+                                <p>{!! $description !!}</p>
                             </figcaption>
                         </li>
                     </ul>

@@ -47,7 +47,7 @@
             <h3 class="section-sub-heading">Introduction</h3>
             <h2 class="section-heading">{{$page_heading}}</h2>
         </div>
-        <p>{{$short_description}}</p>
+        <p>{!! $short_description !!}</p>
         <a href="{{ route('front.about-us.index') }}" class="bton btn-fill">Read More</a>
     </div>
 </section>
@@ -75,7 +75,7 @@
                         <h3 class="section-sub-heading">{{$babamoni_sub_heading}}</h3>
                     </div>
                     <div class="section-content-place">
-                        <p>{{$babamoni_short_description}}</p>
+                        <p>{!!$babamoni_short_description!!}</p>
                     </div>
                         
                     <a href="{{route('front.babamoni.index')}}" class="bton btn-fill">Read More</a>
@@ -104,7 +104,7 @@
                             </figure>
                             <figcaption>
                                 <h4>{{$abhiksha_heading}}</h4>
-                                <p>{{$abhiksha_short_description}}</p>
+                                <p>{!!$abhiksha_short_description!!}</p>
                             </figcaption>
                         </li>
                     </ul>
@@ -116,7 +116,7 @@
                             </figure>
                             <figcaption>
                                 <h4>{{$morality_campaign_heading}}</h4>
-                                <p>{{$morality_campaign_short_description}}</p>
+                                <p>{!!$morality_campaign_short_description!!}</p>
                             </figcaption>
                         </li>
                     </ul>
@@ -168,7 +168,7 @@
                             </figure>
                             <figcaption>
                                 <h4>{{$ayachak_ashram_heading}}</h4>
-                                <p>{{$ayachak_ashram_short_description}}</p>
+                                <p>{!!$ayachak_ashram_short_description!!}</p>
                             </figcaption>
                         </li>
                     </ul>
@@ -180,7 +180,7 @@
                             </figure>
                             <figcaption>
                                 <h4>{{$the_multiversity_heading}}</h4>
-                                <p>{{$the_multiversity_short_description}}</p>
+                                <p>{!!$the_multiversity_short_description!!}</p>
                             </figcaption>
                         </li>
                     </ul>
@@ -228,7 +228,7 @@
                     <figcaption>
                         <h2>{{$ayurvedic_medicines_heading}}</h2>
                         <p>
-                           {{$ayurvedic_medicines_short_description}}
+                           {!!$ayurvedic_medicines_short_description!!}
                         </p>
                     </figcaption>
                     <a href="{{route('front.shop.list')}}" class="bton btn-fill">Shop Now</a>
@@ -242,7 +242,7 @@
                     <figcaption>
                         <h2>{{$books_heading}}</h2>
                         <p>
-                            {{$books_short_description}}
+                            {!!$books_short_description!!}
                         </p>
                     </figcaption>
                     <a href="{{ route('front.shop.list', ['category' => 'Book']) }}" class="bton btn-fill">Shop Now</a>
@@ -256,7 +256,7 @@
                     <figcaption>
                         <h2>{{$voluntary_donations_heading}}</h2>
                         <p>
-                           {{$voluntary_donations_short_description}}
+                           {!!$voluntary_donations_short_description!!}
                         </p>
                     </figcaption>
                     <a href="{{route('front.donation.form')}}" class="bton btn-fill">Donate Now</a>
@@ -279,7 +279,7 @@
                         <h3 class="section-sub-heading">{{$mamoni_sub_heading}}</h3>
                     </div>
                     <div class="section-content-place">
-                        <p>{{$mamoni_short_description}}</p>
+                        <p>{!!$mamoni_short_description!!}</p>
                     </div>
                         
                     <a href="{{route('front.mamoni.index')}}" class="bton btn-fill">Read More</a>
@@ -331,7 +331,7 @@
                         <h3 class="section-sub-heading">{{$sadhanaDevi_sub_heading}}</h3>
                     </div>
                     <div class="section-content-place">
-                        <p>{{$sadhanaDevi_short_description}}</p>
+                        <p>{!!$sadhanaDevi_short_description!!}</p>
                     </div>
                     <a href="{{route('front.sadhanadevi.index')}}" class="bton btn-fill">Read More</a>
                 </div>
@@ -362,7 +362,7 @@
                         <h3 class="section-sub-heading">{{$bhaida_sub_heading}}</h3>
                     </div>
                     <div class="section-content-place">
-                        <p>{{$bhaida_short_description}}</p>
+                        <p>{!!$bhaida_short_description!!}</p>
                     </div>
                     <a href="{{route('front.bhaida.index')}}" class="bton btn-fill">Read More</a>
                 </div>
@@ -390,7 +390,7 @@
                 </figure>
                 <figcaption>
                     <h3>{{$akhanda_heading}}</h3>
-                    <p>{{$akhanda_short_description}}</p>
+                    <p>{!!$akhanda_short_description!!}</p>
                     <a  href="{{route('front.akhanda.index')}}" class="text-arrow">
                         Read More
                         <img src="{{asset('assets/images/text-arrow.svg')}}" alt="">
@@ -405,7 +405,7 @@
                 </figure>
                 <figcaption>
                     <h3>{{$omkar_heading}}</h3>
-                    <p>{{$omkar_short_description}}</p>
+                    <p>{!!$omkar_short_description!!}</p>
                     <a  href="{{route('front.omkar.index')}}" class="text-arrow">
                         Read More
                         <img src="{{asset('assets/images/text-arrow.svg')}}" alt="">
@@ -421,7 +421,7 @@
                 </figure>
                 <figcaption>
                     <h3>{{$Sangathan_heading}}</h3>
-                    <p>{{$Sangathan_short_description}}</p>
+                    <p>{!!$Sangathan_short_description!!}</p>
                     <a  href="{{route('front.sangathan.index')}}" class="text-arrow">
                         Read More
                         <img src="{{asset('assets/images/text-arrow.svg')}}" alt="">
@@ -436,7 +436,7 @@
                 </figure>
                 <figcaption>
                     <h3>{{$samabeta_upasana_heading}}</h3>
-                    <p>{{$samabeta_upasana_short_description}}</p>
+                    <p>{!!$samabeta_upasana_short_description!!}</p>
                     <a  href="{{route('front.samabeta_upasana.index')}}" class="text-arrow">
                         Read More
                         <img src="{{asset('assets/images/text-arrow.svg')}}" alt="">

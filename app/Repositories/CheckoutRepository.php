@@ -115,10 +115,16 @@ class CheckoutRepository implements CheckoutInterface
                 ?? $product->offer_price
                 ?? $product->price
                 ?? 0;
+                
+                $gstPercent = (float) ($product->gst ?? 0);
+                $priceExclGST = $gstPercent > 0 
+                    ? $unitPrice / (1 + ($gstPercent / 100)) 
+                    : $unitPrice;
 
-                $lineSubtotal = $unitPrice * $qty;
-                $gstPercent  = (float) ($product->gst ?? 0);
-                $lineTax     = ($lineSubtotal * $gstPercent) / 100.0;
+                $gstAmountPerUnit = $unitPrice - $priceExclGST;
+
+                $lineSubtotal = $priceExclGST * $qty;
+                $lineTax = $gstAmountPerUnit * $qty; 
 
                 $subtotal += $lineSubtotal;
                 $taxTotal += $lineTax;
@@ -231,7 +237,7 @@ class CheckoutRepository implements CheckoutInterface
                 'orderCancelledBy' => 0,
                 'orderCancelledReason' => null,
             ]);
-           // dd($order);
+            //dd($order);
             $orderNo = 'ORD-' . str_pad($order->id, 6, '0', STR_PAD_LEFT); 
             $order->update(['order_no' => $orderNo]);
 
@@ -264,10 +270,20 @@ class CheckoutRepository implements CheckoutInterface
                 ?? $product->price
                 ?? 0;
 
-                $lineSubtotal = $unitPrice * $qty;
-                $gstPercent  = (float) ($product->gst ?? 0);
-                $lineTax     = ($lineSubtotal * $gstPercent) / 100.0;
-                $lineTotal   = $lineSubtotal + $lineTax;
+                $gstPercent = (float) ($product->gst ?? 0);
+
+                $priceExclGST = $gstPercent > 0 
+                    ? $unitPrice / (1 + ($gstPercent / 100)) 
+                    : $unitPrice;
+
+                $gstAmountPerUnit = $unitPrice - $priceExclGST;
+
+                $lineSubtotal = $priceExclGST * $qty;
+                $lineTax = $gstAmountPerUnit * $qty;
+
+               
+                $subtotal += $lineSubtotal;
+                $taxTotal += $lineTax;
 
                 OrderProduct::create([
                     'order_id' => $order->id,
@@ -305,7 +321,7 @@ class CheckoutRepository implements CheckoutInterface
 
         } catch (\Throwable $e) {
             DB::rollBack();
-            dd($e->getMessage());
+            //dd($e->getMessage());
             \Log::error('Order Creation Failed: '.$e->getMessage(), ['trace' => $e->getTraceAsString()]);
             return false;
         }

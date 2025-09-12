@@ -67,8 +67,9 @@ class DonationController extends Controller
 
     }
 
-    public function show($id)
+    public function show(Request $request)
     {
+        $id = $request->input('id');
         $donation = Donation::findOrFail($id);
         return view('front.donation.show',compact('donation'));
     }

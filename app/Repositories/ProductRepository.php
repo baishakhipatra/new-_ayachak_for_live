@@ -115,9 +115,12 @@ class ProductRepository implements ProductInterface
 
     public function listVariationById($productId)
     {
-        return ProductVariation::with('images')->where('product_id', $productId)->get();
+        return ProductVariation::with('images')
+            ->where('status',1)
+            ->where('product_id', $productId)
+            ->orderBy('weight','asc')
+            ->get();
     }
-
 
     public function create(array $data)
     {

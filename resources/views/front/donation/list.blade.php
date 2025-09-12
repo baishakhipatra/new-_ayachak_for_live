@@ -49,7 +49,15 @@
                                                             @endif
                                                         </td>
                                                         <td>{{ $donation->created_at->format('d M, Y h:i A') }}</td>
-                                                        <td><a href="{{route('front.donation.show', $donation->id)}}" class="view"><i class="fa fa-eye" aria-hidden="true"></a></i></td>
+                                                        <td>    
+                                                            <form action="{{ route('front.donation.show') }}" method="POST" style="display:inline;">
+                                                                @csrf
+                                                                <input type="hidden" name="id" value="{{ $donation->id }}">
+                                                                <button type="submit" class="view" style="border:none; background:none;">
+                                                                    <i class="fa fa-eye" aria-hidden="true"></i>
+                                                                </button>
+                                                            </form>
+                                                        </td>
                                                     </tr>
                                                 @endforeach
                                             </tbody>
