@@ -32,9 +32,9 @@
             </div>
             <a href="{{route('front.donation.form')}}" class="bton btn-fill">Donate Now</a>
             <div class="icon-place">
-                <a href="#" class="search">
+                <!-- <a href="#" class="search">
                     <img src="{{asset('assets/images/search.svg')}}">
-                </a>
+                </a> -->
                 {{--                 
                 <a href="{{ route('front.user.login') }}" class="account">
                     <img src="./assets/images/user.svg">

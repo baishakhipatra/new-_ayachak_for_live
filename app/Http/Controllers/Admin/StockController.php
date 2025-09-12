@@ -14,13 +14,47 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class StockController extends Controller
 {
-   public function stock_sample_csv(Request $request)
+//    public function stock_sample_csv(Request $request)
+//     {
+//         $fileName = 'stock_sample.csv';
+
+//         $productvariation = json_decode($request->input('product_var'), true);
+
+//         $variations = $productvariation['data'] ?? [];
+
+//         $headers = [
+//             "Content-type"        => "text/csv",
+//             "Content-Disposition" => "attachment; filename=$fileName",
+//             "Pragma"              => "no-cache",
+//             "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+//             "Expires"             => "0"
+//         ];
+
+//         $columns = ['SKU_code', 'current_stock'];
+
+//         $callback = function () use ($variations, $columns) {
+//             $file = fopen('php://output', 'w');
+//             fputcsv($file, $columns);
+
+//             foreach ($variations as $product_v) {
+//                 fputcsv($file, [
+//                     $product_v['code'] ?? '',
+//                     ''
+//                 ]);
+//             }
+
+//             fclose($file);
+//         };
+
+//         return response()->stream($callback, 200, $headers);
+//     }
+    public function stock_sample_csv(Request $request)
     {
         $fileName = 'stock_sample.csv';
 
-        $productvariation = json_decode($request->input('product_var'), true);
+        $productIds = json_decode($request->input('product_ids'), true);
 
-        $variations = $productvariation['data'] ?? [];
+        $variations = ProductVariation::whereIn('id', $productIds)->get();
 
         $headers = [
             "Content-type"        => "text/csv",
@@ -30,7 +64,7 @@ class StockController extends Controller
             "Expires"             => "0"
         ];
 
-        $columns = ['SKU_code', 'available_stock', 'current_stock'];
+        $columns = ['SKU_code', 'current_stock'];
 
         $callback = function () use ($variations, $columns) {
             $file = fopen('php://output', 'w');
@@ -38,8 +72,7 @@ class StockController extends Controller
 
             foreach ($variations as $product_v) {
                 fputcsv($file, [
-                    $product_v['code'] ?? '',
-                    $product_v['stock'] ?? '',
+                    $product_v->code ?? '',
                     ''
                 ]);
             }
@@ -50,12 +83,13 @@ class StockController extends Controller
         return response()->stream($callback, 200, $headers);
     }
 
+
     public function stock_import(Request $request)
     {
         try{
             
            $request->validate([
-            //'csv_file' => 'required|file|mimetypes:text/plain,text/csv,application/csv,text/comma-separated-values,application/vnd.ms-excel',
+            // 'csv_file' => 'required|file|mimetypes:text/plain,text/csv,application/csv,text/comma-separated-values,application/vnd.ms-excel',
             'csv_file' => 'required|file|mimes:csv,txt,xls,xlsx',
         ]);
 
@@ -82,7 +116,6 @@ class StockController extends Controller
             $data = array_combine($header, $row);
             $validator = Validator::make($data, [
                 'SKU_code'   => 'required',
-                'available_stock'  => 'required',
             ]);
             $already_stock=ProductVariation::where('code', $data['SKU_code'])->first();
             // dd($already_stock);

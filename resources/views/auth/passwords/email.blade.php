@@ -103,7 +103,7 @@
                 <div class="col-lg-5 mb-4 mb-md-5 mb-lg-0">
                     <div class="login-wrap">
                         <h2 class="section-heading mb-4">Forget Password</h2>
-                            <form method="POST" class="register-block" action="{{route('front.user.forgot.password.check')}}">@csrf
+                            <form method="POST" class="register-block" action="{{route('front.forgot.password.check')}}">@csrf
                                 <div class="form-group"> 
                                     <input type="tel" class="form-control input-style" placeholder=" " id="mobile" name="mobile">
                                     <label class="placeholder-text">Enter mobile</label>
@@ -135,8 +135,8 @@
 
                                 <div class="row align-items-center justify-content-center text-center">
                                     <div class="col-12">
-                                        <button type="submit">Reset Password</button>
-										<a href="{{route('front.user.login')}}">Back to login</a>
+                                        <button class="bton btn-fill" type="submit">Reset Password</button>
+										<a href="{{route('front.login')}}">Back to login</a>
                                     </div>
                                 </div>
                             </form>
