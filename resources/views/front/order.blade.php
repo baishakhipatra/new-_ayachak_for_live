@@ -225,8 +225,12 @@
                                                     {{ ucwords($checkout->shipping_city) }},
                                                     {{ ucwords($checkout->shipping_state) }},
                                                     {{ ucwords($checkout->shipping_country) }} - {{ $checkout->shipping_pin }}
+                                                    @if($checkout->shipping_landmark)
                                                     <br><strong>Landmark:</strong> {{ ucwords($checkout->shipping_landmark) }}
+                                                    @endif
+                                                    @if($checkout->alt_mobile)
                                                     <br><strong>Phone:</strong> {{ $checkout->alt_mobile }}
+                                                    @endif
                                                 @endif
                                             </div>
                                         </div>

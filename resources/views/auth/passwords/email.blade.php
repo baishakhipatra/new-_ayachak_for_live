@@ -135,7 +135,7 @@
 
                                 <div class="row align-items-center justify-content-center text-center">
                                     <div class="col-12">
-                                        <button type="submit">Reset Password</button>
+                                        <button class="bton btn-fill" type="submit">Reset Password</button>
 										<a href="{{route('front.login')}}">Back to login</a>
                                     </div>
                                 </div>

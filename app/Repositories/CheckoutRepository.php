@@ -174,7 +174,7 @@ class CheckoutRepository implements CheckoutInterface
             $data['shipping_state']   = $shipping['state'] ?? null;
             $data['shipping_country'] = $shipping['country'] ?? null;
             $data['shipping_pin']     = $shipping['pin'] ?? null;
-            $data['shipping_landmark'] = $shipping['shipping_landmark'] ?? null;
+            $data['shipping_landmark'] = $sameAddress ? ($shipping['billing_landmark'] ?? null) : ($shipping['shipping_landmark'] ?? null) ;
             $data['alt_mobile'] = $shipping['alt_mobile'] ?? null;
 
             $order = Order::create([
