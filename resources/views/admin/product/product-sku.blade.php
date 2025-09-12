@@ -158,7 +158,9 @@
                 <!-- <a href="{{route('admin.stock.sample_csv')}}" target="_blank" class="text-decoration-underline">
                     Download sample file
                 </a> -->
-                <input type="hidden" id="product_var" value='@json($products)'>
+                <!-- <input type="hidden" id="product_var" value='@json($products)'> -->
+                <input type="hidden" id="product_var" value='@json($products->pluck("id"))'>
+
 
                 <div onclick="stock_sample();" class="text-decoration-underline text-primary" style="cursor: pointer;">
                     Download sample file
@@ -366,14 +368,23 @@
         });
     });
 
-    function stock_sample() {
-        let productData = document.getElementById('product_var').value;
-        let encodedData = encodeURIComponent(productData);
+    // function stock_sample() {
+    //     let productData = document.getElementById('product_var').value;
+    //     let encodedData = encodeURIComponent(productData);
 
-        let downloadUrl = "{{ route('admin.stock.sample_csv') }}?product_var=" + encodedData;
+    //     let downloadUrl = "{{ route('admin.stock.sample_csv') }}?product_var=" + encodedData;
+
+    //     window.location.href = downloadUrl;
+    // }
+    function stock_sample() {
+        let productIds = JSON.parse(document.getElementById('product_var').value);
+
+        let encodedData = encodeURIComponent(JSON.stringify(productIds));
+        let downloadUrl = "{{ route('admin.stock.sample_csv') }}?product_ids=" + encodedData;
 
         window.location.href = downloadUrl;
     }
+
 
 
   function deleteUser(userId) {

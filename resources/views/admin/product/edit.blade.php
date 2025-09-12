@@ -358,7 +358,7 @@
                                         </div>
                                     </div>
                                     <div class="col-3">
-                                        <label for="inputPassword6" class="col-form-label">Gst(%)</label>
+                                        <label for="inputPassword6" class="col-form-label">GST(%)</label>
                                     </div>
                                     <div class="col-9">
                                         <input type="number" id="gst" class="form-control" aria-describedby="priceHelpInline" name="gst" value="{{$data->gst}}" step="0.01">

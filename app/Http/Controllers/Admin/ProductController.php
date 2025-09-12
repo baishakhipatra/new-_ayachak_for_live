@@ -97,7 +97,9 @@ class ProductController extends Controller
         $storeData = $this->productRepository->create($params);
 
         if ($storeData) {
-            return redirect()->route('admin.product.edit', $storeData->id)->with('success', 'New Product created, add Product Variation!');
+            // return redirect()->route('admin.product.edit', $storeData->id)->with('success', 'New Product created, add Product Variation!');
+            return redirect()->route('admin.product.index')->with('success', 'New Product created, add Product Variation!');
+
         } else {
             return redirect()->route('admin.product.create')->withInput($request->all());
         }
@@ -1098,13 +1100,22 @@ class ProductController extends Controller
     {
         $variation = ProductVariation::find($request->id); 
 
+
         if (!$variation) {
             return response()->json([
                 'status' => 404,
                 'message' => 'Product variation not found.',
             ]);
         }
+        $orderProducts = OrderProduct::where('product_variation_id', $variation->id)->exists();
 
+        if ($orderProducts) {
+            return response()->json([
+                'status' => 400,
+                'message' => 'This product variation is associated with existing orders and cannot be deleted.',
+
+            ]);
+        }
         $variation->delete(); 
         return response()->json([
             'status' => 200,
@@ -1146,7 +1157,7 @@ class ProductController extends Controller
             $data = array_combine($header, $row);
            // dd($data);
 
-            $product = Product::where('style_no', $data['product_no'])->first();
+            $product = Product::where('style_no', $data['material_code'])->first();
             //dd($product);
 
             if (!$product) {

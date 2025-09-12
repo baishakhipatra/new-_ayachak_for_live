@@ -128,7 +128,7 @@
                 </th>
                 <th class="text-center"><i class="fi fi-br-picture"></i></th>
                 <th>Name</th>
-                <th>Style No.</th>
+                <th>Product No.</th>
                 {{-- <th>Ranges</th> --}}
                 <th>Category</th>
                 <th>Price</th>

@@ -131,7 +131,7 @@
 							@else
 						   <span></span>
 							@endif
-                        @elseif($item->payment_method == "cash_on_delivery")
+                        @elseif($item->payment_method == "cash_on_delivery" || $item->payment_method == "Cash On Delivery")
 							@if ($item->coupon_code_id != 0)
                             	@if($item->couponDetails)
 									@if($item->address_type=='ho')
@@ -239,9 +239,9 @@
                             </a>
 
                             @if ($item->is_live_order == 1)
-                                <a href="javascript: void(0)" data-bs-toggle="tooltip" title="This is a LIVE Order. Tap to make this a DUMMY Order" onclick="typeUpdate({{$item->id}}, 0)" class="btn btn-success order-type">
+                                <!-- <a href="javascript: void(0)" data-bs-toggle="tooltip" title="This is a LIVE Order. Tap to make this a DUMMY Order" onclick="typeUpdate({{$item->id}}, 0)" class="btn btn-success order-type">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                                </a>
+                                </a> -->
                             @else
                                 <a href="javascript: void(0)" data-bs-toggle="tooltip" title="This is a DUMMY Order. Tap to make this a LIVE Order" onclick="typeUpdate({{$item->id}}, 1)" class="btn btn-danger order-type">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x-circle"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
