@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Cart extends Model
 {
-    protected $fillable = ['ip','user_id', 'product_id', 'product_name', 'product_image', 'product_slug', 'product_variation_id', 'price', 'offer_price', 'qty'];
+    protected $fillable = ['ip','guest_token','user_id', 'product_id', 'product_name', 'product_image', 'product_slug', 'product_variation_id', 'price', 'offer_price', 'qty'];
 
     public function cartVariationDetails() {
         return $this->belongsTo('App\Models\ProductColorSize', 'product_variation_id', 'id');

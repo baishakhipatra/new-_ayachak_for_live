@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Category;
-use App\Models\CategoryParent;
 use App\Models\Collection;
 use App\Models\Settings;
 use App\Models\Cart;
@@ -19,132 +18,126 @@ class AppServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.
-     *
-     * @return void
      */
-    public function register()
+    public function register(): void
     {
         //
     }
 
     /**
      * Bootstrap any application services.
-     *
-     * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         View::composer('*', CategoryComposer::class);
-        view::composer('*', function($view) {
-            //count cart total
-            $cartCount = auth()->check() ? Cart::where('user_id', auth()->id())->count() : 0;
-            $view->with('cartCount', $cartCount);
 
+        View::composer('*', function ($view) {
+            $categories      = collect();
+            $categoryNavList = [];
+            $collections     = collect();
+            $settings        = collect();
+            $cartCount = 0;
+            $wishlistCount     = 0;
 
+            $ip = request()->ip();
 
+            /** -------------------------------
+             * Categories
+             * ----------------------------- */
+            if (Schema::hasTable('categories')) {
+                $categories = Category::with('parentCatDetails')
+                    ->where('status', 1)
+                    ->orderBy('position', 'asc')
+                    ->get();
 
+                foreach ($categories as $catValue) {
+                    if (in_array_r($catValue->parentCatDetails?->name, $categoryNavList)) {
+                        continue;
+                    }
 
-            $ip = $_SERVER['REMOTE_ADDR'];
-
-            // categories
-            $categoryExists = Schema::hasTable('categories');
-            if ($categoryExists) {
-                $categories = Category::with('parentCatDetails')->orderBy('position', 'asc')->where('status', 1)->get();
-                // $categories = Category::with('parentCatDetails')->orderBy('parent', 'asc')->orderBy('position', 'asc')->where('status', 1)->get();
-
-                // dd($categories);
-
-                $categoryNavList = [];
-
-                foreach ($categories as $catKey => $catValue) {
-                    if (in_array_r($catValue->parentCatDetails ? $catValue->parentCatDetails->name : '', $categoryNavList)) continue;
-
-                    $childCategories = Category::select('slug', 'name', 'sketch_icon', 'image_path')->where('parent', $catValue->parent)->orderBy('position', 'asc')->where('status', 1)->get()->toArray();
+                    $childCategories = Category::select('slug', 'name', 'sketch_icon', 'image_path')
+                        ->where('parent', $catValue->parent)
+                        ->where('status', 1)
+                        ->orderBy('position', 'asc')
+                        ->get()
+                        ->toArray();
 
                     $categoryNavList[] = [
-                        'parent' => $catValue->parentCatDetails ? $catValue->parentCatDetails->name : '',
-                        // 'parent' => $catValue->parent,
-                        // 'parent' => $categoryParent->name,
-                        'child' => $childCategories
+                        'parent' => $catValue->parentCatDetails?->name ?? '',
+                        'child'  => $childCategories,
                     ];
                 }
             }
 
-            // dd($categoryNavList);
-
-            // collections
-            $collectionExists = Schema::hasTable('collections');
-            if ($collectionExists) {
-                $collections = Collection::orderBy('position', 'asc')->orderBy('id', 'desc')->where('status', 1)->get();
+            /** -------------------------------
+             * Collections
+             * ----------------------------- */
+            if (Schema::hasTable('collections')) {
+                $collections = Collection::where('status', 1)
+                    ->orderBy('position', 'asc')
+                    ->orderBy('id', 'desc')
+                    ->get();
             }
 
-            // settings
-            $settingsExists = Schema::hasTable('settings');
-            if ($settingsExists) {
+            /** -------------------------------
+             * Settings
+             * ----------------------------- */
+            if (Schema::hasTable('settings')) {
                 $settings = Settings::where('status', 1)->get();
             }
-            // Base URL
-            $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "http://" : "http://";
-    
-            // Get the host
-            $host = $_SERVER['HTTP_HOST'];
-            
-            // Get the current script directory
-            $scriptDir = dirname($_SERVER['SCRIPT_NAME']);
-            
-            // Ensure there is a trailing slash
-            $scriptDir = rtrim($scriptDir, '/\\') . '/';
-            
-            // Construct the base URL
-            $base_url = $protocol . $host . $scriptDir;
 
-            // cart count
-            $cartExists = Schema::hasTable('carts');
-            if ($cartExists) {
-                if (Auth::guard('web')->check()) {
-                    $cartCount = Cart::where('user_id', Auth::guard('web')->user()->id)->get();
+            /** -------------------------------
+             * Cart Count
+             * ----------------------------- */
+            if (Schema::hasTable('carts')) {
+                if (Auth::check()) {
+                    $userId = Auth::id();
+
+                    // Merge guest cart (same IP) into user cart
+                    Cart::where('ip', $ip)
+                        ->whereNull('user_id')
+                        ->update(['user_id' => $userId, 'ip' => null]);
+
+                    $carts = Cart::where('user_id', $userId)->get();
                 } else {
-                    if (!empty($_COOKIE['cartToken'])) {
-                        $cartCount = Cart::where('guest_token', $_COOKIE['cartToken'])->get();
-                    } else {
-                        $cartCount = [];
-                    }
-                }
-                $totalCartProducts = 0;
-                if(count($cartCount) > 0) {
-                    foreach($cartCount as $cartKey => $cartVal) {
-                        $totalCartProducts += $cartVal->qty;
-                    }
+                    $carts = Cart::where('ip', $ip)->get();
                 }
 
-                // $cartCount = Cart::where('ip', $ip)->get();
-
-                // $totalCartProducts = 0;
-                // foreach($cartCount as $cartKey => $cartVal) {
-                //     $totalCartProducts += $cartVal->qty;
-                // }
-            }
-
-            // wishlist count
-            $wishlistExists = Schema::hasTable('wishlists');
-            if ($wishlistExists) {
-                if (Auth::guard('web')->check()) {
-                    $user_id = Auth::guard('web')->user()->id;
-                    $wishlistCount = Wishlist::where('user_id', $user_id)->count();
-                } else {
-                    $wishlistCount = 0;
+                foreach ($carts as $cartItem) {
+                    $cartCount++;
                 }
             }
 
-            view()->share('categories', $categories);
-            view()->share('categoryNavList', $categoryNavList);
-            view()->share('collections', $collections);
-            view()->share('settings', $settings);
-            view()->share('cartCount', $totalCartProducts);
-            view()->share('wishlistCount', $wishlistCount);
-            view()->share('base_url', $base_url);
+            /** -------------------------------
+             * Wishlist Count
+             * ----------------------------- */
+            if (Schema::hasTable('wishlists')) {
+                if (Auth::check()) {
+                    $wishlistCount = Wishlist::where('user_id', Auth::id())->count();
+                }
+            }
+
+            /** -------------------------------
+             * Base URL
+             * ----------------------------- */
+            $protocol = request()->secure() ? "https://" : "http://";
+            $host     = request()->getHost();
+            $scriptDir = rtrim(dirname(request()->getScriptName()), '/\\') . '/';
+            $base_url  = $protocol . $host . $scriptDir;
+
+            /** -------------------------------
+             * Share with all views
+             * ----------------------------- */
+            view()->share(compact(
+                'categories',
+                'categoryNavList',
+                'collections',
+                'settings',
+                'cartCount',
+                'wishlistCount',
+                'base_url'
+            ));
         });
-
 
         Paginator::useBootstrap();
     }

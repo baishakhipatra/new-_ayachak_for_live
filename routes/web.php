@@ -45,6 +45,7 @@ Route::name('front.')->group(function () {
     });
 
 
+
     // profile login & registration - guard
     Route::middleware(['auth:web'])->group(function () {
         // Route::prefix('user/')->name('user.')->group(function () {
@@ -69,18 +70,7 @@ Route::name('front.')->group(function () {
         //});
 
 
-        // cart
-        Route::prefix('cart')->group(function () {
-            Route::get('/details', 'Front\CartController@index')->name('cart.index');
-            Route::post('/update-quantity', 'Front\CartController@updateQuantity')->name('cart.update-quantity');
-            Route::post('/remove-quantity', 'Front\CartController@removeQuantity')->name('cart.remove-quantity');
-            Route::post('/add-to-checkoout', 'Front\CartController@add_to_checkoout')->name('cart.add_to_checkoout');
-            Route::post('/coupon/check', 'Front\CartController@couponCheck')->name('cart.coupon.check');
-            Route::post('/coupon/remove', 'Front\CartController@couponRemove')->name('cart.coupon.remove');
-            Route::post('/add', 'Front\CartController@add')->name('cart.add');
-            Route::get('/delete/{id}', 'Front\CartController@delete')->name('cart.delete');
-            Route::get('/quantity/{id}/{type}', 'Front\CartController@qtyUpdate')->name('cart.quantity');
-        });
+        
 
         // checkout
         Route::prefix('checkout')->name('checkout.')->group(function () {
@@ -92,6 +82,20 @@ Route::name('front.')->group(function () {
             Route::view('/complete', 'front.checkout.complete')->name('complete');
         });
     });
+
+    // cart
+    Route::prefix('cart')->group(function () {
+        Route::get('/details', 'Front\CartController@index')->name('cart.index');
+        Route::post('/update-quantity', 'Front\CartController@updateQuantity')->name('cart.update-quantity');
+        Route::post('/remove-quantity', 'Front\CartController@removeQuantity')->name('cart.remove-quantity');
+        Route::post('/add-to-checkoout', 'Front\CartController@add_to_checkoout')->name('cart.add_to_checkoout');
+        Route::post('/coupon/check', 'Front\CartController@couponCheck')->name('cart.coupon.check');
+        Route::post('/coupon/remove', 'Front\CartController@couponRemove')->name('cart.coupon.remove');
+        Route::post('/add', 'Front\CartController@add')->name('cart.add');
+        Route::get('/delete/{id}', 'Front\CartController@delete')->name('cart.delete');
+        Route::get('/quantity/{id}/{type}', 'Front\CartController@qtyUpdate')->name('cart.quantity');
+    });
+    
     // product detail
     Route::prefix('shop')->group(function () {
         Route::get('/', 'Front\ProductController@shop')->name('shop.list');

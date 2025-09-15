@@ -114,6 +114,7 @@ class ProductController extends Controller
     }
 
     public function AddToCart(Request $request){
+        //dd($request->all());
         if (Auth::guard('web')->check()) {
             $user_id = Auth::guard('web')->user()->id;
             $maxQuantity = 5;
