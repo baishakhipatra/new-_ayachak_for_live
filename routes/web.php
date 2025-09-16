@@ -17,7 +17,6 @@ Route::post('/logout', function () {
 })->name('logout');
 
 //Route::get('/home', 'HomeController@index')->name('home');
-
 // website
 Route::name('front.')->group(function () {        
     Route::get('/', 'Front\FrontController@index')->name('home');
@@ -28,7 +27,7 @@ Route::name('front.')->group(function () {
 
 
     // user login & registration - guard
-   Route::middleware(['guest.front'])->group(function () {
+    Route::middleware(['guest.front'])->group(function () {
         // Route::prefix('user/')->name('user.')->group(function () {
             Route::get('/register', 'Front\UserController@register')->name('register');
             Route::post('/create', 'Front\UserController@create')->name('create');
@@ -38,7 +37,7 @@ Route::name('front.')->group(function () {
             Route::get('/forgot-password', 'Front\UserController@forgotPassword')->name('forgot.password');
             Route::post('/forgot-password/check', 'Front\UserController@forgotPasswordCheck')->name('forgot.password.check');
         //});
-   });
+    });
 
     Route::middleware(['auth:web'])->group(function () {
         Route::post('/logout', 'Front\UserController@logout')->name('logout');
@@ -67,30 +66,29 @@ Route::name('front.')->group(function () {
         Route::post('address/add', 'Front\UserController@addressCreate')->name('address.create');
         Route::get('wishlist', 'Front\UserController@wishlist')->name('wishlist');
         //});
-
+    });
 
         // cart
-        Route::prefix('cart')->group(function () {
-            Route::get('/details', 'Front\CartController@index')->name('cart.index');
-            Route::post('/update-quantity', 'Front\CartController@updateQuantity')->name('cart.update-quantity');
-            Route::post('/remove-quantity', 'Front\CartController@removeQuantity')->name('cart.remove-quantity');
-            Route::post('/add-to-checkoout', 'Front\CartController@add_to_checkoout')->name('cart.add_to_checkoout');
-            Route::post('/coupon/check', 'Front\CartController@couponCheck')->name('cart.coupon.check');
-            Route::post('/coupon/remove', 'Front\CartController@couponRemove')->name('cart.coupon.remove');
-            Route::post('/add', 'Front\CartController@add')->name('cart.add');
-            Route::get('/delete/{id}', 'Front\CartController@delete')->name('cart.delete');
-            Route::get('/quantity/{id}/{type}', 'Front\CartController@qtyUpdate')->name('cart.quantity');
-        });
+    Route::prefix('cart')->group(function () {
+        Route::get('/details', 'Front\CartController@index')->name('cart.index');
+        Route::post('/update-quantity', 'Front\CartController@updateQuantity')->name('cart.update-quantity');
+        Route::post('/remove-quantity', 'Front\CartController@removeQuantity')->name('cart.remove-quantity');
+        Route::post('/add-to-checkoout', 'Front\CartController@add_to_checkoout')->name('cart.add_to_checkoout');
+        Route::post('/coupon/check', 'Front\CartController@couponCheck')->name('cart.coupon.check');
+        Route::post('/coupon/remove', 'Front\CartController@couponRemove')->name('cart.coupon.remove');
+        Route::post('/add', 'Front\CartController@add')->name('cart.add');
+        Route::get('/delete/{id}', 'Front\CartController@delete')->name('cart.delete');
+        Route::get('/quantity/{id}/{type}', 'Front\CartController@qtyUpdate')->name('cart.quantity');
+    });
 
-        // checkout
-        Route::prefix('checkout')->name('checkout.')->group(function () {
-            Route::get('/', 'Front\CheckoutController@index')->name('index');
-            // Route::post('/coupon/check', 'Front\CheckoutController@coupon')->name('coupon.check');
-            Route::post('/store', 'Front\CheckoutController@store')->name('store');
-            Route::get('/payment', 'Front\CheckoutController@payment')->name('payment');
-            Route::post('/payment/complete', 'Front\CheckoutController@paymentStore')->name('payment.store');
-            Route::view('/complete', 'front.checkout.complete')->name('complete');
-        });
+    // checkout
+    Route::prefix('checkout')->name('checkout.')->group(function () {
+        Route::get('/', 'Front\CheckoutController@index')->name('index');
+        // Route::post('/coupon/check', 'Front\CheckoutController@coupon')->name('coupon.check');
+        Route::post('/store', 'Front\CheckoutController@store')->name('store');
+        Route::get('/payment', 'Front\CheckoutController@payment')->name('payment');
+        Route::post('/payment/complete', 'Front\CheckoutController@paymentStore')->name('payment.store');
+        Route::view('/complete', 'front.checkout.complete')->name('complete');
     });
     // product detail
     Route::prefix('shop')->group(function () {

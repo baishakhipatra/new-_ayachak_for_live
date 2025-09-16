@@ -62,7 +62,7 @@
                         <content>
                             <div class="row align-items-center">
                                 <div class="col-5">
-                                    <label for="inputPassword6" class="col-form-label text-muted">Style no :</label>
+                                    <label for="inputPassword6" class="col-form-label text-muted">Product no :</label>
                                 </div>
                                 <div class="col-auto">
                                     {{$productValue->productDetails->style_no}}

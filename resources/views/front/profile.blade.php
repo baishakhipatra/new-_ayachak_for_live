@@ -56,6 +56,13 @@
                                             <p class="small text-danger">{{$message}}</p>
                                         @enderror
                                     </div>
+                                    <div class="form-group">
+                                        <textarea class="form-control input-style" name="address" id="address" placeholder=" " required>{{ Auth::guard('web')->user()->address }}</textarea>
+                                        <label class="placeholder-text">Address</label>
+                                        @error('address')
+                                            <p class="small text-danger">{{ $message }}</p>
+                                        @enderror
+                                    </div>
                                     <input type="hidden" name="id" value="{{Auth::guard('web')->user()->id}}"/>
                                     <input type="submit" class="bton btn-fill" value="Save Changes">
                                 </form>

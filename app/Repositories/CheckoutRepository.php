@@ -100,6 +100,24 @@ class CheckoutRepository implements CheckoutInterface
    
             $sameAddress = isset($data['address_option']) && $data['address_option'] === 'same';
 
+           
+            $billing = json_decode($data['billing_address'], true);
+            $shipping = json_decode($data['shipping_address'], true);
+
+          
+            $billingAddress = Address::create([
+                'user_id' => $userId,
+                'address' => $billing['address'] ?? null,
+                'landmark' => $billing['billing_landmark'] ?? null,
+                'state' => $billing['state'] ?? null,
+                'city' => $billing['city'] ?? null,
+                'pin' => $billing['pin'] ?? null,
+                'country' => $billing['country'] ?? null,
+                'type' => 1, 
+                'billing' => 1, 
+                'status' => 1,
+            ]);
+
             $subtotal = 0.0;
             $taxTotal = 0.0;
 

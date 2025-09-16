@@ -90,7 +90,13 @@ class CartController extends Controller
 
     public function index(Request $request){
         $userId = auth()->id(); 
-        $cartItems = Cart::where('user_id', $userId)->with(['productDetails','variation'])->get();
+        $guestToken = !$userId ? getGuestToken() : null;
+
+        $cartItems = Cart::with(['productDetails', 'variation'])
+            ->when($userId, fn($q) => $q->where('user_id', $userId))
+            ->when(!$userId, fn($q) => $q->where('guest_token', $guestToken))
+            ->get();
+       // $cartItems = Cart::where('user_id', $userId)->with(['productDetails','variation'])->get();
 
         // foreach($cartItems as $item){
         //     $item->is_out_of_stock = $item->variation->stock < $item->qty;
@@ -195,12 +201,14 @@ class CartController extends Controller
     public function add_to_checkoout(Request $request)
     {
         $userId = Auth::guard('web')->id();
+        $guestToken = !$userId ? getGuestToken() : null;
 
         DB::beginTransaction();
 
         try {
             $cartItems = Cart::with(['productDetails', 'variation'])
-                ->where('user_id', $userId)
+                ->when($userId, fn($q) => $q->where('user_id', $userId))
+                ->when(!$userId, fn($q) => $q->where('guest_token', $guestToken))
                 ->get();
 
             if ($cartItems->isEmpty()) {
@@ -297,46 +305,6 @@ class CartController extends Controller
                     'qty'                  => $item->qty,
                 ]);
             }
-
-
-            // foreach ($cartItems as $item) {
-            //     $variation = $item->variation;
-            //     $product = $item->productDetails;
-
-            //     $price = $variation->offer_price
-            //         ?? $variation->price
-            //         ?? $product->offer_price
-            //         ?? $product->price
-            //         ?? 0;
-
-            //     $gstPercent = $product->gst ?? 0;
-            //     $gstAmount  = ($price * $gstPercent) / 100;
-
-            //     $finalPrice = $price + $gstAmount;
-
-            //     $totalGst   += $gstAmount * $item->qty;
-            //     $finalTotal += $finalPrice * $item->qty;
-
-            //     CheckoutProduct::create([
-            //         'checkout_id'          => $checkout->id,
-            //         'product_id'           => $variation->product_id ?? $product->id,
-            //         'user_id'              => $userId,
-            //         'product_name'         => $product->name ?? '',
-            //         'product_image'        => $product->image ?? null,
-            //         'product_slug'         => $product->slug ?? '',
-            //         'product_variation_id' => $variation->id ?? null,
-            //         'colour_name'          => $variation->color_name ?? null,
-            //         'size_name'            => $variation->size_name ?? null,
-            //         'sku_code'             => $variation->code ?? null,
-            //         'coupon_code'          => $coupon ? $coupon->coupon_code : null,
-            //         'price'                => $variation->price ?? $product->price ?? 0,
-            //         'offer_price'          => $variation->offer_price ?? $product->offer_price ?? 0,
-            //         'gst'                  => $gstAmount,
-            //         'qty'                  => $item->qty,
-            //     ]);
-            // }
-
-            //dd($cartItems);
 
             // 🔹 Final total after discount
             $finalTotal = $subTotal  - $totalDiscount;
