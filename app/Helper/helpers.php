@@ -4,6 +4,7 @@ use App\Models\Order;
 use Illuminate\Support\Facades\Mail;
 use App\Models\Settings;
 use App\Models\Wishlist;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 
 // $ip = $_SERVER['REMOTE_ADDR'];
@@ -14,11 +15,8 @@ function SendMail($data)
 	if(isset($data['from']) || !empty($data['from'])) {
 		$mail_from = $data['from'];
 	} else {
-		$mail_from = 'info@onninternational.com';
-		// $mail_from = 'support@onninternational.com';
+		$mail_from = 'ayachak@vanguardit.co';
 	}
-	// $mail_from = $data['from'] ? $data['from'] : 'support@onninternational.com';
-
     // mail log
     $newMail = new \App\Models\MailLog();
     $newMail->from = $mail_from;
@@ -29,17 +27,25 @@ function SendMail($data)
     $newMail->save();
 
     // send mail
-    Mail::send($data['blade_file'], $data, function ($message) use ($data) {
-		if(isset($data['from']) || !empty($data['from'])) {
-			$mail_from = $data['from'];
-		} else {
-            $mail_from = 'info@onninternational.com';
-            // $mail_from = 'support@onninternational.com';
-		}
+    try{
+        Mail::send($data['blade_file'], $data, function ($message) use ($data) {
+            if(isset($data['from']) || !empty($data['from'])) {
+                $mail_from = $data['from'];
+            } else {
+                $mail_from = 'ayachak@vanguardit.co';
+            }
 
-		// $mail_from = $data['from'] ? $data['from'] : 'support@onninternational.com';
-        $message->to($data['email'], $data['name'])->subject($data['subject'])->from($mail_from, env('APP_NAME'));
-    });
+            $message->to($data['email'], $data['name'])->subject($data['subject'])->from($mail_from, env('APP_NAME'));
+            
+        });
+        return true; 
+    } catch (\Swift_TransportException $e) {
+        Log::error('Mail sending failed due to transport issues: ' . $e->getMessage());
+        dd($e->getMessage());
+    } catch (Exception $e) {
+        Log::error('Mail sending failed: ' . $e->getMessage());
+        dd($e->getMessage());
+    }
 }
 
 
