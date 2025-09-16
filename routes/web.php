@@ -44,6 +44,7 @@ Route::name('front.')->group(function () {
     });
 
 
+
     // profile login & registration - guard
     Route::middleware(['auth:web'])->group(function () {
         // Route::prefix('user/')->name('user.')->group(function () {
@@ -68,7 +69,19 @@ Route::name('front.')->group(function () {
         //});
     });
 
-        // cart
+        
+
+    // checkout
+    Route::prefix('checkout')->name('checkout.')->group(function () {
+        Route::get('/', 'Front\CheckoutController@index')->name('index');
+        // Route::post('/coupon/check', 'Front\CheckoutController@coupon')->name('coupon.check');
+        Route::post('/store', 'Front\CheckoutController@store')->name('store');
+        Route::get('/payment', 'Front\CheckoutController@payment')->name('payment');
+        Route::post('/payment/complete', 'Front\CheckoutController@paymentStore')->name('payment.store');
+        Route::view('/complete', 'front.checkout.complete')->name('complete');
+    });
+
+    // cart
     Route::prefix('cart')->group(function () {
         Route::get('/details', 'Front\CartController@index')->name('cart.index');
         Route::post('/update-quantity', 'Front\CartController@updateQuantity')->name('cart.update-quantity');
@@ -80,16 +93,7 @@ Route::name('front.')->group(function () {
         Route::get('/delete/{id}', 'Front\CartController@delete')->name('cart.delete');
         Route::get('/quantity/{id}/{type}', 'Front\CartController@qtyUpdate')->name('cart.quantity');
     });
-
-    // checkout
-    Route::prefix('checkout')->name('checkout.')->group(function () {
-        Route::get('/', 'Front\CheckoutController@index')->name('index');
-        // Route::post('/coupon/check', 'Front\CheckoutController@coupon')->name('coupon.check');
-        Route::post('/store', 'Front\CheckoutController@store')->name('store');
-        Route::get('/payment', 'Front\CheckoutController@payment')->name('payment');
-        Route::post('/payment/complete', 'Front\CheckoutController@paymentStore')->name('payment.store');
-        Route::view('/complete', 'front.checkout.complete')->name('complete');
-    });
+    
     // product detail
     Route::prefix('shop')->group(function () {
         Route::get('/', 'Front\ProductController@shop')->name('shop.list');

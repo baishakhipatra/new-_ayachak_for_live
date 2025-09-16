@@ -15,6 +15,7 @@ use App\Models\CartOffer;
 use App\Models\ProductColorSize;
 use App\Models\Coupon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use DB;
 
 class CartController extends Controller
@@ -37,7 +38,7 @@ class CartController extends Controller
     }
 
     
-    public function add(Request $request) 
+    public function add(Request $request)
     {
         $product = Product::findOrFail($request->product_id);
 
@@ -45,7 +46,7 @@ class CartController extends Controller
 
         $rules = [
             'product_id' => 'required|exists:products,id',
-            'quantity' => 'required|integer|min:1',
+            'quantity'   => 'required|integer|min:1',
         ];
 
         if ($hasVariation) {
@@ -54,35 +55,44 @@ class CartController extends Controller
 
         $request->validate($rules);
 
-        $variation = null;
-        if ($hasVariation) {
-            $variation = ProductVariation::findOrFail($request->variation_id);
-        }
+        $variation = $hasVariation 
+            ? ProductVariation::findOrFail($request->variation_id) 
+            : null;
 
-        $existingCart = Cart::where('product_id', $product->id)->where('user_id', auth()->id());
-       // dd($existingCart);
-        
-        if ($variation) {
-            $existingCart = $existingCart->where('product_variation_id', $variation->id);
-        }
+        // Detect user or guest
+        $userId   = auth()->check() ? auth()->id() : null;
+        $userIp   = request()->ip();
 
-        $existingCart = $existingCart->first();
+        // Check if already exists in cart
+        $existingCart = Cart::where('product_id', $product->id)
+            ->when($userId, function ($q) use ($userId) {
+                $q->where('user_id', $userId);
+            })
+            ->when(!$userId, function ($q) use ($userIp) {
+                $q->where('ip', $userIp);
+            })
+            ->when($variation, function ($q) use ($variation) {
+                $q->where('product_variation_id', $variation->id);
+            })
+            ->first();
 
-        
         if ($existingCart) {
             return back()->with('warning', 'Product already in cart!');
         }
+
+        // Add new cart entry
         Cart::create([
-            'user_id' => auth()->id(),
-            'product_id' => $product->id,
-            'product_name' => $product->name,
-            'product_style_no' => $product->style_no,
-            'product_image' => $product->image,
-            'product_slug' => $product->slug,
-            'product_variation_id' => $variation?->id,
-            'price' => $variation?->price ?? $product->price,
-            'offer_price' => $variation?->offer_price ?? $product->offer_price,
-            'qty' => $request->quantity,
+            'user_id'             => $userId,
+            'ip'          => $userId ? null : $userIp,
+            'product_id'          => $product->id,
+            'product_name'        => $product->name,
+            'product_style_no'    => $product->style_no,
+            'product_image'       => $product->image,
+            'product_slug'        => $product->slug,
+            'product_variation_id'=> $variation?->id,
+            'price'               => $variation?->price ?? $product->price,
+            'offer_price'         => $variation?->offer_price ?? $product->offer_price,
+            'qty'                 => $request->quantity,
         ]);
 
         return back()->with('success', 'Product added to cart!');
@@ -146,20 +156,36 @@ class CartController extends Controller
 
     public function updateQuantity(Request $request)
     {
-        $cart = Cart::with('variation', 'productDetails')->find($request->cart_id);
+        $userId = Auth::id();
+        $ip = $request->ip();
 
-        if (!$cart) {
-            return response()->json(['success' => false, 'message' => 'Cart item not found.'], 404);
+        if ($userId) {
+            // Logged in user
+            $cart = Cart::with('variation', 'productDetails')
+                ->where('user_id', $userId)
+                ->where('id', $request->cart_id)
+                ->first();
+        } else {
+            // Guest user (by IP)
+            $cart = Cart::with('variation', 'productDetails')
+                ->where('ip', $ip)
+                ->where('id', $request->cart_id)
+                ->first();
         }
 
-        // Get stock: use variation stock if exists, otherwise product stock
+        if (!$cart) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Cart item not found.'
+            ], 404);
+        }
+
+     
         $stock = $cart->variation ? $cart->variation->stock : $cart->productDetails->stock;
         $currentQty = $cart->qty;
 
         if ($request->type === 'increment') {
             $newQty = $currentQty + 1;
-
-            // Check if requested qty exceeds stock
             if ($newQty > $stock) {
                 return response()->json([
                     'success' => false,
@@ -167,10 +193,9 @@ class CartController extends Controller
                     'updated_qty' => $currentQty,
                 ]);
             }
-
             $cart->qty = $newQty;
         } elseif ($request->type === 'decrement') {
-            $newQty = max($currentQty - 1, 1); // don't go below 1
+            $newQty = max($currentQty - 1, 1); // don’t go below 1
             $cart->qty = $newQty;
         }
 
@@ -183,10 +208,15 @@ class CartController extends Controller
     }
 
 
-
     public function removeQuantity(Request $request)
     {
-        $cart = Cart::find($request->cart_id);
+        $userId = Auth::id();
+        $ip = $request->ip();
+
+        $cart = Cart::when($userId, fn($q) => $q->where('user_id', $userId))
+            ->when(!$userId, fn($q) => $q->where('ip', $ip))
+            ->where('id', $request->cart_id)
+            ->first();
 
         if (!$cart) {
             return response()->json(['success' => false, 'message' => 'Cart item not found.']);
@@ -194,28 +224,50 @@ class CartController extends Controller
 
         $cart->delete();
 
-        return response()->json(['success' => true, 'checkout_restricted' => $this->checkRestrictedCategories()]);
+        return response()->json(['success' => true]);
     }
+
 
 
     public function add_to_checkoout(Request $request)
     {
         $userId = Auth::guard('web')->id();
-        $guestToken = !$userId ? getGuestToken() : null;
+        $userIp = request()->ip();
+
+        $cartItems = Cart::with(['productDetails', 'variation'])
+        ->when($userId, function ($q) use ($userId) {
+            $q->where('user_id', $userId);
+        })
+        ->when(!$userId, function ($q) use ($userIp) {
+            $q->where('ip', $userIp);
+        })
+        ->get();
+
+        if ($cartItems->isEmpty()) {
+            return back()->with('error', 'Your cart is empty.');
+        }
+
+        if (!$userId) {
+            Session::put('url.intended', route('front.cart.index'));
+
+            return redirect()->route('front.login')
+                ->with('warning', 'Please login to continue checkout.');
+        }
+
+        // $userId = Auth::guard('web')->id();
 
         DB::beginTransaction();
 
         try {
-            $cartItems = Cart::with(['productDetails', 'variation'])
-                ->when($userId, fn($q) => $q->where('user_id', $userId))
-                ->when(!$userId, fn($q) => $q->where('guest_token', $guestToken))
-                ->get();
 
-            if ($cartItems->isEmpty()) {
-                return back()->with('error', 'Your cart is empty.');
-            }
+            // $cartItems = Cart::with(['productDetails', 'variation'])
+            //     ->where('user_id', $userId)
+            //     ->get();
 
-           
+            // if ($cartItems->isEmpty()) {
+            //     return back()->with('error', 'Your cart is empty.');
+            // }
+
             $subTotal = 0;
             $totalDiscount = 0;
             $totalGst = 0;
@@ -306,11 +358,51 @@ class CartController extends Controller
                 ]);
             }
 
-            // 🔹 Final total after discount
+
+            // foreach ($cartItems as $item) {
+            //     $variation = $item->variation;
+            //     $product = $item->productDetails;
+
+            //     $price = $variation->offer_price
+            //         ?? $variation->price
+            //         ?? $product->offer_price
+            //         ?? $product->price
+            //         ?? 0;
+
+            //     $gstPercent = $product->gst ?? 0;
+            //     $gstAmount  = ($price * $gstPercent) / 100;
+
+            //     $finalPrice = $price + $gstAmount;
+
+            //     $totalGst   += $gstAmount * $item->qty;
+            //     $finalTotal += $finalPrice * $item->qty;
+
+            //     CheckoutProduct::create([
+            //         'checkout_id'          => $checkout->id,
+            //         'product_id'           => $variation->product_id ?? $product->id,
+            //         'user_id'              => $userId,
+            //         'product_name'         => $product->name ?? '',
+            //         'product_image'        => $product->image ?? null,
+            //         'product_slug'         => $product->slug ?? '',
+            //         'product_variation_id' => $variation->id ?? null,
+            //         'colour_name'          => $variation->color_name ?? null,
+            //         'size_name'            => $variation->size_name ?? null,
+            //         'sku_code'             => $variation->code ?? null,
+            //         'coupon_code'          => $coupon ? $coupon->coupon_code : null,
+            //         'price'                => $variation->price ?? $product->price ?? 0,
+            //         'offer_price'          => $variation->offer_price ?? $product->offer_price ?? 0,
+            //         'gst'                  => $gstAmount,
+            //         'qty'                  => $item->qty,
+            //     ]);
+            // }
+
+            //dd($cartItems);
+
+            // Final total after discount
             $finalTotal = $subTotal  - $totalDiscount;
            //dd($finalTotal);
 
-            // 🔹 Update checkout totals
+            // Update checkout totals
             $checkout->update([
                 'sub_total_amount' => $subTotal,
                 'discount_amount'  => $totalDiscount,

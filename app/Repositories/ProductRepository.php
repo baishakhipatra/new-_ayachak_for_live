@@ -117,6 +117,7 @@ class ProductRepository implements ProductInterface
     {
         return ProductVariation::with('images')
             ->where('status',1)
+            ->whereNotNull('weight')
             ->where('product_id', $productId)
             ->orderBy('weight','asc')
             ->get();

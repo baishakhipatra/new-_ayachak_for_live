@@ -17,6 +17,9 @@ use DB;
 use Razorpay\Api\Api;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
+use App\Mail\OrderConfirmationMail;
+use Illuminate\Support\Facades\Mail;
+
 class CheckoutController extends Controller
 {
     public function __construct(CheckoutInterface $checkoutRepository, CartInterface $cartRepository) 
@@ -233,12 +236,19 @@ class CheckoutController extends Controller
         $checkoutData = Checkout::where('id',$checkoutId)->firstOrFail()->toArray();
        // dd($checkoutData);
 
+
         if($paymentMethod == 'Cash On Delivery')
         {
             // $checkoutData = $request->except('_token');
             $order_id = $this->checkoutRepository->create($checkoutData);
             $order = Order::with(['orderProducts.productDetails.category'])->findOrFail($order_id);
             //dd($order);
+            // try {
+            //     Mail::to($order->email)->send(new OrderConfirmationMail($order));
+            // } catch (\Exception $e) {
+            //     \Log::error("Mail sending failed: " . $e->getMessage());
+            // }
+
             return view('front.checkout.complete', compact('order_id','order'))->with('success', 'Thank you for you order');
 
         }else{
