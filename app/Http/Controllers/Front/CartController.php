@@ -15,6 +15,7 @@ use App\Models\CartOffer;
 use App\Models\ProductColorSize;
 use App\Models\Coupon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use DB;
 
 class CartController extends Controller
@@ -147,43 +148,6 @@ class CartController extends Controller
         return count($restrictedInCart) > 1; 
     }
 
-    // public function updateQuantity(Request $request)
-    // {
-    //     $cart = Cart::with('variation', 'productDetails')->find($request->cart_id);
-
-    //     if (!$cart) {
-    //         return response()->json(['success' => false, 'message' => 'Cart item not found.'], 404);
-    //     }
-
-    //     // Get stock: use variation stock if exists, otherwise product stock
-    //     $stock = $cart->variation ? $cart->variation->stock : $cart->productDetails->stock;
-    //     $currentQty = $cart->qty;
-
-    //     if ($request->type === 'increment') {
-    //         $newQty = $currentQty + 1;
-
-    //         // Check if requested qty exceeds stock
-    //         if ($newQty > $stock) {
-    //             return response()->json([
-    //                 'success' => false,
-    //                 'message' => "Only {$stock} item(s) available.",
-    //                 'updated_qty' => $currentQty,
-    //             ]);
-    //         }
-
-    //         $cart->qty = $newQty;
-    //     } elseif ($request->type === 'decrement') {
-    //         $newQty = max($currentQty - 1, 1); // don't go below 1
-    //         $cart->qty = $newQty;
-    //     }
-
-    //     $cart->save();
-
-    //     return response()->json([
-    //         'success' => true,
-    //         'updated_qty' => $cart->qty,
-    //     ]);
-    // }
     public function updateQuantity(Request $request)
     {
         $userId = Auth::id();
@@ -210,7 +174,7 @@ class CartController extends Controller
             ], 404);
         }
 
-        // 🔹 Stock check
+     
         $stock = $cart->variation ? $cart->variation->stock : $cart->productDetails->stock;
         $currentQty = $cart->qty;
 
@@ -238,21 +202,6 @@ class CartController extends Controller
     }
 
 
-
-
-    // public function removeQuantity(Request $request)
-    // {
-    //     $cart = Cart::find($request->cart_id);
-
-    //     if (!$cart) {
-    //         return response()->json(['success' => false, 'message' => 'Cart item not found.']);
-    //     }
-
-    //     $cart->delete();
-
-    //     return response()->json(['success' => true, 'checkout_restricted' => $this->checkRestrictedCategories()]);
-    // }
-
     public function removeQuantity(Request $request)
     {
         $userId = Auth::id();
@@ -277,19 +226,42 @@ class CartController extends Controller
     public function add_to_checkoout(Request $request)
     {
         $userId = Auth::guard('web')->id();
+        $userIp = request()->ip();
+
+        $cartItems = Cart::with(['productDetails', 'variation'])
+        ->when($userId, function ($q) use ($userId) {
+            $q->where('user_id', $userId);
+        })
+        ->when(!$userId, function ($q) use ($userIp) {
+            $q->where('ip', $userIp);
+        })
+        ->get();
+
+        if ($cartItems->isEmpty()) {
+            return back()->with('error', 'Your cart is empty.');
+        }
+
+        if (!$userId) {
+            Session::put('url.intended', route('front.cart.index'));
+
+            return redirect()->route('front.login')
+                ->with('warning', 'Please login to continue checkout.');
+        }
+
+        // $userId = Auth::guard('web')->id();
 
         DB::beginTransaction();
 
         try {
-            $cartItems = Cart::with(['productDetails', 'variation'])
-                ->where('user_id', $userId)
-                ->get();
 
-            if ($cartItems->isEmpty()) {
-                return back()->with('error', 'Your cart is empty.');
-            }
+            // $cartItems = Cart::with(['productDetails', 'variation'])
+            //     ->where('user_id', $userId)
+            //     ->get();
 
-           
+            // if ($cartItems->isEmpty()) {
+            //     return back()->with('error', 'Your cart is empty.');
+            // }
+
             $subTotal = 0;
             $totalDiscount = 0;
             $totalGst = 0;
@@ -420,11 +392,11 @@ class CartController extends Controller
 
             //dd($cartItems);
 
-            // 🔹 Final total after discount
+            // Final total after discount
             $finalTotal = $subTotal  - $totalDiscount;
            //dd($finalTotal);
 
-            // 🔹 Update checkout totals
+            // Update checkout totals
             $checkout->update([
                 'sub_total_amount' => $subTotal,
                 'discount_amount'  => $totalDiscount,

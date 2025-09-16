@@ -79,6 +79,15 @@ class UserController extends Controller
         if ($save) {
             $credentials = $request->only('mobile', 'password');
             if (Auth::attempt($credentials)) {
+
+                $userId = Auth::id();
+                $userIp = request()->ip();
+
+                // merge guest cart with user cart
+                Cart::where('ip', $userIp)
+                    ->whereNull('user_id')
+                    ->update(['user_id' => $userId, 'ip' => null]);
+                    
                 $intendedUrl = Session::pull('url.intended', route('front.home'));
                 return redirect()->intended($intendedUrl)->with('success', 'Registration successful');
             } else {
@@ -114,6 +123,15 @@ class UserController extends Controller
         // Attempt login
         $credentials = $request->only('mobile', 'password');
         if (Auth::attempt($credentials)) {
+
+                $userId = Auth::id();
+                $userIp = request()->ip();
+
+                // force merge here
+                Cart::where('ip', $userIp)
+                    ->whereNull('user_id')
+                    ->update(['user_id' => $userId, 'ip' => null]);
+
             $intendedUrl = Session::pull('url.intended', route('front.home'));
             return redirect()->intended($intendedUrl)->with('success', 'Login successful');
         } else {
