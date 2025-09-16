@@ -1293,66 +1293,66 @@ class ProductController extends Controller
     }
 
 
-    // public function productSkuListExport(Request $request){
-    //     $search = $request->input('search');
+    public function productSkuListExport(Request $request){
+        $search = $request->input('search');
 
-    //     $query = ProductVariation::with('product:id,name,style_no');
+        $query = ProductVariation::with('product:id,name,style_no');
 
-    //     if (!empty($search)) {
-    //         $query->where(function($q) use ($search) {
-    //             $q->where('code', 'like', "%{$search}%")
-    //             ->orWhereHas('product', function($qp) use ($search) {
-    //                 $qp->where('name', 'like', "%{$search}%")
-    //                     ->orWhere('style_no', 'like', "%{$search}%");
-    //             });
-    //         });
-    //     }
+        if (!empty($search)) {
+            $query->where(function($q) use ($search) {
+                $q->where('code', 'like', "%{$search}%")
+                ->orWhereHas('product', function($qp) use ($search) {
+                    $qp->where('name', 'like', "%{$search}%")
+                        ->orWhere('style_no', 'like', "%{$search}%");
+                });
+            });
+        }
 
-    //     $skus = $query->get();
-    //     // Build spreadsheet
-    //     $spreadsheet = new Spreadsheet();
-    //     $sheet = $spreadsheet->getActiveSheet();
+        $skus = $query->get();
+        // Build spreadsheet
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
 
-    //     // Headings
-    //     $headings = [
-    //         'SKU Code',
-    //         'Product Name',
-    //         'Product No',
-    //         'Weight',
-    //         'Position',
-    //         'Price',
-    //         'Offer Price',
-    //         'Status',
-    //     ];
+        // Headings
+        $headings = [
+            'SKU Code',
+            'Product Name',
+            'Product No',
+            'Weight',
+            'Position',
+            'Price',
+            'Offer Price',
+            'Status',
+        ];
 
-    //     $sheet->fromArray($headings, null, 'A1');
+        $sheet->fromArray($headings, null, 'A1');
 
-    //     // Data
-    //     $rowNum = 2;
-    //     foreach ($skus as $row) {
-    //         $sheet->fromArray([
-    //             $row->code,
-    //             optional($row->product)->name,
-    //             optional($row->product)->style_no,
-    //             $row->weight,
-    //             $row->position,
-    //             $row->price,
-    //             $row->offer_price,
-    //             $row->status ? 'Active' : 'Inactive',
-    //         ], null, 'A'.$rowNum);
-    //         $rowNum++;
-    //     }
+        // Data
+        $rowNum = 2;
+        foreach ($skus as $row) {
+            $sheet->fromArray([
+                $row->code,
+                optional($row->product)->name,
+                optional($row->product)->style_no,
+                $row->weight,
+                $row->position,
+                $row->price,
+                $row->offer_price,
+                $row->status ? 'Active' : 'Inactive',
+            ], null, 'A'.$rowNum);
+            $rowNum++;
+        }
 
-    //     // File name
-    //     $fileName = 'product_sku_list_' . now()->format('Y_m_d_H_i_s') . '.xlsx';
+        // File name
+        $fileName = 'product_sku_list_' . now()->format('Y_m_d_H_i_s') . '.xlsx';
 
-    //     // Output as download
-    //     $writer = new Xlsx($spreadsheet);
-    //     $temp_file = tempnam(sys_get_temp_dir(), $fileName);
-    //     $writer->save($temp_file);
+        // Output as download
+        $writer = new Xlsx($spreadsheet);
+        $temp_file = tempnam(sys_get_temp_dir(), $fileName);
+        $writer->save($temp_file);
 
-    //     return response()->download($temp_file, $fileName)->deleteFileAfterSend(true);
-    // }
+        return response()->download($temp_file, $fileName)->deleteFileAfterSend(true);
+    }
 
 }
 
