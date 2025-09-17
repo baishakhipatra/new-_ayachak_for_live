@@ -82,11 +82,13 @@ class UserController extends Controller
 
                 $userId = Auth::id();
                 $userIp = request()->ip();
+                $systemIp = getHostByName(getHostName()); 
 
                 // merge guest cart with user cart
                 Cart::where('ip', $userIp)
+                    ->where('guest_token', $systemIp)
                     ->whereNull('user_id')
-                    ->update(['user_id' => $userId, 'ip' => null]);
+                    ->update(['user_id' => $userId, 'ip' => null, 'guest_token' => null]);
                     
                 $intendedUrl = Session::pull('url.intended', route('front.home'));
                 return redirect()->intended($intendedUrl)->with('success', 'Registration successful');
@@ -126,11 +128,13 @@ class UserController extends Controller
 
                 $userId = Auth::id();
                 $userIp = request()->ip();
+                $systemIp = getHostByName(getHostName()); 
 
-                // force merge here
+                // merge guest cart with user cart
                 Cart::where('ip', $userIp)
+                    ->where('guest_token', $systemIp)
                     ->whereNull('user_id')
-                    ->update(['user_id' => $userId, 'ip' => null]);
+                    ->update(['user_id' => $userId, 'ip' => null, 'guest_token' => null]);
 
             $intendedUrl = Session::pull('url.intended', route('front.home'));
             return redirect()->intended($intendedUrl)->with('success', 'Login successful');
