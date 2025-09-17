@@ -589,3 +589,13 @@ function active_wishhList($product_id){
     return Wishlist::where('product_id', $product_id)->where('user_id', $user_id)->first();
 }
 
+
+//guest checkout
+function getGuestToken() {
+    if (!session()->has('guest_token')) {
+        session(['guest_token' => Str::uuid()->toString()]);
+    }
+    return session('guest_token');
+}
+
+
