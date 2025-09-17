@@ -423,14 +423,11 @@ class OrderController extends Controller
 
         $from = $request->from_date ? $request->from_date : date('Y-m-01');
         $to = $request->to_date ? $request->to_date : date('Y-m-d');
-        $collection = (!empty($request->collection) && $request->collection != 'all') ? $request->collection : '';
         $product = $request->product ?? '';
         $payment_type = $request->payment_type ?? '';
         $term = $request->term ?? '';
 
-        $data->collections = Collection::where('status', 1)->orderBy('position')->get();
         $data->products = Product::where('status', 1)->orderBy('style_no')->get();
-        $data->products = ProductColorSize::where('status', 1)->where('code', '!=', ' ')->orderBy('code')->get();
 
         // all order products
         $query1 = OrderProduct::join('orders', 'orders.id', 'order_products.order_id')
@@ -438,10 +435,6 @@ class OrderController extends Controller
         ->where('orders.created_at', '<=', date('Y-m-d', strtotime($to.'+1 day')))
         ->where('orders.is_live_order', 1);
 
-        $query1->when($collection, function($query1) use ($collection) {
-            $query1->join('products', 'products.id', 'order_products.product_id')
-            ->where('products.collection_id', $collection);
-        });
         $query1->when($product, function($query1) use ($product) {
             $query1->where('order_products.sku_code', $product);
         });
