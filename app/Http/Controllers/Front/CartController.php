@@ -62,14 +62,16 @@ class CartController extends Controller
         // Detect user or guest
         $userId   = auth()->check() ? auth()->id() : null;
         $userIp   = request()->ip();
+        $systemIp = getHostByName(getHostName());     // server/system IP
 
         // Check if already exists in cart
         $existingCart = Cart::where('product_id', $product->id)
             ->when($userId, function ($q) use ($userId) {
                 $q->where('user_id', $userId);
             })
-            ->when(!$userId, function ($q) use ($userIp) {
-                $q->where('ip', $userIp);
+            ->when(!$userId, function ($q) use ($userIp, $systemIp) {
+                $q->where('ip', $userIp)
+                ->where('guest_token', $systemIp);
             })
             ->when($variation, function ($q) use ($variation) {
                 $q->where('product_variation_id', $variation->id);
@@ -80,10 +82,11 @@ class CartController extends Controller
             return back()->with('warning', 'Product already in cart!');
         }
 
-        // Add new cart entry
+        // Add new cart entry   
         Cart::create([
             'user_id'             => $userId,
-            'ip'          => $userId ? null : $userIp,
+            'ip'                  => $userId ? null : $userIp,
+            'guest_token'         => $userId ? null : $systemIp,
             'product_id'          => $product->id,
             'product_name'        => $product->name,
             'product_style_no'    => $product->style_no,
@@ -99,9 +102,22 @@ class CartController extends Controller
     }
 
     public function index(Request $request){
-        $userId = auth()->id();
-        $cartItems = Cart::where('user_id', $userId)->with(['productDetails','variation'])->get();
 
+        $userId   = auth()->id();
+        $userIp   = request()->ip();
+        $systemIp = getHostByName(getHostName());
+
+        $cartItems = Cart::with(['productDetails','variation'])
+            ->when($userId, fn($q) => $q->where('user_id', $userId))
+            ->when(!$userId, fn($q) => $q->where('ip', $userIp)->where('guest_token', $systemIp))
+            ->get();
+
+        // $userId = auth()->id(); 
+        // $cartItems = Cart::where('user_id', $userId)->with(['productDetails','variation'])->get();
+
+        // foreach($cartItems as $item){
+        // $item->is_out_of_stock = $item->variation->stock < $item->qty;
+        // }
         $hasOutOfStock = false;
             foreach ($cartItems as $item) {
             $item->is_out_of_stock = $item->variation->stock <= 0 || $item->qty > $item->variation->stock;
@@ -147,22 +163,16 @@ class CartController extends Controller
 
     public function updateQuantity(Request $request)
     {
-        $userId = Auth::id();
-        $ip = $request->ip();
 
-        if ($userId) {
-            // Logged in user
-            $cart = Cart::with('variation', 'productDetails')
-                ->where('user_id', $userId)
-                ->where('id', $request->cart_id)
-                ->first();
-        } else {
-            // Guest user (by IP)
-            $cart = Cart::with('variation', 'productDetails')
-                ->where('ip', $ip)
-                ->where('id', $request->cart_id)
-                ->first();
-        }
+        $userId   = Auth::id();
+        $userIp   = $request->ip();
+        $systemIp = getHostByName(getHostName());
+
+        $cart = Cart::with('variation', 'productDetails')
+            ->when($userId, fn($q) => $q->where('user_id', $userId))
+            ->when(!$userId, fn($q) => $q->where('ip', $userIp)->where('guest_token', $systemIp))
+            ->where('id', $request->cart_id)
+            ->first();
 
         if (!$cart) {
             return response()->json([
@@ -201,11 +211,12 @@ class CartController extends Controller
 
     public function removeQuantity(Request $request)
     {
-        $userId = Auth::id();
-        $ip = $request->ip();
+        $userId   = Auth::id();
+        $userIp   = $request->ip();
+        $systemIp = getHostByName(getHostName());
 
         $cart = Cart::when($userId, fn($q) => $q->where('user_id', $userId))
-            ->when(!$userId, fn($q) => $q->where('ip', $ip))
+            ->when(!$userId, fn($q) => $q->where('ip', $userIp)->where('guest_token', $systemIp))
             ->where('id', $request->cart_id)
             ->first();
 
@@ -222,17 +233,14 @@ class CartController extends Controller
 
     public function add_to_checkoout(Request $request)
     {
-        $userId = Auth::guard('web')->id();
-        $userIp = request()->ip();
+        $userId   = Auth::guard('web')->id();
+        $userIp   = request()->ip();
+        $systemIp = getHostByName(getHostName());
 
         $cartItems = Cart::with(['productDetails', 'variation'])
-        ->when($userId, function ($q) use ($userId) {
-            $q->where('user_id', $userId);
-        })
-        ->when(!$userId, function ($q) use ($userIp) {
-            $q->where('ip', $userIp);
-        })
-        ->get();
+            ->when($userId, fn($q) => $q->where('user_id', $userId))
+            ->when(!$userId, fn($q) => $q->where('ip', $userIp)->where('guest_token', $systemIp))
+            ->get();
 
         if ($cartItems->isEmpty()) {
             return back()->with('error', 'Your cart is empty.');

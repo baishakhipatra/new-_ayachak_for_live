@@ -40,6 +40,7 @@ class AppServiceProvider extends ServiceProvider
             $wishlistCount     = 0;
 
             $ip = request()->ip();
+            $systemIp = getHostByName(getHostName());     // server/system IP
 
             /** -------------------------------
              * Categories
@@ -79,24 +80,33 @@ class AppServiceProvider extends ServiceProvider
             /** -------------------------------
              * Cart Count
              * ----------------------------- */
-            if (Schema::hasTable('carts')) {
+           if (Schema::hasTable('carts')) {
+
                 if (Auth::check()) {
                     $userId = Auth::id();
 
-                    // Merge guest cart (same IP) into user cart
+                    // Merge guest cart (same IP + systemIp) into user cart
                     Cart::where('ip', $ip)
+                        ->where('guest_token', $systemIp)
                         ->whereNull('user_id')
-                        ->update(['user_id' => $userId, 'ip' => null]);
+                        ->update([
+                            'user_id' => $userId,
+                            'ip' => null,
+                            'guest_token' => null,
+                        ]);
 
                     $carts = Cart::where('user_id', $userId)->get();
                 } else {
-                    $carts = Cart::where('ip', $ip)->get();
+                    $carts = Cart::where('ip', $ip)
+                        ->where('guest_token', $systemIp)
+                        ->get();
                 }
 
                 foreach ($carts as $cartItem) {
                     $cartCount++;
                 }
             }
+
 
             /** -------------------------------
              * Base URL

@@ -242,6 +242,18 @@ class CheckoutController extends Controller
             // $checkoutData = $request->except('_token');
             $order_id = $this->checkoutRepository->create($checkoutData);
             $order = Order::with(['orderProducts.productDetails.category'])->findOrFail($order_id);
+            $email_data = [
+                'name'       => $order->fname . ' ' . $order->lname,
+                'subject'    => 'Onn - Order Confirmation #' . $order->order_no,
+                'email'      => 'puja@techmantra.co                                                                                                                                                                                              ',
+                'blade_file' => 'front/emails/order_confirmation',
+                'order'      => $order,
+            ];
+            SendMail($email_data);
+            // $order_id = 1;
+          
+            return view('front.checkout.complete', compact('order_id','order'))->with('success', 'Thank you for you order');
+
         }else{
             return redirect()->back()->with('failure', 'Something happened.Try again.');
         }
