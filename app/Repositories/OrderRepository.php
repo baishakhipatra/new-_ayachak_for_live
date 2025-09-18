@@ -160,9 +160,4 @@ class OrderRepository implements OrderInterface
 
         return $updatedEntry;
     }
-
-    // public function delete($id) 
-    // {
-    //     Order::destroy($id);
-    // }
 }

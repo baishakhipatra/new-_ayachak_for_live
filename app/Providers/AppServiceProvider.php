@@ -71,16 +71,6 @@ class AppServiceProvider extends ServiceProvider
             }
 
             /** -------------------------------
-             * Collections
-             * ----------------------------- */
-            if (Schema::hasTable('collections')) {
-                $collections = Collection::where('status', 1)
-                    ->orderBy('position', 'asc')
-                    ->orderBy('id', 'desc')
-                    ->get();
-            }
-
-            /** -------------------------------
              * Settings
              * ----------------------------- */
             if (Schema::hasTable('settings')) {
@@ -117,15 +107,6 @@ class AppServiceProvider extends ServiceProvider
                 }
             }
 
-
-            /** -------------------------------
-             * Wishlist Count
-             * ----------------------------- */
-            if (Schema::hasTable('wishlists')) {
-                if (Auth::check()) {
-                    $wishlistCount = Wishlist::where('user_id', Auth::id())->count();
-                }
-            }
 
             /** -------------------------------
              * Base URL

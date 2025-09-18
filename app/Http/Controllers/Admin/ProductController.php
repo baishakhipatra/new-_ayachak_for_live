@@ -49,25 +49,19 @@ class ProductController extends Controller
         }
 
         $catagories = Product::select('cat_id')->groupBy('cat_id')->with('category')->get();
-        $ranges = Product::select('collection_id')->groupBy('collection_id')->with('collection')->get();
 
         if ($request->ajax()) {
-            $cid = $request->collection_id;
             $cc = Product::where('collection_id', $cid)->groupBy('cat_id')->select('cat_id')->with('category')->get();
             return json_encode($cc);
         }
 
-        return view('admin.product.index', compact('data', 'catagories', 'ranges'));
+        return view('admin.product.index', compact('data', 'catagories'));
     }
 
     public function create(Request $request)
     {
         $categories = $this->productRepository->categoryList();
-        $sub_categories = $this->productRepository->subCategoryList();
-        $collections = $this->productRepository->collectionList();
-        $colors = $this->productRepository->colorList();
-        $sizes = $this->productRepository->sizeList();
-        return view('admin.product.create', compact('categories', 'sub_categories', 'collections', 'colors', 'sizes'));
+        return view('admin.product.create', compact('categories'));
     }
 
     public function store(Request $request)
@@ -112,41 +106,15 @@ class ProductController extends Controller
         return view('admin.product.detail', compact('data', 'images'));
     }
 
-    public function size(Request $request)
-    {
-        $productId = $request->productId;
-        $colorId = $request->colorId;
-
-        $data = ProductColorSize::where('product_id', $productId)->where('color', $colorId)->get();
-
-        $resp = [];
-
-        foreach ($data as $dataKey => $dataValue) {
-            $resp[] = [
-                'variationId' => $dataValue->id,
-                'sizeId' => $dataValue->size,
-                'sizeName' => $dataValue->sizeDetails->name
-            ];
-        }
-
-        return response()->json(['error' => false, 'data' => $resp]);
-    }
-
     public function edit(Request $request, $id)
     {
         $categories = $this->productRepository->categoryList();
-        $sub_categories = $this->productRepository->subCategoryList();
-        $collections = $this->productRepository->collectionList();
         $data = $this->productRepository->listById($id);
-        $colors = $this->productRepository->colorListByName();
-        $sizes = $this->productRepository->sizeList();
         $images = $this->productRepository->listImagesById($id);
 
         \DB::statement("SET SQL_MODE=''");
-        // $productColorGroup = ProductColorSize::select('id', 'color', 'status')->where('product_id', $id)->groupBy('color')->orderBy('position')->orderBy('id')->get();
-        $productColorGroup = ProductColorSize::select('id', 'color', 'status', 'position', 'color_name', 'color_fabric')->where('product_id', $id)->groupBy('color')->orderBy('position')->orderBy('id')->get();
 
-        return view('admin.product.edit', compact('id', 'data', 'categories', 'sub_categories', 'collections', 'images', 'colors', 'sizes', 'productColorGroup'));
+        return view('admin.product.edit', compact('id', 'data', 'categories', 'images'));
     }
 
     public function update(Request $request)
@@ -1123,90 +1091,6 @@ class ProductController extends Controller
         ]);
     }
 
-
-    // public function productSkuListImport(Request $request)
-    // {
-    //     $request->validate([
-    //         'csv_file' => 'required|file|mimes:xlsx,xls,csv|max:10240',
-    //     ]);
-
-    //     $file = $request->file('csv_file');
-    //     $extension = $file->getClientOriginalExtension();
-
-    //     if (in_array($extension, ['xlsx', 'xls'])) {
-    //         $spreadsheet = IOFactory::load($file->getRealPath());
-    //         $sheet = $spreadsheet->getActiveSheet();
-    //         $rows = $sheet->toArray();
-    //     } else {
-    //         // Fallback to CSV
-    //         $rows = array_map('str_getcsv', file($file->getRealPath()));
-    //     }
-
-    //     $header = array_map('trim', $rows[0]);
-    //     unset($rows[0]);
-
-    //     $imported = 0;
-    //     $skipped = 0;
-
-    //     foreach ($rows as $index => $row) {
-    //         if (count($row) < count($header)) {
-    //             $skipped++;
-    //             continue;
-    //         }
-
-    //         $data = array_combine($header, $row);
-    //        // dd($data);
-
-    //         $product = Product::where('style_no', $data['material_code'])->first();
-    //         //dd($product);
-
-    //         if (!$product) {
-    //             $skipped++;
-    //             continue;
-    //         }
-
-    //         // for duplicate check
-    //         $exists = ProductVariation::where('product_id', $product->id)
-    //             ->where('code', $data['code'])
-    //             ->where('weight', $data['weight'])
-    //             ->exists();
-
-    //         $duplicateCount = 0;
-    //         if ($exists) {
-    //             $skipped++;
-    //             $duplicateCount++;
-    //             continue;
-    //         }
-
-    //         $validator = Validator::make($data, [
-    //             'material_code'   => 'required',
-    //             'weight'       => 'required|string|max:255',
-    //             'code'         => 'required|string|max:255',
-    //             'price'        => 'required|numeric',
-    //             'offer_price'  => 'nullable|numeric',
-    //         ]);
-
-    //         if ($validator->fails()) {
-    //             $skipped++;
-    //             continue;
-    //         }
-
-    //         ProductVariation::create([
-    //             'product_id'   => $product->id,
-    //             'weight'       => $data['weight'],
-    //             'code'         => $data['code'],
-    //             'price'        => $data['price'],
-    //             'offer_price'  => $data['offer_price'] ?? null,
-    //             'position'     => 1,
-    //             'stock'        => 0,
-    //             'status'       => 1,
-    //         ]);
-
-    //         $imported++;
-    //     }
-
-    //     return redirect()->back()->with('success', "$imported variations imported, $skipped skipped. ($duplicateCount duplicates found)");
-    // }
 
     public function productSkuListImport(Request $request)
     {

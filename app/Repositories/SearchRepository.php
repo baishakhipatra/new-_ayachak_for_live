@@ -21,14 +21,6 @@ class SearchRepository implements SearchInterface
            ->orWhere('short_desc', 'like', '%'.$collectedData['query'].'%')
            ->orWhere('desc', 'like', '%'.$collectedData['query'].'%');
        })->get();
-       // $data = Product::where('status', 1)->where('name', 'like', '%'.$collectedData['query'].'%')
-       // ->orWhere('slug', 'like', '%'.$collectedData['query'].'%')
-       // ->orWhere('style_no', 'like', '%'.$collectedData['query'].'%')
-       // ->orWhere('short_desc', 'like', '%'.$collectedData['query'].'%')
-       // ->orWhere('desc', 'like', '%'.$collectedData['query'].'%')
-       // ->get();
-		//dd($data);
-		
         return $data;
     }
 }

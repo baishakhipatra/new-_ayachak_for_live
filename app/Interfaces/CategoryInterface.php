@@ -17,18 +17,6 @@ interface CategoryInterface
      */
     public function getSearchCategories(string $term);
 
-    // public function deleteCategories(string $delete_ids);
-
-    /**
-     * This method is to fetch list of all sizes
-     */
-    public function getAllSizes();
-
-    /**
-     * This method is to fetch list of all colors
-     */
-    public function getAllColors();
-
     /**
      * This method is to get category details by id
      * @param str $categoryId
@@ -65,11 +53,4 @@ interface CategoryInterface
      * @param int $categoryId
      */
     public function deleteCategory($categoryId);
-
-    /**
-     * This method is to delete category
-     * @param int $categoryId
-     * @param array $filter
-     */
-    public function productsByCategory(int $categoryId, array $filter = null);
 }

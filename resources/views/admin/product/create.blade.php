@@ -17,16 +17,6 @@
                 <div class="card shadow-sm">
                     <div class="card-body">
                         <div class="row mb-3">
-                            {{-- <div class="col-sm-6">
-                                <label class="label-control">Range <span class="text-danger">*</span></label>
-                                <select class="form-control" name="collection_id">
-                                    <option hidden selected>Select...</option>
-                                    @foreach ($collections as $index => $item)
-                                        <option value="{{$item->id}}" {{ (old('collection_id') == $item->id) ? 'selected' : ''  }}>{{ $item->name }}</option>
-                                    @endforeach
-                                </select>
-                                @error('collection_id') <p class="small text-danger">{{ $message }}</p> @enderror
-                            </div> --}}
 
                             <div class="col-sm-6">
                                 <label class="label-control">Category <span class="text-danger">*</span></label>
@@ -67,13 +57,6 @@
                         @error('desc') <p class="small text-danger">{{ $message }}</p> @enderror
                     </div>
                 </div>
-                {{-- <div class="card shadow-sm">
-                    <div class="card-body">
-                        <label class="label-control">Wash Care <span class="text-danger">*</span></label>
-                        <textarea id="wash_care" name="wash_care">{{old('wash_care')}}</textarea>
-                        @error('wash_care') <p class="small text-danger">{{ $message }}</p> @enderror
-                    </div>
-                </div> --}}
                 <div class="card shadow-sm">
                     <div class="card-body pt-0">
                         <div class="admin__content">
@@ -192,45 +175,6 @@
                         </div>
                     </div>
                 </div>
-
-                {{-- <div class="card shadow-sm">
-                    <div class="card-header">
-                        Product Variation
-                    </div>
-                    <div class="card-body pt-0"  id="timePriceTable">
-                        <div class="admin__content">
-                            <content>
-                                <div class="row mb-2 align-items-center">
-                                    <div class="col-2">
-                                        <label for="inputPassword6" class="col-form-label">Color</label>
-                                    </div>
-                                    <div class="col-3">
-                                        <select class="form-control" name="color[]">
-                                            <option value="" disabled hidden selected>Select...</option>
-                                            @foreach($colors as $colorIndex => $colorValue)
-                                                <option value="{{$colorValue->id}}" @if (old('color') && in_array($colorValue,old('color'))){{('selected')}}@endif>{{$colorValue->name}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="col-2">
-                                        <label for="inputPassword6" class="col-form-label">Size</label>
-                                    </div>
-                                    <div class="col-3">
-                                        <select class="form-control" name="size[]">
-                                            <option value="" disabled hidden selected>Select...</option>
-                                            @foreach($sizes as $sizeIndex => $sizeValue)
-                                                <option value="{{$sizeValue->id}}">{{$sizeValue->name}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="col-1">
-                                        <a class="btn btn-sm btn-success actionTimebtn addNewTime">+</a>
-                                    </div>
-                                </div>
-                            </content>
-                        </div>
-                    </div>
-                </div> --}}
             </div>
 
             <div class="col-sm-3">
@@ -280,48 +224,6 @@
     ClassicEditor.create( document.querySelector( '#wash_care' ) ).catch( error => {
         console.error( error );
     });
-
-    $(document).on('click','.addNewTime',function(){
-		var thisClickedBtn = $(this);
-		thisClickedBtn.removeClass(['addNewTime','btn-success']);
-		thisClickedBtn.addClass(['removeTimePrice','btn-danger']).text('X');
-
-		var toAppend = `
-        <div class="admin__content">
-            <content>
-                <div class="row mb-2 align-items-center">
-                    <div class="col-2">
-                        <label for="inputPassword6" class="col-form-label">Color</label>
-                    </div>
-                    <div class="col-3">
-                        <select class="form-control" name="color[]">
-                            <option value="" disabled hidden selected>Select...</option>
-                            @foreach($colors as $colorIndex => $colorValue)
-                                <option value="{{$colorValue->id}}" @if (old('color') && in_array($colorValue,old('color'))){{('selected')}}@endif>{{$colorValue->name}}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-2">
-                        <label for="inputPassword6" class="col-form-label">Size</label>
-                    </div>
-                    <div class="col-3">
-                        <select class="form-control" name="size[]">
-                            <option value="" disabled hidden selected>Select...</option>
-                            @foreach($sizes as $sizeIndex => $sizeValue)
-                                <option value="{{$sizeValue->id}}">{{$sizeValue->name}}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-1">
-                        <a class="btn btn-sm btn-success actionTimebtn addNewTime">+</a>
-                    </div>
-                </div>
-            </content>
-        </div>
-        `;
-
-		$('#timePriceTable').append(toAppend);
-	});
 
 	$(document).on('click','.removeTimePrice',function(){
 		var thisClickedBtn = $(this);

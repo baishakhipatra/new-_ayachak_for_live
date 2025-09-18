@@ -103,11 +103,9 @@ class ProductController extends Controller
             $images = $this->productRepository->listImagesById($data->id);
             //dd($data->id);
             $productVariations = $this->productRepository->listVariationById($data->id);
-            $relatedProducts = $this->productRepository->relatedProducts($data->id);
-            $wishlistCheck = $this->productRepository->wishlistCheck($data->id);
-            $primaryColorSizes = $this->productRepository->primaryColorSizes($data->id); 
+            $relatedProducts = $this->productRepository->relatedProducts($data->id); 
             $hasStock = $productVariations->where('stock', '>', 0)->count() > 0;   
-            return view('front.productDetails', compact('data', 'images', 'productVariations', 'relatedProducts', 'wishlistCheck', 'primaryColorSizes','hasStock'));
+            return view('front.productDetails', compact('data', 'images', 'productVariations', 'relatedProducts','hasStock'));
         } else {
             return view('front.404');
         }

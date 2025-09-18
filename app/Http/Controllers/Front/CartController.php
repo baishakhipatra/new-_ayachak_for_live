@@ -116,13 +116,13 @@ class CartController extends Controller
         // $cartItems = Cart::where('user_id', $userId)->with(['productDetails','variation'])->get();
 
         // foreach($cartItems as $item){
-        //     $item->is_out_of_stock = $item->variation->stock < $item->qty;
+        // $item->is_out_of_stock = $item->variation->stock < $item->qty;
         // }
         $hasOutOfStock = false;
-        foreach ($cartItems as $item) {
+            foreach ($cartItems as $item) {
             $item->is_out_of_stock = $item->variation->stock <= 0 || $item->qty > $item->variation->stock;
-            $item->stock_left = $item->variation->stock; 
-
+            $item->stock_left = $item->variation->stock;
+        
             if ($item->is_out_of_stock) {
                 $hasOutOfStock = true;
             }
@@ -131,20 +131,20 @@ class CartController extends Controller
 
         $subtotal = $cartItems->filter(fn($item) => !$item->is_out_of_stock)
             ->sum(function ($item) {
-                $price = $item->offer_price > 0 ? $item->offer_price : $item->price;
-                return $item->qty * $price;
-            }); 
-
+        $price = $item->offer_price > 0 ? $item->offer_price : $item->price;
+            return $item->qty * $price;
+        });
+        
         $categories = $cartItems->pluck('productDetails.category.name')->unique()->toArray();
         $Books = in_array('Book', $categories);
         $Medicines = in_array('Medicine', $categories);
         $Waters = in_array('water', $categories);
-
+        
         $checkoutRestricted = false;
         if ($Books && ($Medicines || $Waters)) {
             $checkoutRestricted = true;
         }
-
+ 
         return view('front.cartList', compact('cartItems','checkoutRestricted','subtotal','hasOutOfStock'));
     }
 

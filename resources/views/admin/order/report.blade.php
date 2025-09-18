@@ -26,9 +26,6 @@
                             <select name="collection" class="form-control" id="collection">
                                 <option value="" disabled>Select</option>
                                 <option value="" {{request()->input('category') == 'all' ? 'selected' : ''}}>All</option>
-                                @foreach ($data->collections as $collection)
-                                    <option value="{{$collection->id}}" {{request()->input('collection') == $collection->id ? 'selected' : ''}}>{{$collection->name}}</option>
-                                @endforeach
                             </select>
                         </div>
 
