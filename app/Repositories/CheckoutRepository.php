@@ -118,8 +118,8 @@ class CheckoutRepository implements CheckoutInterface
                 'status' => 1,
             ]);
 
-            $subtotal = 0.0;
-            $taxTotal = 0.0;
+            $subtotal = 0.0;   
+            $taxTotal = 0.0;   
 
             foreach ($cartItems as $item) {
                 $product = $item->productDetails;
@@ -127,32 +127,30 @@ class CheckoutRepository implements CheckoutInterface
                 if (!$product) continue;
 
                 $qty = (int) $item->qty;
-                //$unitPrice = $product->offer_price > 0 ? (float) $product->offer_price : (float) $product->price;
                 $unitPrice = $variation->offer_price
-                ?? $variation->price
-                ?? $product->offer_price
-                ?? $product->price
-                ?? 0;
-                
+                    ?? $variation->price
+                    ?? $product->offer_price
+                    ?? $product->price
+                    ?? 0;
+
                 $gstPercent = (float) ($product->gst ?? 0);
-                $priceExclGST = $gstPercent > 0 
-                    ? $unitPrice / (1 + ($gstPercent / 100)) 
-                    : $unitPrice;
 
-                $gstAmountPerUnit = $unitPrice - $priceExclGST;
+         
+                $lineTotal = $unitPrice * $qty;
+                $subtotal += $lineTotal;
 
-                $lineSubtotal = $priceExclGST * $qty;
-                $lineTax = $gstAmountPerUnit * $qty; 
-
-                $subtotal += $lineSubtotal;
-                $taxTotal += $lineTax;
+              
+                if ($gstPercent > 0) {
+                    $gstPortion = $lineTotal * ($gstPercent / (100 + $gstPercent));
+                    $taxTotal += $gstPortion;
+                }
             }
 
             $discount = 0.0;
             $couponId = 0;
-            $couponType = null;  
-            $couponValue = 0;   
-            $couponDiscountType = null;          
+            $couponType = null;
+            $couponValue = 0;
+            $couponDiscountType = null;
 
             $latestCheckout = Checkout::where('user_id', $userId)->latest()->first();
 
@@ -160,22 +158,25 @@ class CheckoutRepository implements CheckoutInterface
                 $coupon = Coupon::find($latestCheckout->coupon_id);
                 if ($coupon) {
                     $couponId = (int) $coupon->id;
-                    $couponType = $coupon->type;   
+                    $couponType = $coupon->type;
                     $couponValue = (float) ($coupon->amount ?? 0);
-                    
+
                     if ($couponType == 1) {
+                       
                         $discount = ($subtotal * $couponValue) / 100;
-                        $couponDiscountType = '1';   
+                        $couponDiscountType = '1';
                     } elseif ($couponType == 2) {
+                       
                         $discount = $couponValue;
-                        $couponDiscountType = '2';   
+                        $couponDiscountType = '2';
                     }
                 }
             }
 
+ 
             $shippingCharges = 0.00;
+            $finalAmount = max(0, ($subtotal + $shippingCharges) - $discount);
 
-            $finalAmount = max(0, ($subtotal + $taxTotal + $shippingCharges) - $discount);
 
             $ipAddr  = request()->ip() ?? '0.0.0.0';
 
@@ -198,7 +199,10 @@ class CheckoutRepository implements CheckoutInterface
             $data['shipping_state']   = $shipping['state'] ?? null;
             $data['shipping_country'] = $shipping['country'] ?? null;
             $data['shipping_pin']     = $shipping['pin'] ?? null;
-            $data['shipping_landmark'] = $sameAddress ? ($shipping['billing_landmark'] ?? null) : ($shipping['shipping_landmark'] ?? null) ;
+            $data['shipping_landmark'] = $sameAddress
+                ? ($billing['billing_landmark'] ?? null)
+                : ($shipping['shipping_landmark'] ?? null);
+
             $data['alt_mobile'] = $shipping['alt_mobile'] ?? null;
 
             $order = Order::create([
@@ -228,13 +232,13 @@ class CheckoutRepository implements CheckoutInterface
 
                 'shipping_address_id' => 0,
                 'shipping_address' => $sameAddress ? ($data['billing_address'] ?? null) : ($data['shipping_address'] ?? null),
-                'shipping_landmark' => null,
                 'shipping_country' => $sameAddress ? ($data['billing_country'] ?? null) : ($data['shipping_country'] ?? null),
                 'shipping_state' => $sameAddress ? ($data['billing_state'] ?? null) : ($data['shipping_state'] ?? null),
                 'shipping_city' => $sameAddress ? ($data['billing_city'] ?? null) : ($data['shipping_city'] ?? null),
                 'shipping_landmark' => $sameAddress ? ($data['billing_landmark'] ?? null) : ($data['shipping_landmark'] ?? null),
                 'shipping_pin' => $sameAddress ? ($data['billing_pin'] ?? null) : ($data['shipping_pin'] ?? null),
                 'alt_mobile' => $sameAddress ? ($data['mobile'] ?? null) : ($data['alt_mobile'] ?? null),
+
 
                 'shipping_charges' => $shippingCharges,
                 'shipping_method' => $data['shipping_method'] ?? 'standard',
@@ -255,10 +259,7 @@ class CheckoutRepository implements CheckoutInterface
                 'orderCancelledBy' => 0,
                 'orderCancelledReason' => null,
             ]);
-           // dd($order);
-            // $orderNo = 'ORD-' . str_pad($order->id, 6, '0', STR_PAD_LEFT); 
-            // $order->update(['order_no' => $orderNo]);
-
+            //dd($order);
             do {
                 $orderNo = 'ORD-' . str_pad($order->id, 6, '0', STR_PAD_LEFT);
                 

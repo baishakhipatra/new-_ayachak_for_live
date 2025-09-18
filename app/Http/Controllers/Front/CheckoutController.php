@@ -194,8 +194,6 @@ class CheckoutController extends Controller
 
         //dd($checkoutData);
 
-        
-
         if ($checkoutId) {
             Checkout::where('id', $checkoutId)->update($checkoutData);
         } else {
@@ -249,7 +247,7 @@ class CheckoutController extends Controller
                 'blade_file' => 'front/emails/order_confirmation',
                 'order'      => $order,
             ];
-            SendMail($email_data);
+           // SendMail($email_data);
             // $order_id = 1;
           
             return view('front.checkout.complete', compact('order_id','order'))->with('success', 'Thank you for you order');

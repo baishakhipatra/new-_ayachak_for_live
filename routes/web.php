@@ -47,7 +47,7 @@ Route::name('front.')->group(function () {
 
     // profile login & registration - guard
     Route::middleware(['auth:web'])->group(function () {
-        Route::view('profile', 'front.profile')->name('profile');
+        Route::get('profile', 'Front\UserController@profile')->name('profile');
         Route::view('manage', 'front.profile.edit')->name('manage');
         Route::post('manage/update', 'Front\UserController@updateProfile')->name('manage.update');
         Route::get('password/change', 'Front\UserController@showChangePasswordForm')->name('password.change');

@@ -43,43 +43,6 @@ use Illuminate\Support\Facades\Auth;
         }
     }
 
-// function SendMail($data)
-// {
-// 	if(isset($data['from']) || !empty($data['from'])) {
-// 		$mail_from = $data['from'];
-// 	} else {
-// 		$mail_from = 'ayachak@vanguardit.co';
-// 	}
-//     // mail log
-//     $newMail = new \App\Models\MailLog();
-//     $newMail->from = $mail_from;
-//     $newMail->to = $data['email'];
-//     $newMail->subject = $data['subject'];
-//     $newMail->blade_file = $data['blade_file'];
-//     $newMail->payload = json_encode($data);
-//     $newMail->save();
-
-//     // send mail
-//     try{
-//         Mail::send($data['blade_file'], $data, function ($message) use ($data) {
-//             if(isset($data['from']) || !empty($data['from'])) {
-//                 $mail_from = $data['from'];
-//             } else {
-//                 $mail_from = 'ayachak@vanguardit.co';
-//             }
-
-//             $message->to($data['email'], $data['name'])->subject($data['subject'])->from($mail_from, env('APP_NAME'));
-            
-//         });
-//         return true; 
-//     } catch (\Swift_TransportException $e) {
-//         Log::error('Mail sending failed due to transport issues: ' . $e->getMessage());
-//         dd($e->getMessage());
-//     } catch (Exception $e) {
-//         Log::error('Mail sending failed: ' . $e->getMessage());
-//         dd($e->getMessage());
-//     }
-// }
 
 
 // multi-dimensional in_array

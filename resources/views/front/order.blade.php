@@ -155,7 +155,7 @@
 
                                         <div class="cart-row">
                                             <span>Subtotal</span>
-                                            ₹{{ number_format($checkout->amount + $checkout->tax_amount, 2) }}
+                                            ₹{{ number_format($checkout->amount, 2) }}
                                         </div>
 
                                         @if($checkout->discount_amount > 0)
@@ -220,9 +220,8 @@
                                                     {{ ucwords($checkout->shipping_city) }},
                                                     {{ ucwords($checkout->shipping_state) }},
                                                     {{ ucwords($checkout->shipping_country) }} - {{ $checkout->shipping_pin }}
-                                                    @if($checkout->shipping_landmark)
-                                                        <br><strong>Landmark:</strong> {{ ucwords($checkout->shipping_landmark) }}
-                                                    @endif
+                                                    <br><strong>Landmark:</strong>
+                                                    {{ $checkout->shipping_landmark ? ucwords($checkout->shipping_landmark) : ucwords($checkout->billing_landmark) }}
                                                     @if($checkout->alt_mobile)
                                                         <br><strong>Alternative Phone:</strong> {{ $checkout->alt_mobile }}
                                                     @endif

@@ -57,12 +57,51 @@
                                         @enderror
                                     </div>
                                     <div class="form-group">
-                                        <textarea class="form-control input-style" name="address" id="address" placeholder=" " required>{{ Auth::guard('web')->user()->address }}</textarea>
+                                        <textarea class="form-control input-style" name="address" id="address" placeholder=" " required>{{ $user->defaultAddress->address ?? '' }}</textarea>
                                         <label class="placeholder-text">Address</label>
-                                        @error('address')
-                                            <p class="small text-danger">{{ $message }}</p>
-                                        @enderror
+                                        @error('address') <p class="small text-danger">{{ $message }}</p> @enderror
                                     </div>
+
+                                    <div class="form-group">
+                                        <input type="text" class="form-control input-style" name="landmark" id="landmark" placeholder=" " value="{{ $user->defaultAddress->landmark ?? '' }}">
+                                        <label class="placeholder-text">Landmark</label>
+                                        @error('landmark') <p class="small text-danger">{{ $message }}</p> @enderror
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <input type="text" class="form-control input-style" name="city" id="city" placeholder=" " value="{{ $user->defaultAddress->city ?? '' }}">
+                                                <label class="placeholder-text">City</label>
+                                                @error('city') <p class="small text-danger">{{ $message }}</p> @enderror
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <input type="text" class="form-control input-style" name="state" id="state" placeholder=" " value="{{ $user->defaultAddress->state ?? '' }}">
+                                                <label class="placeholder-text">State</label>
+                                                @error('state') <p class="small text-danger">{{ $message }}</p> @enderror
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <input type="text" class="form-control input-style" name="pin" id="pin" placeholder=" " value="{{ $user->defaultAddress->pin ?? '' }}">
+                                                <label class="placeholder-text">Pin Code</label>
+                                                @error('pin') <p class="small text-danger">{{ $message }}</p> @enderror
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <input type="text" class="form-control input-style" name="country" id="country" placeholder=" " value="{{ $user->defaultAddress->country ?? '' }}">
+                                                <label class="placeholder-text">Country</label>
+                                                @error('country') <p class="small text-danger">{{ $message }}</p> @enderror
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     <input type="hidden" name="id" value="{{Auth::guard('web')->user()->id}}"/>
                                     <input type="submit" class="bton btn-fill" value="Save Changes">
                                 </form>

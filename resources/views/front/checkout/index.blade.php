@@ -166,21 +166,6 @@
                                         <span class="text-danger error-text shipping_country_error"></span>
                                     </div>
 
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="form-group">
-                                                <input type="text" name="shipping_first_name" class="form-control" placeholder="First Name">
-                                                <span class="text-danger error-text shipping_first_name_error"></span>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <div class="form-group"> 
-                                                <input type="text" name="shipping_last_name" class="form-control" placeholder="Last Name">
-                                                <span class="text-danger error-text shipping_last_name_error"></span>
-                                            </div>
-                                        </div>
-                                    </div>
-
                                     <div class="form-group"> 
                                         <input type="text" class="form-control input-style" name="shipping_address">
                                         <label class="placeholder-text">Address</label>
@@ -418,24 +403,11 @@
 
             // ---------------- SHIPPING VALIDATION ----------------
             if ($('input[name="address_option"]:checked').val() === 'different') {
-                
-                let sFname = $('input[name="shipping_first_name"]').val().trim();
-                let sLname = $('input[name="shipping_last_name"]').val().trim();
                 let sAddress = $('input[name="shipping_address"]').val().trim();
                 let sCity = $('input[name="shipping_city"]').val().trim();
                 let sState = $('select[name="shipping_state"]').val();
                 let sPin = $('input[name="shipping_pin"]').val().trim();
 
-                if (!sFname) {
-                    $('input[name="shipping_first_name"]').addClass('is-invalid')
-                        .after('<span class="error-message text-danger">First name is required.</span>');
-                    isValid = false;
-                }
-                if (!sLname) {
-                    $('input[name="shipping_last_name"]').addClass('is-invalid')
-                        .after('<span class="error-message text-danger">Last name is required.</span>');
-                    isValid = false;
-                }
                 if (!sAddress) {
                     $('input[name="shipping_address"]').addClass('is-invalid')
                         .after('<span class="error-message text-danger">Address is required.</span>');

@@ -273,14 +273,33 @@
                         <div class="col-md-4 text-end">
                             <p class="small text-muted mb-2">Pricing</p>
                             <table class="w-100">
-                                <tr>
-                                    <td><p class="small text-muted mb-0">Amount : </p></td>
+                                {{-- <tr>
+                                    <td><p class="small text-muted mb-0">Payble Amount : </p></td>
                                     <td><p class="small text-dark mb-0 text-end">&#8377;{{$data->amount}}</p></td>
                                 </tr>
                                 <tr>
                                     <td><p class="small text-muted mb-0">Tax Amount : </p></td>
-                                    <td><p class="small text-dark mb-0 text-end">+ &#8377;{{$data->tax_amount}}</p></td>
+                                    <td><p class="small text-dark mb-0 text-end"> &#8377;{{$data->tax_amount}}</p></td>
+                                </tr> --}}
+                                <tr>
+                                    <td><p class="small text-muted mb-0">Price (Excl. GST):</p></td>
+                                    <td><p class="small text-dark mb-0 text-end">
+                                        ₹{{ number_format($data->amount - $data->tax_amount, 2) }}
+                                    </p></td>
                                 </tr>
+                                <tr>
+                                    <td><p class="small text-muted mb-0">Tax (GST):</p></td>
+                                    <td><p class="small text-dark mb-0 text-end">
+                                        ₹{{ number_format($data->tax_amount, 2) }}
+                                    </p></td>
+                                </tr>
+                                <tr>
+                                    <td><p class="small text-muted mb-0">Payable Amount:</p></td>
+                                    <td><p class="small text-dark mb-0 text-end fw-bold">
+                                        ₹{{ number_format($data->amount, 2) }}
+                                    </p></td>
+                                </tr>
+
                                 <tr>
                                     <td><p class="small text-muted mb-0">Discount : </p></td>
                                     @if ($data->coupon_code_id != 0)
