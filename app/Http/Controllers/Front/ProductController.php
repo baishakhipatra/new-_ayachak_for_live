@@ -111,61 +111,6 @@ class ProductController extends Controller
         }
     }
 
-    // public function AddToCart(Request $request){
-    //     if (Auth::guard('web')->check()) {
-    //         $user_id = Auth::guard('web')->user()->id;
-    //         $maxQuantity = 5;
-    //         $QuantityExistsInCart = Cart::where('user_id',$user_id)->where('product_id',$request->productId)->where('product_variation_id', $request->variationId)->sum('qty');
-            
-
-    //         $remainingQuantity = $maxQuantity - $QuantityExistsInCart;
-           
-    //         if($remainingQuantity==0){
-    //             return redirect()->back()->with('warning','You already add 5 quantity for this product variation');
-    //         };
-    //         $quantityToAdd = min($request->quantity, $remainingQuantity);
-    //         $request->validate([
-    //             'choose_color'=>'required',
-    //             'size_name'=>'required',
-    //             'quantity'=>'required|max:5|min:1',
-    //         ],[
-    //             'choose_color.required' => 'Please select a color.',
-    //             'size_name.required' => 'Please select a size.',
-    //             'quantity.required' => 'Please select a quantity.',
-    //             'quantity.max' => 'Please select a maximum of 5 quantities.',
-    //             'quantity.min' => 'The quantity cannot be less than 1.'
-    //         ]);
-
-           
-    //         $colorId = ProductColorSize::findOrFail($request->variationId);
-           
-    //         $image = "";
-    //         if($colorId){
-    //             $productImage = ProductImage::where('color_id',$colorId->color)->where('product_id',$request->productId)->first();
-    //             $image = $productImage->image;
-    //         }
-    //         for ($i = 0; $i < $quantityToAdd; $i++) {
-    //             $cart = new Cart();
-    //             $cart->user_id = $user_id;
-    //             $cart->product_id = $request->productId;
-    //             $cart->product_name = $request->productName;
-    //             $cart->product_style_no = $request->productStyleNo;
-    //             $cart->product_slug = $request->productSlug;
-    //             $cart->product_variation_id = $request->variationId ;
-    //             $cart->price = $request->price;
-    //             $cart->offer_price = $request->offer_price;
-    //             $cart->qty = 1;
-    //             $cart->product_image = $image;
-    //             $cart->save();
-    //         }
-    //         return redirect()->back()->with('success',''.$quantityToAdd.' items successfully added to your cart.');
-    //     }else{
-    //         $route = route('front.shop.details', $request->productSlug);
-    //         session(['url.intended' => $route]);
-    //         return redirect()->route('front.user.login')->with('warning','You should log in first before adding items to your cart.');
-    //     }
-
-    // }
     public function AddToCart(Request $request)
     {
         $maxQuantity = 5;
