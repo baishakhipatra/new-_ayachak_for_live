@@ -31,7 +31,7 @@
 
             <div class="mb-3">
                 <label class="form-label">Description</label>
-                <textarea name="description" id="editor" class="form-control" rows="5">{{ old('description', $event->description) }}</textarea>
+                <textarea name="description" id="content-editor" class="form-control" rows="5">{{ old('description', $event->description) }}</textarea>
                 @error('description') <p class="small text-danger">{{ $message }}</p> @enderror
             </div>
 
@@ -110,7 +110,7 @@
 
 @endsection
 
-@section('scripts')
+@section('script')
 <script>
     ClassicEditor
         .create(document.querySelector('#content-editor'), {
