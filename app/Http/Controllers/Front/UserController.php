@@ -145,6 +145,54 @@ class UserController extends Controller
                 ->with('failure', 'Incorrect password. Please try again.');
         }
     }
+
+
+    // public function check(Request $request)
+    // {
+    //     // dd($request->all());
+    //     $existsNumber = User::where('mobile',$request->mobile)->first();
+    //     if(!$existsNumber){
+    //         $request->validate([
+    //             'mobile' => 'required|numeric|digits:10|unique:users,mobile',
+    //         ],[
+    //             'mobile.digits' => 'The mobile number must be exactly 10 digits.',
+    //         ]);
+    //             // Create a new user
+    //         $user = new User();
+    //         $user->mobile = $request->mobile;
+    //         $user->password = Hash::make($request->password);
+    //         $save = $user->save();
+    //         if ($save) {
+    //             $credentials = $request->only('mobile','password');
+    //             if (Auth::attempt($credentials)) {
+    //                 $intendedUrl = Session::pull('url.intended', route('front.home'));
+    //                 return redirect()->intended($intendedUrl)->with('success', 'Registration successful');
+    //             } else {
+    //                 return redirect()->route('front.login')->with('failure', 'Please enter valid credentials');
+    //             }
+    //         }else {
+    //             return redirect()->back()->with('failure', 'Failed to create User')->withInput($request->all());
+    //         }
+    //     }else{
+    //         if ($existsNumber->status == 0) {
+    //             return redirect()->route('front.login')
+    //             ->withInput($request->all())
+    //             ->with('failure', 'Your account is inactive. Please contact support.');
+    //         }
+
+    //         $request->validate([
+    //             'mobile' => 'required|numeric|exists:users,mobile',
+    //         ]);
+    //         $credentials = $request->only('mobile', 'password');
+
+    //         if (Auth::attempt($credentials)) {
+    //             $intendedUrl = Session::pull('url.intended', route('front.home'));
+    //             return redirect()->intended($intendedUrl)->with('success', 'Login successful');
+    //         } else {
+    //             return redirect()->route('front.login')->withInput($request->all())->with('failure', 'Please enter valid credentials');
+    //         }
+    //     }
+    // }
     
     public function logout(Request $request)
     {

@@ -67,7 +67,6 @@ Route::name('front.')->group(function () {
     // checkout
     Route::prefix('checkout')->name('checkout.')->group(function () {
         Route::get('/', 'Front\CheckoutController@index')->name('index');
-        // Route::post('/coupon/check', 'Front\CheckoutController@coupon')->name('coupon.check');
         Route::post('/store', 'Front\CheckoutController@store')->name('store');
         Route::get('/payment', 'Front\CheckoutController@payment')->name('payment');
         Route::post('/payment/complete', 'Front\CheckoutController@paymentStore')->name('payment.store');
@@ -174,35 +173,37 @@ Route::name('front.')->group(function () {
     });
 
   
-    // // product detail
-    // Route::name('product.')->group(function () {
-    //     Route::post('/add-to-cart', 'Front\ProductController@AddToCart')->name('add.to.cart');
-    //     Route::get('/details/{slug}', 'Front\ProductController@details')->name('details');
-    //     Route::get('/product/list', 'Front\ProductController@ProductList')->name('list');
-    //     Route::get('/product/{slug}', 'Front\ProductController@detail')->name('detail');
-    //     Route::get('/product/search', 'Front\ProductController@ProductSearch')->name('search');
-    // });
+    // product detail
+    Route::name('product.')->group(function () {
+        Route::post('/add-to-cart', 'Front\ProductController@AddToCart')->name('add.to.cart');
+        Route::get('/details/{slug}', 'Front\ProductController@details')->name('details');
+        Route::get('/color-wise-size', 'Front\ProductController@colorWiseSize')->name('color.wise.size');
+        Route::get('/size', 'Front\ProductController@size')->name('size');
+        Route::get('/product/list', 'Front\ProductController@ProductList')->name('list');
+        Route::get('/product/{slug}', 'Front\ProductController@detail')->name('detail');
+        Route::get('/product/search', 'Front\ProductController@ProductSearch')->name('search');
+    });
 
 
-    // // cart
-    // Route::prefix('cart')->name('cart.')->group(function () {
-    //     // Route::get('/', 'Front\CartController@viewByIp')->name('index');
-    //     Route::get('/details', 'Front\CartController@index')->name('index');
-    //     Route::post('/add-to-checkoout', 'Front\CartController@add_to_checkoout')->name('add_to_checkoout');
-    //     Route::post('/coupon/check', 'Front\CartController@couponCheck')->name('coupon.check');
-    //     Route::post('/coupon/remove', 'Front\CartController@couponRemove')->name('coupon.remove');
-    //     Route::post('/add', 'Front\CartController@add')->name('add');
-    //     Route::get('/delete/{id}', 'Front\CartController@delete')->name('delete');
-    //     Route::get('/quantity/{id}/{type}', 'Front\CartController@qtyUpdate')->name('quantity');
-    // });
+    // cart
+    Route::prefix('cart')->name('cart.')->group(function () {
+        // Route::get('/', 'Front\CartController@viewByIp')->name('index');
+        Route::get('/details', 'Front\CartController@index')->name('index');
+        Route::post('/add-to-checkoout', 'Front\CartController@add_to_checkoout')->name('add_to_checkoout');
+        Route::post('/coupon/check', 'Front\CartController@couponCheck')->name('coupon.check');
+        Route::post('/coupon/remove', 'Front\CartController@couponRemove')->name('coupon.remove');
+        Route::post('/add', 'Front\CartController@add')->name('add');
+        Route::get('/delete/{id}', 'Front\CartController@delete')->name('delete');
+        Route::get('/quantity/{id}/{type}', 'Front\CartController@qtyUpdate')->name('quantity');
+    });
 
 
-    // Route::prefix('payment')->name('payment.')->group(function () {
-    //     Route::post('/order', 'Front\CheckoutController@createOrder')->name('createOrder');
-    //     Route::get('/success', 'Front\CheckoutController@success')->name('success');
-    //     Route::post('/failure', 'Front\CheckoutController@failure')->name('failure');
-    //     Route::post('/webhook', 'Front\CheckoutController@webhook')->name('webhook');
-    // });
+    Route::prefix('payment')->name('payment.')->group(function () {
+        Route::post('/order', 'Front\CheckoutController@createOrder')->name('createOrder');
+        Route::get('/success', 'Front\CheckoutController@success')->name('success');
+        Route::post('/failure', 'Front\CheckoutController@failure')->name('failure');
+        Route::post('/webhook', 'Front\CheckoutController@webhook')->name('webhook');
+    });
 
 
     // settings contents

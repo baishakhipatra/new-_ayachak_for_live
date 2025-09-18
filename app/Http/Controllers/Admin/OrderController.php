@@ -227,7 +227,7 @@ class OrderController extends Controller
 
         if(count($data) > 0) {
             $delimiter = ",";
-            $filename = "onninternational-all-orders-".date('Y-m-d').".csv";
+            $filename = "ayachak-ashrama-".date('Y-m-d').".csv";
 
             // Create a file pointer 
             $f = fopen('php://memory', 'w');

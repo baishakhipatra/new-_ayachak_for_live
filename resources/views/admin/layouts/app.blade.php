@@ -281,6 +281,11 @@
         @elseif (Session::get('failure'))
             toastFire('warning', '{{ Session::get('failure') }}');
         @endif
+        @if ($errors->any())
+            @foreach ($errors->all() as $error)
+                toastFire('warning', '{{ $error }}');
+            @endforeach
+        @endif
 
         // enable all tooltips
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))

@@ -324,7 +324,7 @@ class CheckoutRepository implements CheckoutInterface
                     'product_variation_id' => $variation->id ?? null,
                     'colour_name' => $variation->color_name ?? null,
                     'size_name' => $variation->size_name ?? null,
-                    'sku_code' => $variation->sku ?? null,
+                    'sku_code' => $variation->code ?? null,
                     'qty' => $qty,
                     'gst' => $gstPercent,
                     'price' => $variation->price ?? $product->price ?? 0,
