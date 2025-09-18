@@ -111,13 +111,7 @@ class CartController extends Controller
             ->when($userId, fn($q) => $q->where('user_id', $userId))
             ->when(!$userId, fn($q) => $q->where('ip', $userIp)->where('guest_token', $systemIp))
             ->get();
-
-        // $userId = auth()->id(); 
-        // $cartItems = Cart::where('user_id', $userId)->with(['productDetails','variation'])->get();
-
-        // foreach($cartItems as $item){
-        // $item->is_out_of_stock = $item->variation->stock < $item->qty;
-        // }
+            
         $hasOutOfStock = false;
             foreach ($cartItems as $item) {
             $item->is_out_of_stock = $item->variation->stock <= 0 || $item->qty > $item->variation->stock;
@@ -196,7 +190,7 @@ class CartController extends Controller
             }
             $cart->qty = $newQty;
         } elseif ($request->type === 'decrement') {
-            $newQty = max($currentQty - 1, 1); // don’t go below 1
+            $newQty = max($currentQty - 1, 1); 
             $cart->qty = $newQty;
         }
 

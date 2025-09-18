@@ -56,14 +56,16 @@
                             </div>
                         </div>
 
-                        <div class="cart-total">
-                            <div class="cart-total-label">
-                                Coupon
+                        @if(!empty($data->discount_amount && $data->discount_amount > 0))
+                            <div class="cart-total">
+                                <div class="cart-total-label">
+                                    Discount
+                                </div>
+                                <div class="cart-total-value">
+                                    &#8377;<span id="subTotalAmount">-{{$data->discount_amount}}</span>
+                                </div>
                             </div>
-                            <div class="cart-total-value">
-                                &#8377;<span id="subTotalAmount">-{{$data->discount_amount}}</span>
-                            </div>
-                        </div>
+                        @endif
 
                         <div class="cart-total-label mt-3 mb-3">
                             Shipping Method
@@ -83,6 +85,9 @@
                             <div class="cart-total-label">
                                 Shipping Charges
                                 <span id="shippingMore"></span>
+                            </div>
+                            <div class="cart-total-value">
+                               <span id="shippingCharges">Free</span>
                             </div>
                         </div>
 

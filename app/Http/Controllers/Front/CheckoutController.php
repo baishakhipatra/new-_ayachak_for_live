@@ -194,8 +194,6 @@ class CheckoutController extends Controller
 
         //dd($checkoutData);
 
-        
-
         if ($checkoutId) {
             Checkout::where('id', $checkoutId)->update($checkoutData);
         } else {

@@ -11,6 +11,7 @@ use App\Models\OrderProduct;
 use App\Models\Cart;
 use App\Models\CheckoutProduct;
 use App\Models\Checkout;
+use App\Models\Address;
 use App\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -261,6 +262,11 @@ class UserController extends Controller
         return view('front.order_details', compact('data','order'));
     }
 
+    public function profile(){
+        $user = auth()->user()->load('defaultAddress');
+        return view('front.profile', compact('user'));
+    }
+
  
     public function updateProfile(Request $request)
     {
@@ -271,19 +277,36 @@ class UserController extends Controller
             "lname" => "required|string|max:255",
             "email" => "required|unique:users,email,".$userId,
             "mobile" => "required|integer|digits:10|unique:users,mobile,".$userId,
+            "address" => "required|string|max:255",
+            "landmark" => "nullable|string|max:255",
+            "state" => "nullable|string|max:255",
+            "city" => "nullable|string|max:255",
+            "pin" => "nullable|string|max:10",
+            "country" => "nullable|string|max:255",
         ], [
             "mobile.unique" => "This mobile number is already in use.",
             "mobile.digits" => "Please enter a valid 10 digit mobile number"
         ]);
         
         $params = $request->except('_token');
-        $storeData = $this->userRepository->updateUserProfile($params);
+        $this->userRepository->updateUserProfile($params);
 
-        if ($storeData) {
+        Address::updateOrCreate(
+            ['user_id' => $userId, 'billing' => 1],
+            ['address'  => $request->address,
+                'landmark' => $request->landmark,
+                'state'    => $request->state,
+                'city'     => $request->city,
+                'pin'      => $request->pin,
+                'country'  => $request->country,
+            ] 
+        );
+
+        // if ($storeData) {
             return redirect()->route('front.profile')->with('success', 'Profile updated successfully');
-        } else {
-            return redirect()->route('front.profile')->withInput($request->all())->with('failure', 'Something happened. Try again');
-        }
+        // } else {
+        //     return redirect()->route('front.profile')->withInput($request->all())->with('failure', 'Something happened. Try again');
+        // }
     }
 
     public function showChangePasswordForm(){

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use App\Models\Address;
 
 class User extends Authenticatable
 {
@@ -50,4 +51,16 @@ class User extends Authenticatable
     {
         return 'mobile';
     }
+
+    public function addresses()
+    {
+        return $this->hasMany(Address::class, 'user_id', 'id');
+    }
+
+    // If you want only one (like default billing/shipping)
+    public function defaultAddress()
+    {
+        return $this->hasOne(Address::class, 'user_id', 'id')->where('billing', 1);
+    }
+
 }

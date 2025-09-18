@@ -21,26 +21,7 @@
                             <input type="date" name="to_date" id="to_date" class="form-control" value="{{request()->input('to_date') ?? date('Y-m-d') }}">
                         </div>
 
-                        <div class="col-auto">
-                            <label for="collection" class="small text-muted">Collection</label>
-                            <select name="collection" class="form-control" id="collection">
-                                <option value="" disabled>Select</option>
-                                <option value="" {{request()->input('category') == 'all' ? 'selected' : ''}}>All</option>
-                            </select>
-                        </div>
-
                         {{-- <div class="col-auto">
-                            <label for="category" class="small text-muted">Category</label>
-                            <select name="category" class="form-control" id="category">
-                                <option value="" disabled>Select</option>
-                                <option value="all" {{request()->input('category') == 'all' ? 'selected' : ''}}>All</option>
-                                @foreach ($data->categories as $category)
-                                    <option value="{{$category->id}}" {{request()->input('category') == $category->id ? 'selected' : ''}}>{{$category->name}}</option>
-                                @endforeach
-                            </select>
-                        </div> --}}
-
-                        <div class="col-auto">
                             <label for="product" class="small text-muted">Product</label>
                             <select name="product" class="form-control select2" id="product">
                                 <option value="" disabled>Select</option>
@@ -49,7 +30,7 @@
                                     <option value="{{$product->code}}" {{request()->input('product') == $product->code ? 'selected' : ''}}>{{$product->code}}</option>
                                 @endforeach
                             </select>
-                        </div>
+                        </div> --}}
 
                         <div class="col-auto">
                             <label for="" class="small text-muted">Payment type</label>
@@ -80,53 +61,6 @@
             </div>
         </div>
     </div>
-
-    {{-- <div class="row">
-        <div class="col-md-3">
-            <div class="card card-body">
-                Today's Order
-                <br>
-                &#8377;{{ number_format($data->daily_order->daily_order) }}
-                <p class="small text-muted">
-                    {{date('Y-m-d')}}
-                </p>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="card card-body">
-                This week's Order
-                <br>
-                &#8377;{{ number_format($data->weekly_order->weekly_order) }}
-                <p class="small text-muted">
-                    {{$data->weekStartsFrom}} - {{$data->weekEndsIn}}
-                </p>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="card card-body">
-                Monthly Order
-                <br>
-                &#8377;{{ number_format($data->monthly_order->monthly_order) }}
-                <p class="small text-muted">
-                    {{request()->input('from_date') ?? date('Y-m-01') }} - {{request()->input('to_date') ?? date('Y-m-d') }}
-                </p>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="card card-body">
-                Total Order till now
-                <br>
-                &#8377;{{ number_format($data->total_order->total_order) }}
-                <p class="small text-muted">
-                    {{ date('Y-m-d', strtotime($data->first_order_date->created_at)) }} - 
-                    {{ date('Y-m-d', strtotime($data->last_order_date->created_at)) }}
-                </p>
-            </div>
-        </div>
-    </div> --}}
 
     <div class="row">
         <div class="col-12">
