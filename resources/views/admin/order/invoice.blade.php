@@ -1,4 +1,4 @@
-@extends('admin.layouts.app')
+    @extends('admin.layouts.app')
 
 @section('page', 'Order Invoice')
 
@@ -64,10 +64,10 @@
                                 <th>Product</th>
                                 <th>Qty</th>
                                 <th>Price (₹)</th>
-                                <th>Taxable Value (₹)</th>
-                                <th>GST (₹)</th>
-                                <th>Discount (₹)</th>
-                                <th>Total (₹)</th>
+                                <th class="text-end">Taxable Value (₹)</th>
+                                <th class="text-end">GST (₹)</th>
+                                <th class="text-end">Discount (₹)</th>
+                                <th class="text-end">Total (₹)</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -76,17 +76,17 @@
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $product->product_name }}</td>
                                     <td>{{ $product->qty }}</td>
-                                    <td>{{ number_format($product->offer_price, 2) }}</td>
-                                    <td class="text-end">{{ number_format($product->amount) }}</td>
-                                    <td class="text-end">{{ number_format($product->tax_amount) }}</td>
-                                    <td class="text-end">{{ number_format($product->discount_amount) }}</td>
-                                    <td class="text-end">{{ number_format($product->final_amount) }}</td>
+                                    <td>{{ number_format($product->total, 2) }}</td>
+                                    <td class="text-end">{{ number_format(($product->total) - ($product->gst_amount),2) }}</td>
+                                    <td class="text-end">{{ number_format($product->gst_amount,2) }}</td>
+                                    <td class="text-end"></td>
+                                    <td class="text-end">{{ number_format($product->total,2) }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th colspan="4" class="text-end">Grand Total (₹)</th>
+                                <th colspan="7" class="text-end">Grand Total (₹)</th>
                                 <th class="text-end">{{ number_format($data->final_amount, 2) }}</th>
                             </tr>
                         </tfoot>
