@@ -259,14 +259,6 @@ class CartController extends Controller
 
         try {
 
-            // $cartItems = Cart::with(['productDetails', 'variation'])
-            //     ->where('user_id', $userId)
-            //     ->get();
-
-            // if ($cartItems->isEmpty()) {
-            //     return back()->with('error', 'Your cart is empty.');
-            // }
-
             $subTotal = 0;
             $totalDiscount = 0;
             $totalGst = 0;
@@ -356,45 +348,6 @@ class CartController extends Controller
                     'qty'                  => $item->qty,
                 ]);
             }
-
-
-            // foreach ($cartItems as $item) {
-            //     $variation = $item->variation;
-            //     $product = $item->productDetails;
-
-            //     $price = $variation->offer_price
-            //         ?? $variation->price
-            //         ?? $product->offer_price
-            //         ?? $product->price
-            //         ?? 0;
-
-            //     $gstPercent = $product->gst ?? 0;
-            //     $gstAmount  = ($price * $gstPercent) / 100;
-
-            //     $finalPrice = $price + $gstAmount;
-
-            //     $totalGst   += $gstAmount * $item->qty;
-            //     $finalTotal += $finalPrice * $item->qty;
-
-            //     CheckoutProduct::create([
-            //         'checkout_id'          => $checkout->id,
-            //         'product_id'           => $variation->product_id ?? $product->id,
-            //         'user_id'              => $userId,
-            //         'product_name'         => $product->name ?? '',
-            //         'product_image'        => $product->image ?? null,
-            //         'product_slug'         => $product->slug ?? '',
-            //         'product_variation_id' => $variation->id ?? null,
-            //         'colour_name'          => $variation->color_name ?? null,
-            //         'size_name'            => $variation->size_name ?? null,
-            //         'sku_code'             => $variation->code ?? null,
-            //         'coupon_code'          => $coupon ? $coupon->coupon_code : null,
-            //         'price'                => $variation->price ?? $product->price ?? 0,
-            //         'offer_price'          => $variation->offer_price ?? $product->offer_price ?? 0,
-            //         'gst'                  => $gstAmount,
-            //         'qty'                  => $item->qty,
-            //     ]);
-            // }
-
             //dd($cartItems);
 
             // Final total after discount

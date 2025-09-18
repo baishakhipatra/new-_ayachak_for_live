@@ -231,7 +231,7 @@
                            {!!$ayurvedic_medicines_short_description!!}
                         </p>
                     </figcaption>
-                    <a href="{{route('front.shop.list')}}" class="bton btn-fill">Shop Now</a>
+                    <a href="{{route('front.shop.list', ['category' => 'Medicine'])}}" class="bton btn-fill">Shop Now</a>
                 </div>
             </li>
             <li>

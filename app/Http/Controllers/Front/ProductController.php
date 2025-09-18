@@ -169,20 +169,12 @@ class ProductController extends Controller
 
     public function details(Request $request, $slug)
     {
-        $selectedColorId = $request->color?$request->color:"";
         $data = $this->productRepository->getProductDetailsBySlug($slug);
        
         $categoryWiseProducts = Product::inRandomOrder()->take(4)->where('status',1)->get();
-        if($request->color){
-            $primaryColorSizes = $this->productRepository->SelectedColorSizes($data->id, $request->color);
-        }else{
-            $primaryColorSizes = $this->productRepository->primaryColorSizes($data->id);
-        }
+        $productVariations = $this->productRepository->listVariationById($data->id);
+        $hasStock = $productVariations->where('stock', '>', 0)->count() > 0; 
         
-        $availableColor = $this->productRepository->getAvailableColorByProductId($data->id);
-        
-        return view('front.productDetails', compact('data','availableColor','primaryColorSizes','categoryWiseProducts','selectedColorId'));
+        return view('front.productDetails', compact('data','categoryWiseProducts','hasStock','productVariations'));
     }
-
-
 }

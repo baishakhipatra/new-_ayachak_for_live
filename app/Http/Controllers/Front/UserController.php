@@ -145,6 +145,53 @@ class UserController extends Controller
         }
     }
 
+
+    // public function check(Request $request)
+    // {
+    //     // dd($request->all());
+    //     $existsNumber = User::where('mobile',$request->mobile)->first();
+    //     if(!$existsNumber){
+    //         $request->validate([
+    //             'mobile' => 'required|numeric|digits:10|unique:users,mobile',
+    //         ],[
+    //             'mobile.digits' => 'The mobile number must be exactly 10 digits.',
+    //         ]);
+    //             // Create a new user
+    //         $user = new User();
+    //         $user->mobile = $request->mobile;
+    //         $user->password = Hash::make($request->password);
+    //         $save = $user->save();
+    //         if ($save) {
+    //             $credentials = $request->only('mobile','password');
+    //             if (Auth::attempt($credentials)) {
+    //                 $intendedUrl = Session::pull('url.intended', route('front.home'));
+    //                 return redirect()->intended($intendedUrl)->with('success', 'Registration successful');
+    //             } else {
+    //                 return redirect()->route('front.login')->with('failure', 'Please enter valid credentials');
+    //             }
+    //         }else {
+    //             return redirect()->back()->with('failure', 'Failed to create User')->withInput($request->all());
+    //         }
+    //     }else{
+    //         if ($existsNumber->status == 0) {
+    //             return redirect()->route('front.login')
+    //             ->withInput($request->all())
+    //             ->with('failure', 'Your account is inactive. Please contact support.');
+    //         }
+
+    //         $request->validate([
+    //             'mobile' => 'required|numeric|exists:users,mobile',
+    //         ]);
+    //         $credentials = $request->only('mobile', 'password');
+
+    //         if (Auth::attempt($credentials)) {
+    //             $intendedUrl = Session::pull('url.intended', route('front.home'));
+    //             return redirect()->intended($intendedUrl)->with('success', 'Login successful');
+    //         } else {
+    //             return redirect()->route('front.login')->withInput($request->all())->with('failure', 'Please enter valid credentials');
+    //         }
+    //     }
+    // }
     
     public function logout(Request $request)
     {
@@ -214,51 +261,7 @@ class UserController extends Controller
         return view('front.order_details', compact('data','order'));
     }
 
-    public function coupon(Request $request)
-    {
-        $data = $this->userRepository->couponList();
-        return view('front.coupon', compact('data'));
-    }
-
-    public function address(Request $request)
-    {
-        $data = $this->userRepository->addressById(Auth::guard('web')->user()->id);
-        if ($data) {
-            return view('front.profile.address', compact('data'));
-        } else {
-            return view('front.404');
-        }
-    }
-
-    public function addressCreate(Request $request)
-    {
-        $request->validate([
-            "user_id" => "required|integer",
-            "address" => "required|string|max:255",
-            "landmark" => "required|string|max:255",
-            "lat" => "nullable",
-            "lng" => "nullable",
-            "type" => "required|integer",
-            "state" => "required|string",
-            "city" => "required|string",
-            "country" => "required|string",
-            "pin" => "required|integer|digits:6",
-            "type" => "required|integer",
-        //], [
-          //  "lat.*" => "Please enter Location",
-          //  "lng.*" => "Please enter Location"
-        ]);
-
-        $params = $request->except('_token');
-        $storeData = $this->userRepository->addressCreate($params);
-
-        if ($storeData) {
-            return redirect()->route('front.address');
-        } else {
-            return redirect()->route('front.address.add')->withInput($request->all());
-        }
-    }
-
+ 
     public function updateProfile(Request $request)
     {
         $userId = auth()->id();
@@ -366,39 +369,6 @@ class UserController extends Controller
             $order->orderCancelledReason = $request->cancellationReason;
             $order->save();
 
-            // Optionally send emails
-            /*
-            $email_data = [
-                'name' => auth()->user()->fname . ' ' . auth()->user()->lname,
-                'subject' => 'ONN - Order update for #' . $order->order_no,
-                'email' => auth()->user()->email,
-                'orderId' => $order->id,
-                'orderNo' => $order->order_no,
-                'orderAmount' => $order->final_amount,
-                'status' => $order->status,
-                'statusTitle' => 'Cancelled',
-                'statusDesc' => 'Your order is cancelled',
-                'orderProducts' => $order->orderProducts,
-                'blade_file' => 'front/mail/order-update',
-            ];
-            SendMail($email_data);
-
-            $email_data2 = [
-                'name' => 'ONN ADMIN',
-                'subject' => 'ONN - Order cancel for #' . $order->order_no,
-                'email' => 'ecom.cozyworld@luxinnerwear.com',
-                'orderId' => $order->id,
-                'orderNo' => $order->order_no,
-                'orderAmount' => $order->final_amount,
-                'status' => $order->status,
-                'statusTitle' => 'Cancelled',
-                'statusDesc' => 'This order is cancelled',
-                'orderProducts' => $order->orderProducts,
-                'blade_file' => 'front/mail/order-cancel-admin',
-            ];
-            SendMail($email_data2);
-            */
-
             DB::commit();
 
             return redirect()->back()->with('success', 'Order cancelled and stock restored successfully.');
@@ -466,33 +436,6 @@ class UserController extends Controller
             dd($e->getMessage());
             DB::rollBack();
             return redirect()->back()->with('error', 'Something went wrong while cancelling product: ' . $e->getMessage());
-        }
-    }
-
-    public function orderReturn(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            "orderProductId" => "required | integer",
-            "returnReasonType" => "required | string",
-            "returnReasonComment" => "required | string"
-        ], [
-            "returnReasonType.*" => "Please select Return reason",
-            "returnReasonComment.*" => "Please enter Return comment",
-        ]);
-
-        if (!$validator->fails()) {
-            $orderProduct = OrderProduct::findOrFail($request->orderProductId);
-            $orderProduct->status = 6;
-            $orderProduct->return_reason_type = $request->returnReasonType;
-            $orderProduct->return_reason_comment = $request->returnReasonComment;
-            $orderProduct->save();
-
-            // $order->orderCancelledBy = auth()->guard('web')->user()->id;
-            // $order->orderCancelledReason = $request->cancellationReason;
-
-            return redirect()->back()->with('success', 'You have requested return for this product');
-        } else {
-            return redirect()->back()->with('failure', $validator->errors()->first());
         }
     }
 }
