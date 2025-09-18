@@ -166,6 +166,7 @@ class CheckoutController extends Controller
             'state' => $request->billing_state,
             'billing_landmark' => $request->billing_landmark,
             'pin' => $request->billing_pin,
+            'address_option' => $request->address_option,
         ];
 
  

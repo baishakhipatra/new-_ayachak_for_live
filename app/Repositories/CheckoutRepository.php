@@ -98,7 +98,7 @@ class CheckoutRepository implements CheckoutInterface
             }
 
    
-            $sameAddress = isset($data['address_option']) && $data['address_option'] === 'same';
+            // $sameAddress = isset($data['address_option']) && $data['address_option'] === 'same';
 
            
             $billing = json_decode($data['billing_address'], true);
@@ -199,9 +199,7 @@ class CheckoutRepository implements CheckoutInterface
             $data['shipping_state']   = $shipping['state'] ?? null;
             $data['shipping_country'] = $shipping['country'] ?? null;
             $data['shipping_pin']     = $shipping['pin'] ?? null;
-            $data['shipping_landmark'] = $sameAddress
-                ? ($billing['billing_landmark'] ?? null)
-                : ($shipping['shipping_landmark'] ?? null);
+            $data['shipping_landmark'] =  ($billing['address_option']=='same') ? ($shipping['billing_landmark'] ?? null) : ($shipping['shipping_landmark'] ?? null);
 
             $data['alt_mobile'] = $shipping['alt_mobile'] ?? null;
 
@@ -228,16 +226,16 @@ class CheckoutRepository implements CheckoutInterface
                 'billing_pin' => $data['billing_pin'] ?? null,
                 
 
-                'shippingSameAsBilling' => $sameAddress ? 1 : 0,
+                'shippingSameAsBilling' =>  ($billing['address_option']=='same') ? 1 : 0,
 
                 'shipping_address_id' => 0,
-                'shipping_address' => $sameAddress ? ($data['billing_address'] ?? null) : ($data['shipping_address'] ?? null),
-                'shipping_country' => $sameAddress ? ($data['billing_country'] ?? null) : ($data['shipping_country'] ?? null),
-                'shipping_state' => $sameAddress ? ($data['billing_state'] ?? null) : ($data['shipping_state'] ?? null),
-                'shipping_city' => $sameAddress ? ($data['billing_city'] ?? null) : ($data['shipping_city'] ?? null),
-                'shipping_landmark' => $sameAddress ? ($data['billing_landmark'] ?? null) : ($data['shipping_landmark'] ?? null),
-                'shipping_pin' => $sameAddress ? ($data['billing_pin'] ?? null) : ($data['shipping_pin'] ?? null),
-                'alt_mobile' => $sameAddress ? ($data['mobile'] ?? null) : ($data['alt_mobile'] ?? null),
+                'shipping_address' =>  ($data['shipping_address'] ?? null),
+                'shipping_country' => ($data['shipping_country'] ?? null),
+                'shipping_state' => ($data['shipping_state'] ?? null),
+                'shipping_city' => ($data['shipping_city'] ?? null),
+                'shipping_landmark' => ($data['shipping_landmark'] ?? null),
+                'shipping_pin' => ($data['shipping_pin'] ?? null),
+                'alt_mobile' => ($data['alt_mobile'] ?? null),
 
 
                 'shipping_charges' => $shippingCharges,

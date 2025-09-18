@@ -202,18 +202,14 @@
                         <tr><td colspan="100%" class="small text-muted">No data found</td></tr>
                     @endforelse
                     <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td>
+                        
+                        <td colspan="5">
                             <p class="small text-dark mb-1 fw-bold">TOTAL</p>
                         </td>
-                        <td>
+                        <td colspan="5">
                             <p class="small text-dark mb-1 fw-bold">&#8377; {{ number_format($all_orders_total_amount) }}</p>
                         </td>
-                        <td></td>
-                        <td></td>
+                        
                     </tr>
                 </tbody>
             </table>
