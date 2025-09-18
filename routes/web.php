@@ -47,7 +47,6 @@ Route::name('front.')->group(function () {
 
     // profile login & registration - guard
     Route::middleware(['auth:web'])->group(function () {
-        // Route::prefix('user/')->name('user.')->group(function () {
         Route::view('profile', 'front.profile')->name('profile');
         Route::view('manage', 'front.profile.edit')->name('manage');
         Route::post('manage/update', 'Front\UserController@updateProfile')->name('manage.update');
@@ -59,13 +58,7 @@ Route::name('front.')->group(function () {
         Route::get('/order/invoice/{order_no}/download', 'Front\UserController@invoice')->name('order.invoice');
         Route::post('order/product-cancel', 'Front\UserController@productCancel')->name('product.cancel');
         Route::post('order/cancel', 'Front\UserController@orderCancel')->name('order.cancel');
-        Route::post('order/return', 'Front\UserController@orderReturn')->name('order.return');
        // Route::get('order/{id}/invoice', 'Front\UserController@invoice')->name('invoice');
-        Route::get('coupon', 'Front\UserController@coupon')->name('coupon');
-        Route::get('address', 'Front\UserController@address')->name('address');
-        Route::view('address/add', 'front.profile.address-add')->name('address.add');
-        Route::post('address/add', 'Front\UserController@addressCreate')->name('address.create');
-        Route::get('wishlist', 'Front\UserController@wishlist')->name('wishlist');
         //});
     });
 
@@ -103,8 +96,6 @@ Route::name('front.')->group(function () {
         Route::get('/search', 'Front\ProductController@ProductSearch')->name('shop.search');
         Route::post('/add-to-cart', 'Front\ProductController@AddToCart')->name('shop.add.to.cart');
         Route::get('/details/{slug}', 'Front\ProductController@details')->name('shop.details');
-        Route::get('/color-wise-size', 'Front\ProductController@colorWiseSize')->name('shop.color.wise.size');
-        Route::get('/size', 'Front\ProductController@size')->name('shop.size');
     });
 
 
@@ -183,71 +174,68 @@ Route::name('front.')->group(function () {
     });
 
   
-    // product detail
-    Route::name('product.')->group(function () {
-        Route::post('/add-to-cart', 'Front\ProductController@AddToCart')->name('add.to.cart');
-        Route::get('/details/{slug}', 'Front\ProductController@details')->name('details');
-        Route::get('/color-wise-size', 'Front\ProductController@colorWiseSize')->name('color.wise.size');
-        Route::get('/size', 'Front\ProductController@size')->name('size');
-        Route::get('/product/list', 'Front\ProductController@ProductList')->name('list');
-        Route::get('/product/{slug}', 'Front\ProductController@detail')->name('detail');
-        Route::get('/product/search', 'Front\ProductController@ProductSearch')->name('search');
-    });
+    // // product detail
+    // Route::name('product.')->group(function () {
+    //     Route::post('/add-to-cart', 'Front\ProductController@AddToCart')->name('add.to.cart');
+    //     Route::get('/details/{slug}', 'Front\ProductController@details')->name('details');
+    //     Route::get('/product/list', 'Front\ProductController@ProductList')->name('list');
+    //     Route::get('/product/{slug}', 'Front\ProductController@detail')->name('detail');
+    //     Route::get('/product/search', 'Front\ProductController@ProductSearch')->name('search');
+    // });
 
 
-    // cart
-    Route::prefix('cart')->name('cart.')->group(function () {
-        // Route::get('/', 'Front\CartController@viewByIp')->name('index');
-        Route::get('/details', 'Front\CartController@index')->name('index');
-        Route::post('/add-to-checkoout', 'Front\CartController@add_to_checkoout')->name('add_to_checkoout');
-        Route::post('/coupon/check', 'Front\CartController@couponCheck')->name('coupon.check');
-        Route::post('/coupon/remove', 'Front\CartController@couponRemove')->name('coupon.remove');
-        Route::post('/add', 'Front\CartController@add')->name('add');
-        Route::get('/delete/{id}', 'Front\CartController@delete')->name('delete');
-        Route::get('/quantity/{id}/{type}', 'Front\CartController@qtyUpdate')->name('quantity');
-    });
+    // // cart
+    // Route::prefix('cart')->name('cart.')->group(function () {
+    //     // Route::get('/', 'Front\CartController@viewByIp')->name('index');
+    //     Route::get('/details', 'Front\CartController@index')->name('index');
+    //     Route::post('/add-to-checkoout', 'Front\CartController@add_to_checkoout')->name('add_to_checkoout');
+    //     Route::post('/coupon/check', 'Front\CartController@couponCheck')->name('coupon.check');
+    //     Route::post('/coupon/remove', 'Front\CartController@couponRemove')->name('coupon.remove');
+    //     Route::post('/add', 'Front\CartController@add')->name('add');
+    //     Route::get('/delete/{id}', 'Front\CartController@delete')->name('delete');
+    //     Route::get('/quantity/{id}/{type}', 'Front\CartController@qtyUpdate')->name('quantity');
+    // });
 
 
-    Route::prefix('payment')->name('payment.')->group(function () {
-        Route::post('/order', 'Front\CheckoutController@createOrder')->name('createOrder');
-        Route::get('/success', 'Front\CheckoutController@success')->name('success');
-        Route::post('/failure', 'Front\CheckoutController@failure')->name('failure');
-        Route::post('/webhook', 'Front\CheckoutController@webhook')->name('webhook');
-    });
+    // Route::prefix('payment')->name('payment.')->group(function () {
+    //     Route::post('/order', 'Front\CheckoutController@createOrder')->name('createOrder');
+    //     Route::get('/success', 'Front\CheckoutController@success')->name('success');
+    //     Route::post('/failure', 'Front\CheckoutController@failure')->name('failure');
+    //     Route::post('/webhook', 'Front\CheckoutController@webhook')->name('webhook');
+    // });
 
 
     // settings contents
-    Route::name('content.')->group(function () {
-        Route::get('/terms-and-conditions', 'Front\ContentController@termDetails')->name('terms');
-        Route::get('/privacy-statement', 'Front\ContentController@privacyDetails')->name('privacy');
-        Route::get('/security', 'Front\ContentController@securityDetails')->name('security');
-        Route::get('/disclaimer', 'Front\ContentController@disclaimerDetails')->name('disclaimer');
-        Route::get('/shipping-and-delivery', 'Front\ContentController@shippingDetails')->name('shipping');
-        Route::get('/payment-voucher-promotion', 'Front\ContentController@paymentDetails')->name('payment');
-        Route::get('/return-policy', 'Front\ContentController@returnDetails')->name('return');
-        Route::get('/refund-policy', 'Front\ContentController@refundDetails')->name('refund');
-        Route::get('/service-and-contact', 'Front\ContentController@serviceDetails')->name('service');
+    // Route::name('content.')->group(function () {
+    //     Route::get('/terms-and-conditions', 'Front\ContentController@termDetails')->name('terms');
+    //     Route::get('/privacy-statement', 'Front\ContentController@privacyDetails')->name('privacy');
+    //     Route::get('/security', 'Front\ContentController@securityDetails')->name('security');
+    //     Route::get('/disclaimer', 'Front\ContentController@disclaimerDetails')->name('disclaimer');
+    //     Route::get('/shipping-and-delivery', 'Front\ContentController@shippingDetails')->name('shipping');
+    //     Route::get('/payment-voucher-promotion', 'Front\ContentController@paymentDetails')->name('payment');
+    //     Route::get('/return-policy', 'Front\ContentController@returnDetails')->name('return');
+    //     Route::get('/refund-policy', 'Front\ContentController@refundDetails')->name('refund');
+    //     Route::get('/service-and-contact', 'Front\ContentController@serviceDetails')->name('service');
 
-        Route::get('/blog', 'Front\ContentController@blog')->name('blog');
-        Route::get('/blog/{slug}', 'Front\ContentController@blogDetail')->name('blog.detail');
+    //     Route::get('/blog', 'Front\ContentController@blog')->name('blog');
+    //     Route::get('/blog/{slug}', 'Front\ContentController@blogDetail')->name('blog.detail');
 
-		Route::get('/blog-demo', 'Front\ContentController@blog2')->name('blog.dummy');
-        Route::get('/blog-demo/{slug}', 'Front\ContentController@blogDetail2')->name('blog.detail.dummy');
+	// 	Route::get('/blog-demo', 'Front\ContentController@blog2')->name('blog.dummy');
+    //     Route::get('/blog-demo/{slug}', 'Front\ContentController@blogDetail2')->name('blog.detail.dummy');
 
-        Route::get('/about', 'Front\ContentController@about')->name('about');
-        Route::get('/contact', 'Front\ContentController@contact')->name('contact');
+    //     Route::get('/about', 'Front\ContentController@about')->name('about');
+    //     Route::get('/contact', 'Front\ContentController@contact')->name('contact');
 
-        Route::get('/corporate', 'Front\ContentController@corporate')->name('corporate');
-        Route::get('/news', 'Front\ContentController@news')->name('news');
-        Route::get('/news/{slug}', 'Front\ContentController@newsDetail')->name('news.detail');
+    //     Route::get('/corporate', 'Front\ContentController@corporate')->name('corporate');
+    //     Route::get('/news', 'Front\ContentController@news')->name('news');
+    //     Route::get('/news/{slug}', 'Front\ContentController@newsDetail')->name('news.detail');
 
-		Route::get('/news-demo', 'Front\ContentController@news2')->name('news.demo');
-        Route::get('/news-demo/{slug}', 'Front\ContentController@newsDetail2')->name('news.detail.demo');
+	// 	Route::get('/news-demo', 'Front\ContentController@news2')->name('news.demo');
+    //     Route::get('/news-demo/{slug}', 'Front\ContentController@newsDetail2')->name('news.detail.demo');
 
-        Route::get('/career', 'Front\ContentController@career')->name('career');
-        Route::get('/global', 'Front\ContentController@global')->name('global');
-    });
-
+    //     Route::get('/career', 'Front\ContentController@career')->name('career');
+    //     Route::get('/global', 'Front\ContentController@global')->name('global');
+    // });
 
 
 });

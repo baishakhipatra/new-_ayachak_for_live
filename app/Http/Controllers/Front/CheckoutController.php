@@ -242,26 +242,6 @@ class CheckoutController extends Controller
             // $checkoutData = $request->except('_token');
             $order_id = $this->checkoutRepository->create($checkoutData);
             $order = Order::with(['orderProducts.productDetails.category'])->findOrFail($order_id);
-            // try {
-            //     Mail::to($order->email)->send(new OrderConfirmationMail($order));
-            // } catch (\Exception $e) {
-            //     \Log::error("Mail sending failed: " . $e->getMessage());
-            // }
-
-
-            // $order = [];
-            // $email_data = [
-            //     'name' => 'Sagar Shah',
-            //     'subject' => 'Onn - Franchise partner request',
-            //     'email' => 'puja17kumari2025@gmail.com',
-            //     'blade_file' => 'front.emails.order_confirmation',
-            //     'order'      => $order, 
-            // ];
-            SendMail($order);
-            // $order_id = 1;
-          
-            // return view('front.checkout.complete', compact('order_id','order'))->with('success', 'Thank you for you order');
-
         }else{
             return redirect()->back()->with('failure', 'Something happened.Try again.');
         }
@@ -304,58 +284,6 @@ class CheckoutController extends Controller
             return redirect()->back();
         }
     }
-    // public function createOrder(Request $request){
-    //     dd($request->all());
-    //     return view('front.payment.success');
-    //     $razorpayKey = env('RAZORPAY_KEY');
-    //     $razorpaySecret = env('RAZORPAY_SECRET');
-
-    //     // Prepare the data for the order
-    //     $orderData = [
-    //         'receipt'         => 'rcptid_' . time(),
-    //         // 'amount'          => $request->input('amount') * 100, // amount in the smallest currency unit
-    //         'amount'          => 1 * 100, // amount in the smallest currency unit
-    //         'currency'        => 'INR',
-    //         'payment_capture' => 1 // auto capture
-    //     ];
-
-    //     // Encode the order data
-    //     $jsonData = json_encode($orderData);
-
-    //     // Initialize cURL
-    //     $ch = curl_init();
-
-    //     // Set cURL options
-    //     curl_setopt($ch, CURLOPT_URL, 'https://api.razorpay.com/v1/orders');
-    //     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    //     curl_setopt($ch, CURLOPT_POST, true);
-    //     curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
-    //     curl_setopt($ch, CURLOPT_HTTPHEADER, [
-    //         'Content-Type: application/json',
-    //         'Authorization: Basic ' . base64_encode("$razorpayKey:$razorpaySecret")
-    //     ]);
-
-    //     // Execute the cURL request
-    //     $response = curl_exec($ch);
-    //     // Check for errors
-    //     if ($response === false) {
-    //         $errorMessage = curl_error($ch);
-    //         return response()->json(['error' => $errorMessage], 500);
-    //     }
-
-    //     // Decode the response
-    //     $responseData = json_decode($response, true);
-
-    //     // Check if order creation was successful
-    //     if (isset($responseData['id'])) {
-    //         return response()->json([
-    //             'orderId' => $responseData['id'],
-    //             'amount' => $request->input('amount')
-    //         ]);
-    //     } else {
-    //         return response()->json(['error' => 'Order creation failed. Please try again.'], 500);
-    //     }
-    // }
     public function success(Request $request)
     {
         // Validate the request
@@ -407,8 +335,6 @@ class CheckoutController extends Controller
                 $reason = $request->input('payload.payment.entity.error_reason');
 
                 Log::info("Payment failed. Payment ID: $paymentId, Order ID: $orderId, Reason: $reason");
-
-                // Optionally, update your database to mark the payment as failed
             }
 
             return response()->json(['status' => 'success']);
