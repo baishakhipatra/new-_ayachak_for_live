@@ -57,7 +57,7 @@
                                         @enderror
                                     </div>
                                     <div class="form-group">
-                                        <textarea class="form-control input-style" name="address" id="address" placeholder=" " required>{{ $user->defaultAddress->address ?? '' }}</textarea>
+                                        <input type="text" class="form-control input-style" name="address" id="address" placeholder=" " value="{{ $user->defaultAddress->address ?? '' }}" required>
                                         <label class="placeholder-text">Address</label>
                                         @error('address') <p class="small text-danger">{{ $message }}</p> @enderror
                                     </div>

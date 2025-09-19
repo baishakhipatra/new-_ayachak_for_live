@@ -80,9 +80,9 @@
                             <label>Add a Coupon</label>
                             <div class="input-group">
                                 <input type="text" id="coupon_code" class="form-control" placeholder="Enter coupon">
-                                <button type="button" id="apply_coupon" class="btn btn-primary">Apply</button>
+                                <button type="button" id="apply_coupon" class="mt-2 mb-2 btn btn-primary">Apply</button>
                             </div>
-                            <small id="coupon_message" class="text-success"></small>
+                            <small id="coupon_message"></small>
                         </div>
                         <div class="cart-row">
                             <span>Subtotal</span>
@@ -335,7 +335,7 @@
     $(document).on('click', '#apply_coupon', function () {
         let code = $('#coupon_code').val().trim();
         if (!code) {
-            $('#coupon_message').html('<span class="text-danger">Please enter a coupon code</span>');
+            $('#coupon_message').html('<span class="bg-light p-1 text-danger">Please enter a coupon code</span>');
             return;
         }
 
@@ -345,7 +345,7 @@
             data: { _token: "{{ csrf_token() }}", code },
             success: function(res){
                 if (res && res.type === 'success') {
-                    $('#coupon_message').html('<span class="text-success">'+res.message+'</span>');
+                    $('#coupon_message').html('<span class="bg-light p-1 text-success">'+res.message+'</span>');
 
                     
                     $('#applied_coupon_id').val(res.id || '');
@@ -356,12 +356,12 @@
                     $('#applied_coupon_amount').val(discount.toFixed(2));
                     recalculateCartTotals();
                 } else {
-                    $('#coupon_message').html('<span class="text-danger">'+(res?.message || 'Unable to apply coupon')+'</span>');
+                    $('#coupon_message').html('<span class="bg-light p-1 text-danger">'+(res?.message || 'Unable to apply coupon')+'</span>');
                 }
             },
             error: function(xhr){
                 const msg = xhr.status === 419 ? 'Session expired. Refresh and try again.' : 'Something went wrong';
-                $('#coupon_message').html('<span class="text-danger">'+msg+'</span>');
+                $('#coupon_message').html('<span class="bg-light p-1 text-danger">'+msg+'</span>');
             }
         });
     });
@@ -374,7 +374,7 @@
             data: { _token: "{{ csrf_token() }}" },
             success: function(res){
                 if (res && res.type === 'success') {
-                    $('#coupon_message').html('<span class="text-success">'+res.message+'</span>');
+                    $('#coupon_message').html('<span class="bg-light p-1 text-success">'+res.message+'</span>');
                     // clear stored coupon info
                     $('#applied_coupon_id').val('');
                     $('#applied_coupon_type').val('');
@@ -382,12 +382,12 @@
                     $('#coupon_code').val('');
                     recalculateCartTotals();
                 } else {
-                    $('#coupon_message').html('<span class="text-danger">'+(res?.message || 'Failed to remove coupon')+'</span>');
+                    $('#coupon_message').html('<span class="bg-light p-1 text-danger">'+(res?.message || 'Failed to remove coupon')+'</span>');
                 }
             },
             error: function(xhr){
                 const msg = xhr.status === 419 ? 'Session expired. Refresh and try again.' : 'Something went wrong';
-                $('#coupon_message').html('<span class="text-danger">'+msg+'</span>');
+                $('#coupon_message').html('<span class="bg-light p-1 text-danger">'+msg+'</span>');
             }
         });
     });
