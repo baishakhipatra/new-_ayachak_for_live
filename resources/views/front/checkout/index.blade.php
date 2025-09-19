@@ -35,34 +35,77 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="form-group">
-                                                <input type="text" name="first_name" class="form-control" 
+                                                <input type="text" name="first_name" class="form-control input-style" 
                                                     value="{{ explode(' ', auth()->user()->name)[0] ?? '' }}">
+                                                    <label class="placeholder-text">First Name</label>
                                                 <span class="text-danger error-text first_name_error"></span>
                                             </div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="form-group"> 
-                                                <input type="text" name="last_name" class="form-control" 
+                                                <input type="text" name="last_name" class="form-control input-style" 
                                                     value="{{ explode(' ', auth()->user()->name)[1] ?? '' }}">
+                                                    <label class="placeholder-text">Last Name</label>
                                                 <span class="text-danger error-text last_name_error"></span>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="form-group"> 
-                                        <input type="text" class="form-control input-style" name="billing_address">
+                                        <input type="text" class="form-control input-style" value="{{$user_address->address}}" name="billing_address">
                                         <label class="placeholder-text">Address</label>
                                     </div>
 
                                     <div class="row">
                                         <div class="col-lg-4">
                                             <div class="form-group"> 
-                                                <input type="text" class="form-control input-style" name="billing_city">
+                                                <input type="text" class="form-control input-style" value="{{$user_address->city}}" name="billing_city">
                                                 <label class="placeholder-text">City</label>
                                             </div>
                                         </div>
                                         <div class="col-lg-4">
                                             <div class="form-group"> 
                                                 <select name="billing_state" class="form-select select-style">
+                                                    <option value="">Select State</option>
+                                                    <option value="Andaman and Nicobar Islands" {{ $user_address->state == 'Andaman and Nicobar Islands' ? 'selected' : '' }}>Andaman and Nicobar Islands</option>
+                                                    <option value="Andhra Pradesh" {{ $user_address->state == 'Andhra Pradesh' ? 'selected' : '' }}>Andhra Pradesh</option>
+                                                    <option value="Arunachal Pradesh" {{ $user_address->state == 'Arunachal Pradesh' ? 'selected' : '' }}>Arunachal Pradesh</option>
+                                                    <option value="Assam" {{ $user_address->state == 'Assam' ? 'selected' : '' }}>Assam</option>
+                                                    <option value="Bihar" {{ $user_address->state == 'Bihar' ? 'selected' : '' }}>Bihar</option>
+                                                    <option value="Chandigarh" {{ $user_address->state == 'Chandigarh' ? 'selected' : '' }}>Chandigarh</option>
+                                                    <option value="Chhattisgarh" {{ $user_address->state == 'Chhattisgarh' ? 'selected' : '' }}>Chhattisgarh</option>
+                                                    <option value="Dadra and Nagar Haveli and Daman and Diu" {{ $user_address->state == 'Dadra and Nagar Haveli and Daman and Diu' ? 'selected' : '' }}>Dadra and Nagar Haveli and Daman and Diu</option>
+                                                    <option value="Delhi" {{ $user_address->state == 'Delhi' ? 'selected' : '' }}>Delhi</option>
+                                                    <option value="Goa" {{ $user_address->state == 'Goa' ? 'selected' : '' }}>Goa</option>
+                                                    <option value="Gujarat" {{ $user_address->state == 'Gujarat' ? 'selected' : '' }}>Gujarat</option>
+                                                    <option value="Haryana" {{ $user_address->state == 'Haryana' ? 'selected' : '' }}>Haryana</option>
+                                                    <option value="Himachal Pradesh" {{ $user_address->state == 'Himachal Pradesh' ? 'selected' : '' }}>Himachal Pradesh</option>
+                                                    <option value="Jammu and Kashmir" {{ $user_address->state == 'Jammu and Kashmir' ? 'selected' : '' }}>Jammu and Kashmir</option>
+                                                    <option value="Jharkhand" {{ $user_address->state == 'Jharkhand' ? 'selected' : '' }}>Jharkhand</option>
+                                                    <option value="Karnataka" {{ $user_address->state == 'Karnataka' ? 'selected' : '' }}>Karnataka</option>
+                                                    <option value="Kerala" {{ $user_address->state == 'Kerala' ? 'selected' : '' }}>Kerala</option>
+                                                    <option value="Ladakh" {{ $user_address->state == 'Ladakh' ? 'selected' : '' }}>Ladakh</option>
+                                                    <option value="Lakshadweep" {{ $user_address->state == 'Lakshadweep' ? 'selected' : '' }}>Lakshadweep</option>
+                                                    <option value="Madhya Pradesh" {{ $user_address->state == 'Madhya Pradesh' ? 'selected' : '' }}>Madhya Pradesh</option>
+                                                    <option value="Maharashtra" {{ $user_address->state == 'Maharashtra' ? 'selected' : '' }}>Maharashtra</option>
+                                                    <option value="Manipur" {{ $user_address->state == 'Manipur' ? 'selected' : '' }}>Manipur</option>
+                                                    <option value="Meghalaya" {{ $user_address->state == 'Meghalaya' ? 'selected' : '' }}>Meghalaya</option>
+                                                    <option value="Mizoram" {{ $user_address->state == 'Mizoram' ? 'selected' : '' }}>Mizoram</option>
+                                                    <option value="Nagaland" {{ $user_address->state == 'Nagaland' ? 'selected' : '' }}>Nagaland</option>
+                                                    <option value="Odisha" {{ $user_address->state == 'Odisha' ? 'selected' : '' }}>Odisha</option>
+                                                    <option value="Puducherry" {{ $user_address->state == 'Puducherry' ? 'selected' : '' }}>Puducherry</option>
+                                                    <option value="Punjab" {{ $user_address->state == 'Punjab' ? 'selected' : '' }}>Punjab</option>
+                                                    <option value="Rajasthan" {{ $user_address->state == 'Rajasthan' ? 'selected' : '' }}>Rajasthan</option>
+                                                    <option value="Sikkim" {{ $user_address->state == 'Sikkim' ? 'selected' : '' }}>Sikkim</option>
+                                                    <option value="Tamil Nadu" {{ $user_address->state == 'Tamil Nadu' ? 'selected' : '' }}>Tamil Nadu</option>
+                                                    <option value="Telangana" {{ $user_address->state == 'Telangana' ? 'selected' : '' }}>Telangana</option>
+                                                    <option value="Tripura" {{ $user_address->state == 'Tripura' ? 'selected' : '' }}>Tripura</option>
+                                                    <option value="Uttar Pradesh" {{ $user_address->state == 'Uttar Pradesh' ? 'selected' : '' }}>Uttar Pradesh</option>
+                                                    <option value="Uttarakhand" {{ $user_address->state == 'Uttarakhand' ? 'selected' : '' }}>Uttarakhand</option>
+                                                    <option value="West Bengal" {{ $user_address->state == 'West Bengal' ? 'selected' : '' }}>West Bengal</option>
+                                                </select>
+
+
+                                                <!-- <select name="billing_state" class="form-select select-style">
                                                     <option value="">Select State</option>
                                                     <option>Andhra Pradesh</option>
                                                     <option>Arunachal Pradesh</option>
@@ -100,20 +143,20 @@
                                                     <option>Puducherry</option>
                                                     <option>Ladakh</option>
                                                     <option>Jammu and Kashmir</option>
-                                                </select>
+                                                </select> -->
                                             </div>
                                         </div>
                                     
                                         <div class="col-lg-4">
                                             <div class="form-group"> 
-                                                <input type="text" class="form-control input-style" name="billing_pin">
+                                                <input type="text" class="form-control input-style" value="{{$user_address->pin}}" name="billing_pin">
                                                 <label class="placeholder-text">Pin Code</label>
                                             </div> 
                                         </div>
                                     </div>
                                 
                                     <div class="form-group"> 
-                                        <input type="text" class="form-control input-style" name="billing_landmark">
+                                        <input type="text" class="form-control input-style" value="{{$user_address->landmark}}" name="billing_landmark">
                                         <label class="placeholder-text">Billing Landmark</label>
                                     </div>
                                 

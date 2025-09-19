@@ -12,6 +12,7 @@ use App\Models\Order;
 use App\Models\Cart;
 use App\Models\Coupon; 
 use App\Models\Checkout;
+use App\Models\Address;
 use Illuminate\Support\Facades\Validator;
 use DB;
 use Razorpay\Api\Api;
@@ -35,6 +36,7 @@ class CheckoutController extends Controller
         $cartItems = Cart::with(['productDetails', 'variation', 'productDetails.category'])
             ->where('user_id', $userId)
             ->get();
+        $user_address = Address::where('user_id', $userId)->first();
 
         if ($cartItems->isEmpty()) {
             return redirect()->route('front.cart.index')->with('warning', 'Your cart is empty.');
@@ -96,7 +98,8 @@ class CheckoutController extends Controller
             'discount',
             'total',
             'coupon',
-            'checkoutId'
+            'checkoutId',
+            'user_address'
         ));
     }
 
