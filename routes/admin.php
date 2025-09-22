@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Admin\{AdminUserManagementController, PageController, MenuController,CSRProjectController, TagController,DonationController, ProductController, EventController, StockController};
+use App\Http\Controllers\Admin\{AdminUserManagementController, PageController, MenuController,CSRProjectController, TagController,DonationController, ProductController, EventController, StockController,DesignationController};
 
 // admin guard
 use Illuminate\Support\Facades\Route;
@@ -24,7 +24,7 @@ Route::prefix('admin')->name('admin.')->middleware('prevent-back-history')->grou
         Route::get('/', function () {
             return redirect()->route('admin.home');
         });
-        Route::get('/home', 'Admin\AdminController@home')->name('home');
+        Route::get('/home', 'Admin\AdminController@home')->middleware('permission')->name('home');
         Route::post('/logout', 'Admin\AdminController@logout')->name('logout');
 
         // Change password
@@ -43,6 +43,20 @@ Route::prefix('admin')->name('admin.')->middleware('prevent-back-history')->grou
             Route::post('/delete', [AdminUserManagementController::class, 'delete'])->name('admin-user-management.delete');
             Route::get('/export', [AdminUserManagementController::class, 'export'])->name('admin-user-management.export');
         });
+
+        Route::prefix('designation')->group(function () {
+            Route::get('/', [DesignationController::class, 'index'])->name('designation.index');
+            Route::get('/create', [DesignationController::class, 'create'])->name('designation.create');
+            Route::post('/store', [DesignationController::class, 'store'])->name('designation.store');
+            Route::get('/status/{id}', [DesignationController::class, 'status'])->name('designation.status');
+            Route::post('/delete', [DesignationController::class, 'delete'])->name('designation.delete');
+            Route::get('/edit/{id}', [DesignationController::class, 'edit'])->name('designation.edit');
+            Route::post('/update', [DesignationController::class, 'update'])->name('designation.update');
+            Route::get('/permission/{id}', [DesignationController::class, 'permissions'])->name('designation.permissions');
+            Route::post('/permission/update', [DesignationController::class, 'updatePermissions'])->name('designation.permissions.update');
+            Route::post('/permission/ajax', [DesignationController::class, 'updatePermissionAjax'])->name('designation.permissions.ajax');
+        });
+
 
         //CMS module
         Route::prefix('pages')->group(function () {

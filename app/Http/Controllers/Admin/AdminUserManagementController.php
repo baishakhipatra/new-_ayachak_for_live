@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
-use App\Models\{Admin};
+use App\Models\{Admin,Designation}; 
 
 class AdminUserManagementController extends Controller
 {
@@ -23,14 +23,15 @@ class AdminUserManagementController extends Controller
                         ->orWhere('email', 'like', '%' . $keyword . '%');
             });
         });
-
-        $admins = $query->latest('id')->paginate(10);
+        $admins = $query->with('designation')->latest('id')->paginate(10);
 
         return view('admin.admin-user-management.index', compact('admins'));
     }
 
     public function create(){
-        return view('admin.admin-user-management.create');
+        // return view('admin.admin-user-management.create');
+        $designations = Designation::where('status', 1)->get();
+        return view('admin.admin-user-management.create', compact('designations'));
     }
 
     public function store(Request $request) {
@@ -40,6 +41,7 @@ class AdminUserManagementController extends Controller
             'email'            => 'required|email|unique:admins,email',
             'phone'            => 'required|digits:10',
             'password'         => 'required|string|min:6',
+            'designation_id' => 'required|exists:designations,id',
         ]);
 
         //If validation fails
@@ -53,6 +55,7 @@ class AdminUserManagementController extends Controller
             'phone'            => $request->phone,
             'password'         => Hash::make($request->password),
             'status'           => 1,
+            'designation_id' => $request->designation_id,
         ]);
         //dd('Hi');
 
@@ -61,7 +64,8 @@ class AdminUserManagementController extends Controller
 
     public function edit($id) {
         $data = Admin::findOrFail($id);
-        return view('admin.admin-user-management.edit', compact('data'));
+        $designations = Designation::where('status', 1)->get();
+        return view('admin.admin-user-management.edit', compact('data', 'designations'));
     }
 
     public function update(Request $request) {
@@ -69,7 +73,8 @@ class AdminUserManagementController extends Controller
         $validator = Validator::make($request->all(), [
             'name'      => 'required|string|max:255',
             'email'     => 'required|email|unique:admins,email,' . $request->id,
-            'phone'     => 'required|digits:10'
+            'phone'     => 'required|digits:10',
+            'designation_id' => 'required|exists:designations,id',
         ]);
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
@@ -80,8 +85,8 @@ class AdminUserManagementController extends Controller
             'name'             => $request->name,
             'email'            => $request->email,
             'phone'            => $request->phone,
+            'designation_id' => $request->designation_id,
         ]);
-        //dd($request->designation_id);
         return redirect()->route('admin.admin-user-management.index')->with('success', 'Admin updated successfully!');
     }
 

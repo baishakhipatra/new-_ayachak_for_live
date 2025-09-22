@@ -30,9 +30,11 @@
         </div>
         <nav class="main__nav">
             <ul>
+                @if (hasPermissionByParent('dashboard'))
                 <li class="{{ ( request()->is('admin/home*') ) ? 'active' : '' }}"><a href="{{ route('admin.home') }}"><i class="fi fi-br-home"></i> <span>Dashboard</span></a></li>
+                @endif
 
-
+                @if (hasPermissionByParent('admin-user-management'))
                 <li class="@if(request()->is('admin/admin-user-management*') || request()->is('admin/user-management*') || request()->is    ('admin/designation*')) active @endif">
                     <a href="javascript:void(0)"><i class="fi fi-br-cube"></i> <span>Super Admin Module</span></a>
                     <ul>
@@ -41,24 +43,33 @@
                                 <i class="fi fi-br-database"></i> <span>Role User</span>
                             </a>
                         </li>
+                        @if (hasPermissionByParent('designation'))
                         <li class="{{ request()->is('admin/designation*') ? 'active' : '' }}">
-                            <a href="">
+                            <a href="{{ route('admin.designation.index') }}">
                                 <i class="fi fi-br-database"></i> <span>Designation</span>
                             </a>
                         </li>
+                        @endif
                     </ul>
                 </li>
+                @endif
 
+                @if (hasPermissionByParent('donations'))
                 <li class="{{ request()->is('admin/donation-management*') ? 'active' : '' }}">
                     <a href="{{ route('admin.donations.index') }}">
                         <i class="fi fi-br-database"></i> <span>Donations</span>
                     </a>
                 </li>
+                @endif
 
+                @if (hasPermissionByParent('donations'))
                 <li class="{{ ( request()->is('admin/admin/admin-event-management*') ) ? 'active' : '' }}"><a href="{{ route('admin.events.index') }}"><i class="fi fi-br-database"></i> <span>Events</span></a></li>
+                @endif
+
 
                 <li class="{{ ( request()->is('admin/admin/category*') ) ? 'active' : '' }}"><a href="{{ route('admin.category.index') }}"><i class="fi fi-br-database"></i> <span>Category</span></a></li>
 
+                @if (hasPermissionByParent('product'))
                 <li class="@if(request()->is('admin/product*') || request()->is('admin/faq*')) { {{'active'}} }  @endif">
                     <a href="javascript: void(0)"><i class="fi fi-br-cube"></i> <span>Product Management</span></a>
                     <ul>
@@ -69,7 +80,9 @@
                         <li class="{{ ( request()->is('admin/product/sku-list*') ) ? 'active' : '' }}"><a href="{{ route('admin.product.sku_list') }}">Product SKUs</a></li>
                     </ul>
                 </li>
+                @endif
 
+                @if (hasPermissionByParent('order'))
                 <li class="@if(request()->is('admin/order*')) { {{'active'}} }  @endif">
                     <a href="javascript: void(0)"><i class="fi fi-br-cube"></i> <span>Order Management</span></a>
                     <ul>
@@ -88,6 +101,7 @@
                         <li class="{{ ( request()->is('admin/order?status=cancel') ) ? 'active' : '' }}"><a href="{{ route('admin.order.index', ['status'=>'5']) }}"><i class="fi fi-br-database"></i> <span>Cancelled Orders</span></a></li>
                     </ul>
                 </li>
+                @endif
 
                 <li class="@if(request()->is('admin/customer*') || request()->is('admin/address*')) { {{'active'}} }  @endif">
                     <a href="javascript: void(0)"><i class="fi fi-br-cube"></i> <span>Customer Management</span></a>

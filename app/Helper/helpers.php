@@ -2,10 +2,42 @@
 
 use App\Models\Order;
 use App\Models\Settings;
+use App\Models\{Admin, DesignationPermission, Designation, Permission};
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 
 // $ip = $_SERVER['REMOTE_ADDR'];
+    if(!function_exists('hasPermissionByParent')){
+        function hasPermissionByParent($parentName){
+            // Ensure designation is loaded
+            $user = Auth::guard('admin')->user();
+            if (!$user || !$user->designation) {
+                return false;
+            }
+            $permission_id = Permission::where('parent_name', $parentName)->value('id');
+            if($permission_id){
+                return DesignationPermission::where('permission_id', $permission_id)->where('designation_id', $user->designation->id)->exists();
+            }else{
+                return false;
+            }
+        }
+    }
+
+    // if(!function_exists('hasPermissionByChild')){
+    //     function hasPermissionByChild($childName){
+    //         // Ensure designation is loaded
+    //         $user = Auth::guard('admin')->user();
+    //         if (!$user || !$user->designation) {
+    //             return false;
+    //         }
+    //         $permission_id = Permission::where('name', $childName)->value('id');
+    //         if($permission_id){
+    //             return DesignationPermission::where('permission_id', $permission_id)->where('designation_id', $user->designation->id)->exists();
+    //         }else{
+    //             return false;
+    //         }
+    //     }
+    // }
 
 // send mail helper
     function SendMail($data)

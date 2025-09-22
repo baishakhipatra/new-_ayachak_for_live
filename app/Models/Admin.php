@@ -20,7 +20,7 @@ class Admin extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'phone','password','status',
+        'name', 'email', 'phone','password','status','designation_id',
     ];
 
     /**
@@ -40,4 +40,26 @@ class Admin extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+      public function designation()
+    {
+        return $this->belongsTo(Designation::class, 'designation_id', 'id');
+    }
+
+     public function hasPermissionByRoute($route)
+    {
+        if (!$this->designation) {
+            return false; // Ensure user has a designation
+        }
+
+        return $this->designation->permissions()->where('route', $route)->exists();
+    }
+
+    // public function hasPermission($route)
+    // {
+    //     return $this->designation
+    //                 ->permissions()
+    //                 ->where('route', $route)
+    //                 ->exists();
+    // }
 }

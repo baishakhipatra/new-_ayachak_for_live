@@ -1,13 +1,14 @@
 @extends('admin.layouts.app')
 
-@section('page', 'Admin-User-Management')
+@section('page', 'Designation')
 
 @section('content')
 
 <!-- Basic Bootstrap Table -->
 <div class="card">
   <div class="card-footer d-flex justify-content-end">
-    <a href="{{ route('admin.admin-user-management.create') }}" class="btn btn-primary btn-sm">+ Add Admin User</a>
+    <a href="{{ route('admin.designation.create') }}" class="btn btn-primary btn-sm">+ Add Designation</a>
+ 
   </div>
 
   <div class="px-3 py-2">
@@ -27,15 +28,7 @@
                   <a href="{{ url()->current() }}" class="btn btn-sm btn-light" data-toggle="tooltip" title="Clear filter">
                     <i class="fa fa-close"></i>
                   </a>
-                  {{-- @if (hasPermissionByChild('export_employee_list')) --}}
-                    <div>
-                      <a href="{{ route('admin.admin-user-management.export', ['keyword' => request()->input('keyword')]) }}" 
-                        class="btn buttons-collection btn-outline-secondary waves-effect" 
-                        data-toggle="tooltip" title="Export Data">
-                        Export<i class="fa fa-download"></i>
-                      </a>
-                    </div>
-                  {{-- @endif --}}
+                  
                 </div>
               </div>
             </div>
@@ -49,36 +42,35 @@
       <table class="table">
         <thead>
           <tr>
-            {{-- <th>Employee ID</th> --}}
             <th>Name</th>
-            <th>Email</th>
-            <th>Phone</th>
-            <th>Role</th>
             <th>Status</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody class="table-border-bottom-0">
-          @foreach($admins as $item)
+          @foreach($designations as $des)
             <tr>
-              {{-- <td>{{ $item->user_id }}</td> --}}
-              <td>{{ ucfirst($item->name) }}</td>
-              <td>{{ $item->email }}</td>
-              <td>{{ $item->phone }}</td>
-              <td>{{ $item->designation->name ?? 'No Role Assigned' }}</td>
+              <td>{{ $des->name }}</td>
               <td>
                  <div class="form-check form-switch" data-bs-toggle="tooltip" title="Toggle status">
-                    <input class="form-check-input ms-auto" type="checkbox" id="customSwitch{{$item->id}}"
-                      {{ $item->status ? 'checked' : ''}} onclick="statusToggle('{{route('admin.admin-user-management.status', $item->id)}}', this)">
-                    <label class="form-check-label" for="customSwitch{{$item->id}}"></label>
+                    <input class="form-check-input ms-auto" type="checkbox" id="customSwitch{{$des->id}}"
+                      {{ $des->status ? 'checked' : ''}} onclick="statusToggle('{{route('admin.designation.status', $des->id)}}', this)"> 
+
+                    <label class="form-check-label" for="customSwitch{{$des->id}}"></label>
                   </div>
               </td>
               {{-- View, Edit and delete --}}
               <td>
                 <div class="btn-group" role="group" aria-label="Action Buttons">
+                    <div>
+                      <a href="{{ route('admin.designation.permissions', $des->id) }}">
+                          <span class="btn btn-outline-primary">Permission</span>
+                      </a>
+                    </div>
+                    &nbsp;
                   {{-- @if (hasPermissionByChild('edit_employee')) --}}
                     <div>
-                      <a href="{{ route('admin.admin-user-management.edit', $item->id) }}" class="btn btn-sm btn-icon btn-outline-dark"                     
+                      <a href="{{ route('admin.designation.edit', $des->id) }}" class="btn btn-sm btn-icon btn-outline-dark"                     
                         data-bs-toggle="tooltip"  title="Edit">
                         <i class="fa fa-edit"></i>
                       </a>
@@ -87,12 +79,12 @@
                   
                   {{-- @if (hasPermissionByChild('delete_employee')) --}}
                     <div>
-                      <a href="javascript:void(0);" class="btn btn-sm btn-icon btn-outline-danger" onclick="deleteUser({{ $item->id }})"     
+                      <a href="javascript:void(0);" class="btn btn-sm btn-icon btn-outline-danger" onclick="deleteDes({{ $des->id }})"     
                         data-bs-toggle="tooltip" title="Delete">
                         <i class="fa fa-trash"></i>
                       </a>
                     </div>    
-                  {{-- @endif            --}}
+                  {{-- @endif --}}
                 </div>
               </td>
  
@@ -102,7 +94,6 @@
       </table>
       {{-- Pagination Links --}}
       <div class="pagination-container">
-          {{$admins->links()}}
       </div>
     </div>
   </div>
@@ -111,7 +102,7 @@
 @endsection
 @section('script')
 <script>
-  function deleteUser(userId) {
+  function deleteDes(id) {
     Swal.fire({
         icon: 'warning',
         title: "Are you sure you want to delete this?",
@@ -121,13 +112,12 @@
         cancelButtonColor: "#d33",
         confirmButtonText: "Delete",
     }).then((result) => {
-        /* Read more about isConfirmed, isDenied below */
         if (result.isConfirmed) {
             $.ajax({
-                url: "{{ route('admin.admin-user-management.delete')}}",
+                url: "{{ route('admin.designation.delete')}}",
                 type: 'POST',
                 data: {
-                    "id": userId,
+                    "id": id,
                     "_token": '{{ csrf_token() }}',
                 },
                 success: function (data){

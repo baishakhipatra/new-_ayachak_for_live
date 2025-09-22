@@ -64,6 +64,7 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'prevent-back-history' => \App\Http\Middleware\PreventBackHistory::class,
         'guest.front' => \App\Http\Middleware\RedirectIfAuthenticatedFront::class,
+        'permission' => \App\Http\Middleware\CheckPermission::class,
     ];
 
     /**

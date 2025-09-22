@@ -133,7 +133,7 @@
                         "id": userId,
                         "_token": '{{ csrf_token() }}',
                     },
-                    success: function (data){
+                    success:    function (data){
                         if (data.status != 200) {
                             toastFire('error', data.message);
                         } else {
