@@ -20,10 +20,14 @@
                     <div class="d-flex justify-content-between">
                         <div>
                             <strong>Sold By / Billed From:</strong><br>
-                            {{ config('app.name') }}<br>
+                            {{ "Ayachak Ashrama" }}<br>
                             {{-- You can hardcode company address here --}}
-                            Address line 1, City, State, Country <br>
-                            GSTIN: 1234567890
+                            <h5>Head Office</h5>
+                            GURU-DHAM
+                            P-238, Swami Swarupananda Sarani
+                            P.O. - Kankurgachi,
+                            Kolkata-700054
+                            Phone-2320-8455/5559
                         </div>
                         <div class="text-end">
                             <strong>Invoice Number:</strong> {{ $data->order_no }}<br>

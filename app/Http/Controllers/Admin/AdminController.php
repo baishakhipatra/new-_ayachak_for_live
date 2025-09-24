@@ -38,8 +38,6 @@ class AdminController extends Controller
 
     public function home(Request $request)
     {
-        // $data = $userRepository->listAll();
-        // dd($data->count());
         $data = (object)[];
         $data->users = User::count();
         $data->category = Category::count();
@@ -53,33 +51,21 @@ class AdminController extends Controller
         $data->todays_sale_amount = Order::where('created_at','>=',date('Y-m-d'))->sum('final_amount');
 
         $sku_product_count = OrderProduct::where('sku_code','like','%'.'ONN'.'%')->selectRaw('sku_code, COUNT(*) as count, product_name, colour_name, size_name, offer_price, product_image')->groupBy('sku_code')->orderBy('count', 'desc')->limit(10)->get();
-        // dd($sku_product_count);
-
-        // // dd($products[0]);
-        // return view('admin.product.product-sku',compact('products','sku_product_count'));
 
         return view('admin.home', compact('data','sku_product_count'));
     }
-
-    // public function logout(Request $request)
-    // {
-    //     Auth::guard('admin')->logout();
-    //     $request->session()->flush();
-    //     $request->session()->regenerate();
-    //     return redirect()->guest(route('admin.login'));
-    // }
 
     public function logout(Request $request)
     {
         Auth::guard('admin')->logout();
 
-        // Invalidate the session to prevent session fixation
+     
         $request->session()->invalidate();
 
-        // Regenerate CSRF token
+     
         $request->session()->regenerateToken();
 
-        // Redirect to admin login
+      
         return redirect()->route('admin.login');
     }
 

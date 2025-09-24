@@ -60,7 +60,6 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         // dd($request->all());
-
         $request->validate([
             "fname" => "required|regex:/^[\pL\s\-]+$/u|max:255",
             "lname" => "required|regex:/^[\pL\s\-]+$/u|max:255",

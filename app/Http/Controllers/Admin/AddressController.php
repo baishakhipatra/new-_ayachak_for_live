@@ -64,7 +64,6 @@ class AddressController extends Controller
     public function update(Request $request, $id)
     {
         // dd($request->all());
-
         $request->validate([
             "user_id" => "required|integer",
             "address" => "required|string|max:255",
@@ -107,11 +106,6 @@ class AddressController extends Controller
     }
     public function bulkDestroy(Request $request)
     {
-        // $request->validate([
-        //     'bulk_action' => 'required',
-        //     'delete_check' => 'required|array',
-        // ]);
-
         $validator = Validator::make($request->all(), [
             'bulk_action' => 'required',
             'delete_check' => 'required|array',
