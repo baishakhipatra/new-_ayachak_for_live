@@ -32,7 +32,7 @@ Route::prefix('admin')->name('admin.')->middleware('prevent-back-history')->grou
         Route::post('/update/password','Admin\AdminController@updatePassword')->name('update.password');
 
         //admin-user-management
-        Route::prefix('admin-user-management')->group(function () {
+        Route::prefix('admin-user-management')->middleware('permission')->group(function () {
             Route::get('/', [AdminUserManagementController::class, 'index'])->name('admin-user-management.index');
             Route::get('/create', [AdminUserManagementController::class, 'create'])->name('admin-user-management.create');
             Route::post('/store', [AdminUserManagementController::class, 'store'])->name('admin-user-management.store');
@@ -45,13 +45,13 @@ Route::prefix('admin')->name('admin.')->middleware('prevent-back-history')->grou
         });
 
         Route::prefix('designation')->group(function () {
-            Route::get('/', [DesignationController::class, 'index'])->name('designation.index');
-            Route::get('/create', [DesignationController::class, 'create'])->name('designation.create');
-            Route::post('/store', [DesignationController::class, 'store'])->name('designation.store');
-            Route::get('/status/{id}', [DesignationController::class, 'status'])->name('designation.status');
-            Route::post('/delete', [DesignationController::class, 'delete'])->name('designation.delete');
-            Route::get('/edit/{id}', [DesignationController::class, 'edit'])->name('designation.edit');
-            Route::post('/update', [DesignationController::class, 'update'])->name('designation.update');
+            Route::get('/', [DesignationController::class, 'index'])->middleware('permission')->name('designation.index');
+            Route::get('/create', [DesignationController::class, 'create'])->middleware('permission')->name('designation.create');
+            Route::post('/store', [DesignationController::class, 'store'])->middleware('permission')->name('designation.store');
+            Route::get('/status/{id}', [DesignationController::class, 'status'])->middleware('permission')->name('designation.status');
+            Route::post('/delete', [DesignationController::class, 'delete'])->middleware('permission')->name('designation.delete');
+            Route::get('/edit/{id}', [DesignationController::class, 'edit'])->middleware('permission')->name('designation.edit');
+            Route::post('/update', [DesignationController::class, 'update'])->middleware('permission')->name('designation.update');
             Route::get('/permission/{id}', [DesignationController::class, 'permissions'])->name('designation.permissions');
             Route::post('/permission/update', [DesignationController::class, 'updatePermissions'])->name('designation.permissions.update');
             Route::post('/permission/ajax', [DesignationController::class, 'updatePermissionAjax'])->name('designation.permissions.ajax');
@@ -59,7 +59,7 @@ Route::prefix('admin')->name('admin.')->middleware('prevent-back-history')->grou
 
 
         //CMS module
-        Route::prefix('pages')->group(function () {
+        Route::prefix('pages')->middleware('permission')->group(function () {
             Route::get('/', [PageController::class, 'index'])->name('pages.index');
             Route::get('/create', [PageController::class, 'create'])->name('pages.create');
             Route::post('/store', [PageController::class, 'store'])->name('pages.store');
@@ -94,7 +94,7 @@ Route::prefix('admin')->name('admin.')->middleware('prevent-back-history')->grou
         });
 
         //donations
-        Route::prefix('donations')->group(function() {
+        Route::prefix('donations')->middleware('permission')->group(function() {
             Route::get('/', [DonationController::class, 'index'])->name('donations.index');
             Route::get('/create', [DonationController::class, 'create'])->name('donations.create');
             Route::post('/store', [DonationController::class, 'store'])->name('donations.store');
@@ -103,7 +103,7 @@ Route::prefix('admin')->name('admin.')->middleware('prevent-back-history')->grou
         });
 
         //events
-          Route::prefix('events')->group(function() {
+          Route::prefix('events')->middleware('permission')->group(function() {
             Route::get('/', [EventController::class, 'index'])->name('events.index');
             Route::get('/create', [EventController::class, 'create'])->name('events.create');
             Route::post('/store', [EventController::class, 'store'])->name('events.store');
@@ -154,24 +154,24 @@ Route::prefix('admin')->name('admin.')->middleware('prevent-back-history')->grou
         });
 
         Route::prefix('product')->name('product.')->group(function () {
-            Route::get('/list', 'Admin\ProductController@index')->name('index');
-            Route::get('/create', 'Admin\ProductController@create')->name('create');
-            Route::post('/store', 'Admin\ProductController@store')->name('store');
-            Route::get('/{id}/view', 'Admin\ProductController@show')->name('view');
+            Route::get('/list', 'Admin\ProductController@index')->middleware('permission')->name('index');
+            Route::get('/create', 'Admin\ProductController@create')->middleware('permission')->name('create');
+            Route::post('/store', 'Admin\ProductController@store')->middleware('permission')->name('store');
+            Route::get('/{id}/view', 'Admin\ProductController@show')->middleware('permission')->name('view');
             Route::post('/size', 'Admin\ProductController@size')->name('size');
-            Route::get('/{id}/edit', 'Admin\ProductController@edit')->name('edit');
+            Route::get('/{id}/edit', 'Admin\ProductController@edit')->middleware('permission')->name('edit');
             Route::get('/{id}/status', 'Admin\ProductController@status')->name('status');
             Route::get('/{id}/sale', 'Admin\ProductController@sale')->name('sale');
             Route::get('/{id}/trending', 'Admin\ProductController@trending')->name('trending');
             Route::get('/{id}/hotdeal', 'Admin\ProductController@hotdeal')->name('hotdeal');
             Route::get('/{id}/feature', 'Admin\ProductController@feature')->name('feature');
             Route::get('/{id}/dealoftheday', 'Admin\ProductController@dealoftheday')->name('dealoftheday');
-            Route::get('/{id}/delete', 'Admin\ProductController@destroy')->name('delete');
+            Route::get('/{id}/delete', 'Admin\ProductController@destroy')->middleware('permission')->name('delete');
             Route::get('/{id}/image/delete', 'Admin\ProductController@destroySingleImage')->name('image.delete');
             Route::get('/bulkDelete', 'Admin\ProductController@bulkDestroy')->name('bulkDestroy');
             Route::get('/{id}/sync', 'Admin\UnicommerceController@sync')->name('unicommerce.sync');
             Route::get('/{id}/sync/single', 'Admin\UnicommerceController@syncSingle')->name('unicommerce.sync.single');
-            Route::get('/export/all', 'Admin\ProductController@exportAll')->name('export.all');
+            Route::get('/export/all', 'Admin\ProductController@exportAll')->middleware('permission')->name('export.all');
 
             // variation
             Route::post('/variation/color/add', 'Admin\ProductController@variationColorAdd')->name('variation.color.add');
@@ -248,19 +248,19 @@ Route::prefix('admin')->name('admin.')->middleware('prevent-back-history')->grou
 
         // order
         Route::prefix('order')->name('order.')->group(function () {
-            Route::get('/', 'Admin\OrderController@index')->name('index');
-            Route::post('/store', 'Admin\OrderController@store')->name('store');
-            Route::get('/{id}/view', 'Admin\OrderController@show')->name('view');
+            Route::get('/', 'Admin\OrderController@index')->middleware('permission')->name('index');
+            Route::post('/store', 'Admin\OrderController@store')->middleware('permission')->name('store');
+            Route::get('/{id}/view', 'Admin\OrderController@show')->middleware('permission')->name('view');
             Route::get('/{id}/invoice', 'Admin\OrderController@invoice')->name('invoice');
-            Route::post('/{id}/update', 'Admin\OrderController@update')->name('update');
-            Route::get('/{id}/status/{status}', 'Admin\OrderController@status')->name('status');
+            Route::post('/{id}/update', 'Admin\OrderController@update')->middleware('permission')->name('update');
+            Route::get('/{id}/status/{status}', 'Admin\OrderController@status')->middleware('permission')->name('status');
             Route::get('/{id}/type/{type}', 'Admin\OrderController@type')->name('type');
-            Route::post('/status', 'Admin\OrderController@statusPost')->name('status');
+            Route::post('/status', 'Admin\OrderController@statusPost')->middleware('permission')->name('status');
             Route::post('/product/status', 'Admin\OrderController@orderProductStatus')->name('product.status');
-            Route::get('/export/all', 'Admin\OrderController@exportAll')->name('export.all');
+            Route::get('/export/all', 'Admin\OrderController@exportAll')->middleware('permission')->name('export.all');
 
             // report
-            Route::get('/report', 'Admin\OrderController@report')->name('report');
+            Route::get('/report', 'Admin\OrderController@report')->middleware('permission')->name('report');
 
             // remark
             Route::get('/{id}/remark', 'Admin\OrderRemarkController@fetch')->name('remark.show');
