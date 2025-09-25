@@ -111,60 +111,60 @@ class ProductController extends Controller
         }
     }
 
-    public function AddToCart(Request $request)
-    {
-        $maxQuantity = 5;
-        $userId = Auth::guard('web')->id();
-        $guestToken = !$userId ? getGuestToken() : null;
-        //dd(session('guest_token'));
+    // public function AddToCart(Request $request)
+    // {
+    //     $maxQuantity = 5;
+    //     $userId = Auth::guard('web')->id();
+    //     $guestToken = !$userId ? getGuestToken() : null;
+    //     //dd(session('guest_token'));
 
-        $cartQuery = Cart::query()
-            ->when($userId, fn($q) => $q->where('user_id', $userId))
-            ->when(!$userId, fn($q) => $q->where('guest_token', $guestToken));
+    //     $cartQuery = Cart::query()
+    //         ->when($userId, fn($q) => $q->where('user_id', $userId))
+    //         ->when(!$userId, fn($q) => $q->where('guest_token', $guestToken));
 
-        $QuantityExistsInCart = $cartQuery
-            ->where('product_id', $request->productId)
-            ->where('product_variation_id', $request->variationId)
-            ->sum('qty');
+    //     $QuantityExistsInCart = $cartQuery
+    //         ->where('product_id', $request->productId)
+    //         ->where('product_variation_id', $request->variationId)
+    //         ->sum('qty');
 
-        $remainingQuantity = $maxQuantity - $QuantityExistsInCart;
+    //     $remainingQuantity = $maxQuantity - $QuantityExistsInCart;
 
-        if ($remainingQuantity == 0) {
-            return redirect()->back()->with('warning', 'You already added 5 quantities for this product variation.');
-        }
+    //     if ($remainingQuantity == 0) {
+    //         return redirect()->back()->with('warning', 'You already added 5 quantities for this product variation.');
+    //     }
 
-        $quantityToAdd = min($request->quantity, $remainingQuantity);
+    //     $quantityToAdd = min($request->quantity, $remainingQuantity);
 
-        $request->validate([
-            'quantity' => 'required|max:5|min:1',
-        ]);
+    //     $request->validate([
+    //         'quantity' => 'required|max:5|min:1',
+    //     ]);
 
-        $image = '';
-        if ($colorId) {
-            $productImage = ProductImage::where('color_id', $colorId->color)
-                ->where('product_id', $request->productId)
-                ->first();
-            $image = $productImage->image ?? '';
-        }
+    //     $image = '';
+    //     if ($colorId) {
+    //         $productImage = ProductImage::where('color_id', $colorId->color)
+    //             ->where('product_id', $request->productId)
+    //             ->first();
+    //         $image = $productImage->image ?? '';
+    //     }
 
-        for ($i = 0; $i < $quantityToAdd; $i++) {
-            $cart = new Cart();
-            $cart->user_id = $userId;
-            $cart->guest_token = $guestToken;
-            $cart->product_id = $request->productId;
-            $cart->product_name = $request->productName;
-            $cart->product_style_no = $request->productStyleNo;
-            $cart->product_slug = $request->productSlug;
-            $cart->product_variation_id = $request->variationId;
-            $cart->price = $request->price;
-            $cart->offer_price = $request->offer_price;
-            $cart->qty = 1;
-            $cart->product_image = $image;
-            $cart->save();
-        }
+    //     for ($i = 0; $i < $quantityToAdd; $i++) {
+    //         $cart = new Cart();
+    //         $cart->user_id = $userId;
+    //         $cart->guest_token = $guestToken;
+    //         $cart->product_id = $request->productId;
+    //         $cart->product_name = $request->productName;
+    //         $cart->product_style_no = $request->productStyleNo;
+    //         $cart->product_slug = $request->productSlug;
+    //         $cart->product_variation_id = $request->variationId;
+    //         $cart->price = $request->price;
+    //         $cart->offer_price = $request->offer_price;
+    //         $cart->qty = 1;
+    //         $cart->product_image = $image;
+    //         $cart->save();
+    //     }
 
-        return redirect()->back()->with('success', "$quantityToAdd items successfully added to your cart.");
-    }
+    //     return redirect()->back()->with('success', "$quantityToAdd items successfully added to your cart.");
+    // }
 
 
     public function details(Request $request, $slug)

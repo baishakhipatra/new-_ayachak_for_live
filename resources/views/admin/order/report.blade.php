@@ -126,9 +126,9 @@
 											@endif
 										</div>
                            		 @endif
-                             @else
-                                 <p class="small text-dark mb-1">&#8377; {{ number_format($item->final_amount) }}</p>
-                             @endif
+                                @else
+                                    <p class="small text-dark mb-1">&#8377; {{ number_format($item->final_amount) }}</p>
+                                @endif
                             </td>
                             
                             @if ($trans)

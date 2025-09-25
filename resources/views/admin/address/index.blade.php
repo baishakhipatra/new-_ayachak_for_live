@@ -36,6 +36,9 @@
                                     <div class="col-auto">
                                         <button type="submit" class="btn btn-outline-danger btn-sm">Search Address</button>
                                     </div>
+                                    <div class="col-auto">
+                                        <a href="{{route('admin.address.index')}}" class="btn btn-secondary">Reset</a>
+                                    </div>
                                 </div>
                                 </form>
                             </div>
@@ -174,16 +177,6 @@
                             @error('landmark') <p class="small text-danger">{{ $message }}</p> @enderror
                         </div>
                         <div class="form-group mb-3">
-                            <label class="label-control">Latitude</label>
-                            <input type="text" name="lat" placeholder="" class="form-control" value="{{old('lat')}}">
-                            @error('lat') <p class="small text-danger">{{ $message }}</p> @enderror
-                        </div>
-                        <div class="form-group mb-3">
-                            <label class="label-control">Longitude</label>
-                            <input type="text" name="lng" placeholder="" class="form-control" value="{{old('lng')}}">
-                            @error('lng') <p class="small text-danger">{{ $message }}</p> @enderror
-                        </div>
-                        <div class="form-group mb-3">
                             <label class="label-control">State <span class="text-danger">*</span> </label>
                             <input type="text" name="state" placeholder="" class="form-control" value="{{old('state')}}">
                             @error('state') <p class="small text-danger">{{ $message }}</p> @enderror
@@ -197,11 +190,6 @@
                             <label class="label-control">Pin <span class="text-danger">*</span> </label>
                             <input type="number" name="pin" placeholder="" class="form-control" value="{{old('pin')}}">
                             @error('pin') <p class="small text-danger">{{ $message }}</p> @enderror
-                        </div>
-                        <div class="form-group mb-3">
-                            <label class="label-control">Type <span class="text-danger">*</span> </label>
-                            <input type="text" name="type" placeholder="" class="form-control" value="{{old('type')}}">
-                            @error('type') <p class="small text-danger">{{ $message }}</p> @enderror
                         </div>
                         <div class="form-group">
                             <button type="submit" class="btn btn-sm btn-danger">Add New</button>

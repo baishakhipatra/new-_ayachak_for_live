@@ -15,7 +15,6 @@ interface ProductInterface
     public function create(array $data);
     public function update($id, array $data);
     public function toggle($id);
-    public function sale($id);
     public function delete($id);
     public function deleteSingleImage($id);
 }

@@ -9,13 +9,6 @@
             <div class="card">    
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-md-2">
-                        @if($data->image)
-                            <img src="{{asset($data->image)}}" alt="" style="height: 100px" class="mr-4">
-                        @else
-                            <img src="{{asset('backend_asset/images/placeholder-image.jpg')}}" alt="" class="mr-4" style="width: 100px;height: 100px;border-radius: 50%;">
-                        @endif
-                        </div>
                         <div class="col-md-10">
                             <h3>{{ $data->fname.' '.$data->lname }}</h3>
                             <p class="small">{{ $data->email }}</p>

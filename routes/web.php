@@ -58,8 +58,6 @@ Route::name('front.')->group(function () {
         Route::get('/order/invoice/{order_no}/download', 'Front\UserController@invoice')->name('order.invoice');
         Route::post('order/product-cancel', 'Front\UserController@productCancel')->name('product.cancel');
         Route::post('order/cancel', 'Front\UserController@orderCancel')->name('order.cancel');
-       // Route::get('order/{id}/invoice', 'Front\UserController@invoice')->name('invoice');
-        //});
     });
 
         

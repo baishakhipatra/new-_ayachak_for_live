@@ -40,7 +40,7 @@ class AppServiceProvider extends ServiceProvider
             $wishlistCount     = 0;
 
             $ip = request()->ip();
-            $systemIp = getHostByName(getHostName());     // server/system IP
+            $systemIp = session()->getId();     // server/system IP
 
             /** -------------------------------
              * Categories

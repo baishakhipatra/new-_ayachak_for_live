@@ -105,14 +105,16 @@
                                                 </div>
                                             @endforeach
                                         </ul>
+                                        @php
+                                            $allCancelled = $checkoutProducts->every(fn($item) => $item->status == 5);
+                                            $allShippedOrDelivered = $checkoutProducts->every(fn($item) => in_array($item->status, [3,4]));
+                                        @endphp
 
-                                        {{-- Whole Order Cancel Button --}}
-                                        @php $firstItem = $checkoutProducts->first(); @endphp
-                                        @if($firstItem && !in_array($firstItem->status, [3,4,5])) 
+                                        @if(!$allCancelled && !$allShippedOrDelivered)
                                             <button type="button" class="btn btn-danger mb-3" data-bs-toggle="modal" data-bs-target="#cancelOrderModal">
                                                 Cancel Entire Order
                                             </button>
-                                        @elseif($firstItem && $firstItem->status == 5)
+                                        @elseif($allCancelled)
                                             <p class="text-danger mt-3">This order has been cancelled.</p>
                                         @else
                                             <p class="text-success mt-3">This order cannot be cancelled (already shipped).</p>
@@ -131,7 +133,7 @@
                                         </div>
                                         <form action="{{ route('front.order.cancel') }}" method="POST">
                                             @csrf
-                                            <input type="hidden" name="orderId" value="{{ $firstItem->order_id ?? '' }}">
+                                            <input type="hidden" name="orderId" value="{{ $checkoutProducts->first()->order_id ?? '' }}">
                                             <div class="modal-body">
                                                 <div class="mb-3">
                                                     <label for="cancellationReason" class="form-label">Cancellation Reason</label>

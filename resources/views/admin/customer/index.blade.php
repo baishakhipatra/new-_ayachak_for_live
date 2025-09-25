@@ -35,6 +35,9 @@
                                         <div class="col-auto">
                                             <button type="submit" class="btn btn-outline-danger btn-sm">Search Customer</button>
                                         </div>
+                                        <div class="col-auto">
+                                            <a href="{{route('admin.customer.index')}}" class="btn btn-secondary">Reset</a>
+                                        </div>
                                     </div>
                                 </form>
                             </div>
@@ -85,9 +88,7 @@
                                         <label class="form-check-label" for="flexCheckDefault"></label>
                                     </div>
                                     </th>
-                                    <th class="text-center"><i class="fi fi-br-picture"></i></th>
                                     <th>Name</th>
-                                    {{-- <th>Orders</th> --}}
                                     <th width="30%">Contact</th>
                                     <th>Gender</th>
                                     <th>Status</th>
@@ -115,16 +116,8 @@
                                         }
                                         @endphp>
                                     </td>
-                                    <td class="text-center column-thumb">
-                                        {{-- <img src="{{ asset($item->image) }}"> --}}
-                                        @if($item->image)
-                                            <img src="{{asset($item->image)}}" alt="" style="height: 100px" class="mr-4">
-                                        @else
-                                            <img src="{{asset('backend_asset/images/placeholder-image.jpg')}}" alt="" class="mr-4" style="width: 100px;height: 100px;border-radius: 50%;">
-                                        @endif
-                                    </td>
                                     <td>
-                                        {{$item->fname.' '.$item->lname}}
+                                        {{ ucwords($item->fname.' '.$item->lname) }}
                                         <div class="row__action">
                                             <a href="{{ route('admin.customer.view', [$item->id, 'mode'=>'edit']) }}">Edit</a>
                                             <a href="{{ route('admin.customer.view', [$item->id, 'mode'=>'view']) }}">View</a>

@@ -11,11 +11,6 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="d-flex">
-                                @if($data->user->image)
-                                    <img src="{{asset($data->user->image)}}" alt="" style="height: 100px" class="mr-4">
-                                @else
-                                    <img src="{{asset('backend_asset/images/placeholder-image.jpg')}}" alt="" class="me-4" style="width: 65px;height: 65px;border-radius: 50%;">
-                                @endif
                                 <div>
                                     <h5>{{$data->user->fname.' '.$data->user->lname}}</h5>
                                     <p class="text-muted small mb-0 mt-2">{{$data->user->email}}</p>
@@ -31,9 +26,6 @@
                             <p class="text-muted small mb-1">Landmark</p>
                             <p class="text-dark small">{{$data->landmark}}</p>
 
-                            <p class="text-muted small mb-1">LAT & LNG</p>
-                            <p class="text-dark small">{{$data->lat.' | '.$data->lng}}</p>
-
                             <p class="text-muted small mb-1">State</p>
                             <p class="text-dark small">{{$data->state}}</p>
 
@@ -42,15 +34,7 @@
 
                             <p class="text-muted small mb-1">Pincode</p>
                             <p class="text-dark small">{{$data->pin}}</p>
-
-                            <p class="text-muted small mb-1">Type</p>
-                            <p class="text-dark small">{{ ($data->type == 1) ? 'Home' : ($data->type == 2 ? 'Work' : 'Other') }}</p>
                         </div>
-                        {{-- <div class="col-md-8">
-                            <h5 class="text-muted">Address details</h5>
-                            <h3>{{ $data->name }}</h3>
-                            <p class="small">{{ $data->description }}</p>
-                        </div> --}}
                     </div>  
                 </div>
             </div>
@@ -83,16 +67,6 @@
                             @error('landmark') <p class="small text-danger">{{ $message }}</p> @enderror
                         </div>
                         <div class="form-group mb-3">
-                            <label class="label-control">Latitude </label>
-                            <input type="text" name="lat" placeholder="" class="form-control" value="{{$data->lat}}">
-                            @error('lat') <p class="small text-danger">{{ $message }}</p> @enderror
-                        </div>
-                        <div class="form-group mb-3">
-                            <label class="label-control">Longitude</label>
-                            <input type="text" name="lng" placeholder="" class="form-control" value="{{$data->lng}}">
-                            @error('lng') <p class="small text-danger">{{ $message }}</p> @enderror
-                        </div>
-                        <div class="form-group mb-3">
                             <label class="label-control">State <span class="text-danger">*</span> </label>
                             <input type="text" name="state" placeholder="" class="form-control" value="{{$data->state}}">
                             @error('state') <p class="small text-danger">{{ $message }}</p> @enderror
@@ -107,15 +81,10 @@
                             <input type="number" name="pin" placeholder="" class="form-control" value="{{$data->pin}}">
                             @error('pin') <p class="small text-danger">{{ $message }}</p> @enderror
                         </div>
-                        <div class="form-group mb-3">
-                            <label class="label-control">Type <span class="text-danger">*</span> </label>
-                            <input type="text" name="type" placeholder="" class="form-control" value="{{$data->type}}">
-                            @error('type') <p class="small text-danger">{{ $message }}</p> @enderror
-                        </div>
                         @if(request()->get('mode') == 'edit')
-                        <div class="form-group">
-                            <button type="submit" class="btn btn-sm btn-danger">Update</button>
-                        </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-sm btn-danger">Update</button>
+                            </div>
                         @endif
                     </form>
                 </div>

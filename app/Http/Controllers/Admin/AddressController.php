@@ -35,13 +35,9 @@ class AddressController extends Controller
             "user_id" => "required|integer",
             "address" => "required|string|max:255",
             "landmark" => "required|string|max:255",
-            "lat" => "nullable",
-            "lng" => "nullable",
-            "type" => "required|integer",
             "state" => "required|string",
             "city" => "required|string",
             "pin" => "required|integer|digits:6",
-            "type" => "required|integer",
         ]);
 
         $params = $request->except('_token');
@@ -68,13 +64,9 @@ class AddressController extends Controller
             "user_id" => "required|integer",
             "address" => "required|string|max:255",
             "landmark" => "required|string|max:255",
-            "lat" => "nullable",
-            "lng" => "nullable",
-            "type" => "required|integer",
             "state" => "required|string",
             "city" => "required|string",
             "pin" => "required|integer|digits:6",
-            "type" => "required|integer",
         ]);
 
         $params = $request->except('_token');

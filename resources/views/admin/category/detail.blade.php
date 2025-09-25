@@ -45,8 +45,7 @@
                                 <tr>
                                     <th class="text-center"><i class="fi fi-br-picture"></i></th>
                                     <th>Name</th>
-                                    <th>Style No.</th>
-                                    <th>Collection</th>
+                                    <th>Product No.</th>
                                     <th>Price</th>
                                     <th>Status</th>
                                 </tr>
@@ -74,7 +73,6 @@
                                             </div>
                                         </td>
                                         <td>{{$item->style_no}}</td>
-                                        <td>{{$item->collection ? $item->collection->name : ''}}</td>
                                         <td>
                                             <small> <del>{{$item->price}}</del> </small> Rs. {{$item->offer_price}}
                                         </td>

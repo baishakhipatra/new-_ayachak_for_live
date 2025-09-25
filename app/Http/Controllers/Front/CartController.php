@@ -62,7 +62,7 @@ class CartController extends Controller
         // Detect user or guest
         $userId   = auth()->check() ? auth()->id() : null;
         $userIp   = request()->ip();
-        $systemIp = getHostByName(getHostName());     // server/system IP
+        $systemIp = session()->getId();     // server/system IP
 
         // Check if already exists in cart
         $existingCart = Cart::where('product_id', $product->id)
@@ -105,7 +105,7 @@ class CartController extends Controller
 
         $userId   = auth()->id();
         $userIp   = request()->ip();
-        $systemIp = getHostByName(getHostName());
+        $systemIp = session()->getId();
 
         $cartItems = Cart::with(['productDetails','variation'])
             ->when($userId, fn($q) => $q->where('user_id', $userId))
@@ -160,7 +160,7 @@ class CartController extends Controller
 
         $userId   = Auth::id();
         $userIp   = $request->ip();
-        $systemIp = getHostByName(getHostName());
+        $systemIp = session()->getId();
 
         $cart = Cart::with('variation', 'productDetails')
             ->when($userId, fn($q) => $q->where('user_id', $userId))
@@ -207,7 +207,7 @@ class CartController extends Controller
     {
         $userId   = Auth::id();
         $userIp   = $request->ip();
-        $systemIp = getHostByName(getHostName());
+        $systemIp = session()->getId();
 
         $cart = Cart::when($userId, fn($q) => $q->where('user_id', $userId))
             ->when(!$userId, fn($q) => $q->where('ip', $userIp)->where('guest_token', $systemIp))
@@ -229,7 +229,7 @@ class CartController extends Controller
     {
         $userId   = Auth::guard('web')->id();
         $userIp   = request()->ip();
-        $systemIp = getHostByName(getHostName());
+        $systemIp = session()->getId();
 
         $cartItems = Cart::with(['productDetails', 'variation'])
             ->when($userId, fn($q) => $q->where('user_id', $userId))

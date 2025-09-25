@@ -38,6 +38,9 @@
                                 <div class="col-auto">
                                     <button type="submit" class="btn btn-outline-danger btn-sm">Search Category</button>
                                 </div>
+                                <div class="col-auto">
+                                    <a href="{{ route('admin.category.index') }}" class="btn btn-secondary">Reset</a>
+                                </div>
                             </div>
                         </form>
                     </div>

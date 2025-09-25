@@ -55,6 +55,9 @@
                     </div>
                 @endif
                 <div class="cart-total">
+                    <span>Shipping</span> Free
+                </div>
+                <div class="cart-total">
                     <span>Total</span> ₹{{ number_format($order->final_amount, 2) }}
                 </div>
             </div>

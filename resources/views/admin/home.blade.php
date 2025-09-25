@@ -84,7 +84,7 @@
                                 <img src="{{asset($product->image)}}">
                             </td>
                             <td>
-                                <p style="height: 42px;overflow: hidden;text-overflow: ellipsis;margin-bottom: 0;">{{$product->name}}</p>
+                                <p style="height: 42px;overflow: hidden;text-overflow: ellipsis;margin-bottom: 0;">{{ucwords($product->name)}}</p>
                                 <div class="row__action">
                                     <a href="{{ route('admin.product.edit', $product->id) }}">Edit</a>
                                     <a href="{{ route('admin.product.view', $product->id) }}">View</a>

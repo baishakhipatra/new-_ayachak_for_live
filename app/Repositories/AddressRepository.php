@@ -15,8 +15,6 @@ class AddressRepository implements AddressInterface
     public function getSearchAddress(string $term)
     {
         return Address::where('address', 'LIKE', '%' . $term . '%')
-            ->orWhere('lat', 'LIKE', '%' . $term . '%')
-            ->orWhere('lng', 'LIKE', '%' . $term . '%')
             ->orWhere('state', 'LIKE', '%' . $term . '%')
             ->orWhere('city', 'LIKE', '%' . $term . '%')
             ->orWhere('landmark','LIKE', '%'.$term.'%')
@@ -40,12 +38,9 @@ class AddressRepository implements AddressInterface
         $newEntry->user_id = $collectedData['user_id'];
         $newEntry->address = $collectedData['address'];
         $newEntry->landmark = $collectedData['landmark'];
-        $newEntry->lat = $collectedData['lat'] ?? '';
-        $newEntry->lng = $collectedData['lng'] ?? '';
         $newEntry->state = $collectedData['state'];
         $newEntry->city = $collectedData['city'];
         $newEntry->pin = $collectedData['pin'];
-        $newEntry->type = $collectedData['type'];
         $newEntry->save();
 
         return $newEntry;
@@ -58,12 +53,9 @@ class AddressRepository implements AddressInterface
         $updatedEntry->user_id = $collectedData['user_id'];
         $updatedEntry->address = $collectedData['address'];
         $updatedEntry->landmark = $collectedData['landmark'];
-        $updatedEntry->lat = $collectedData['lat'] ?? '';
-        $updatedEntry->lng = $collectedData['lng'] ?? '';
         $updatedEntry->state = $collectedData['state'];
         $updatedEntry->city = $collectedData['city'];
         $updatedEntry->pin = $collectedData['pin'];
-        $updatedEntry->type = $collectedData['type'];
         $updatedEntry->save();
 
         return $updatedEntry;

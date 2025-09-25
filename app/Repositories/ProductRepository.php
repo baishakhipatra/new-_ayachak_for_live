@@ -233,19 +233,6 @@ class ProductRepository implements ProductInterface
         return $updatedEntry;
     }
 
-    public function sale($id)
-    {
-        $saleExist = Sale::where('product_id', $id)->first();
-
-        if ($saleExist) {
-            $resp = Sale::where(['product_id' => $id])->delete();
-            return $resp;
-        } else {
-            $resp = Sale::create(['product_id' => $id]);
-            return $resp;
-        }
-    }
-
     public function delete($id)
     {
         Product::destroy($id);

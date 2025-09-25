@@ -41,19 +41,19 @@
                     <div class="d-flex justify-content-between">
                         <div>
                             <strong>Bill To:</strong><br>
-                            {{ $data->fname }} {{ $data->lname }}<br>
-                            {{ $data->billing_address }}, {{ $data->billing_city }}, {{ $data->billing_state }}, {{ $data->billing_country }}<br>
-                            Landmark: {{ $data->billing_landmark }}<br>
+                            {{ ucwords($data->fname) }} {{ ucwords($data->lname) }}<br>
+                            {{ ucwords($data->billing_address) }}, {{ ucwords($data->billing_city) }}, {{ ucwords($data->billing_state) }}, {{ ucwords($data->billing_country) }}<br>
+                            Landmark: {{ ucwords($data->billing_landmark) }}<br>
                             Phone: {{ $data->mobile }}
                         </div>
                         <div>
                             <strong>Ship To:</strong><br>
-                            {{ $data->fname }} {{ $data->lname }}<br>
-                            {{ $data->shipping_address ?? $data->billing_address }},
-                            {{ $data->shipping_city ?? $data->billing_city }},
-                            {{ $data->shipping_state ?? $data->billing_state }},
-                            {{ $data->shipping_country ?? $data->billing_country }}<br>
-                            Landmark: {{ $data->billing_landmark }}<br>
+                            {{ ucwords($data->fname) }} {{ $data->lname }}<br>
+                            {{ ucwords($data->shipping_address) ?? ucwords($data->billing_address) }},
+                            {{ ucwords($data->shipping_city) ?? ucwords($data->billing_city) }},
+                            {{ ucwords($data->shipping_state) ?? ucwords($data->billing_state) }},
+                            {{ ucwords($data->shipping_country) ?? ucwords($data->billing_country) }}<br>
+                            Landmark: {{ ucwords($data->billing_landmark) }}<br>
                             Alernative Phone: {{ $data->alt_mobile }}
                         </div>
                     </div>
@@ -70,7 +70,6 @@
                                 <th>Price (₹)</th>
                                 <th class="text-end">Taxable Value (₹)</th>
                                 <th class="text-end">GST (₹)</th>
-                                <th class="text-end">Discount (₹)</th>
                                 <th class="text-end">Total (₹)</th>
                             </tr>
                         </thead>
@@ -83,14 +82,21 @@
                                     <td>{{ number_format($product->total, 2) }}</td>
                                     <td class="text-end">{{ number_format(($product->total) - ($product->gst_amount),2) }}</td>
                                     <td class="text-end">{{ number_format($product->gst_amount,2) }}</td>
-                                    <td class="text-end"></td>
                                     <td class="text-end">{{ number_format($product->total,2) }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th colspan="7" class="text-end">Grand Total (₹)</th>
+                                <th colspan="6" class="text-end">Grand Total (₹)</th>
+                                <th class="text-end">{{ number_format($data->amount, 2) }}</th>
+                            </tr>
+                            <tr>
+                                <th colspan="6" class="text-end">Discount</th>
+                                <th class="text-end">{{ number_format($data->discount_amount, 2) }}</th>
+                            </tr>
+                            <tr>
+                                <th colspan="6" class="text-end">Final Amount</th>
                                 <th class="text-end">{{ number_format($data->final_amount, 2) }}</th>
                             </tr>
                         </tfoot>
@@ -123,11 +129,11 @@
 @section('script')
 <script src="{{ asset('js/printThis.js') }}"></script>
 <script>
-function printInvoice() {
-    $('.printDiv').printThis({
-        pageTitle: '{{ $data->order_no }}'
-    });
-}
+    function printInvoice() {
+        $('.printDiv').printThis({
+            pageTitle: '{{ $data->order_no }}'
+        });
+    }
 </script>
-@endsection
+@endsection 
 

@@ -206,14 +206,6 @@
 
             <div class="card shadow-sm">
                 <div class="card-body">
-                    <a href="javascript: void(0)" class="btn btn-danger chat_btn" title="Order Remark" onclick="remarkModal({{$data->id}}, '{{$data->order_no}}')">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-message-square"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-                        Order Remark
-                    </a>
-
-                    <br>
-                    <br>
-
                     <div class="form-group mb-3">
                         <p class="small">Order Time : {{date('j M Y g:i A', strtotime($data->created_at))}}</p>
                         <h5>#{{$data->order_no}}</h5>
@@ -337,32 +329,6 @@
         </div>
     </div>
 </section>
-
-{{-- Order Remark Modal --}}
-<div class="chat_box" id="orderRemarkModal">
-    <div class="card">
-        <div class="card-header d-flex align-items-center justify-content-between">
-            <h5 class="modal-title"></h5>
-            <button type="button" class="btn-close chat_close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="card-body"></div>
-        <div class="card-footer p-0">
-            <form action="" method="post" class="w-100 remark-form">
-                <div class="row g-3 align-items-center">
-                    <div class="col">
-                        <div class="input-group input-group-lg">
-                            <input type="text" class="form-control rounded-0" placeholder="Type something..." aria-label="Type something..." aria-describedby="remark-submit" name="comment">
-                            <input type="hidden" name="order_id" value="">
-                            <button class="btn btn-secondary rounded-0" type="submit" id="remark-submit">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-send"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
 @endsection
 
 @section('script')
