@@ -212,17 +212,6 @@
                 <div class="card shadow-sm">
                     <div class="card-body">
                         <div class="row mb-3">
-                            {{-- <div class="col-sm-6">
-                                <label class="label-control">Range <span class="text-danger">*</span></label>
-                                <select class="form-control" name="collection_id">
-                                    <option hidden selected>Select...</option>
-                                    @foreach ($collections as $index => $item)
-                                        <option value="{{$item->id}}" {{ ($data->collection_id == $item->id) ? 'selected' : '' }}>{{ $item->name }}</option>
-                                    @endforeach
-                                </select>
-                                @error('collection_id') <p class="small text-danger">{{ $message }}</p> @enderror
-                            </div> --}}
-
                             <div class="col-sm-6">
                                 <label class="label-control">Category <span class="text-danger">*</span></label>
                                 <select class="form-control" name="cat_id">
@@ -233,16 +222,6 @@
                                 </select>
                                 @error('cat_id') <p class="small text-danger">{{ $message }}</p> @enderror
                             </div>
-
-                            {{-- <div class="col-sm-4">
-                                <select class="form-control" name="sub_cat_id">
-                                    <option hidden selected>Select sub-category...</option>
-                                    @foreach ($sub_categories as $index => $item)
-                                        <option value="{{$item->id}}" {{ ($data->sub_cat_id == $item->id) ? 'selected' : '' }}>{{ $item->name }}</option>
-                                    @endforeach
-                                </select>
-                                @error('sub_cat_id') <p class="small text-danger">{{ $message }}</p> @enderror
-                            </div> --}}
                         </div>
 
                         <div class="form-group mb-3">
@@ -267,13 +246,6 @@
                         @error('desc') <p class="small text-danger">{{ $message }}</p> @enderror
                     </div>
                 </div>
-                {{-- <div class="card shadow-sm">
-                    <div class="card-body">
-                        <label class="label-control">Wash Care <span class="text-danger">*</span></label>
-                        <textarea id="wash_care" name="wash_care">{{$data->wash_care}}</textarea>
-                        @error('wash_care') <p class="small text-danger">{{ $message }}</p> @enderror
-                    </div>
-                </div> --}}
                 <div class="card shadow-sm">
                     <div class="card-body pt-0">
                         <div class="admin__content">
@@ -383,6 +355,47 @@
                                 </div>
                             </content>
                         </div>
+                        <div class="card shadow-sm mt-3">
+                            <div class="card-body">
+                                <nav>Product Variation <span class="text-danger">*</span></nav>
+
+                                <table class="table table-bordered" id="variationTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Weight</th>
+                                            <th>SKU Code</th>
+                                            <th>Price</th>
+                                            <th>Offer Price</th>
+                                            <th>Stock</th>
+                                            <th>Variation Images</th>
+                                            <th><button type="button" class="btn btn-sm btn-success" id="addVariation">+</button></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($product->variations as $index => $variation)
+                                        <tr>
+                                            <input type="hidden" name="variations[{{ $index }}][id]" value="{{ $variation->id }}">
+                                            <td><input type="text" name="variations[{{ $index }}][weight]" class="form-control" value="{{ $variation->weight }}"></td>
+                                            <td><input type="text" name="variations[{{ $index }}][code]" class="form-control" value="{{ $variation->code }}"></td>
+                                            <td><input type="number" step="0.01" name="variations[{{ $index }}][price]" class="form-control" value="{{ $variation->price }}"></td>
+                                            <td><input type="number" step="0.01" name="variations[{{ $index }}][offer_price]" class="form-control" value="{{ $variation->offer_price }}"></td>
+                                            <td><input type="number" name="variations[{{ $index }}][stock]" class="form-control" value="{{ $variation->stock }}"></td>
+                                            <td>
+                                                <input type="file" name="variations[{{ $index }}][images][]" class="form-control" multiple>
+                                                <small class="text-muted">You can upload multiple images for this variation.</small>
+                                                <div class="existing-images mt-1">
+                                                    @foreach($variation->images as $img)
+                                                        <img src="{{ asset($img->image_path) }}" style="width: 50px; height: 50px;" class="me-1 mb-1">
+                                                    @endforeach
+                                                </div>
+                                            </td>
+                                            <td><button type="button" class="btn btn-sm btn-danger removeVariation">x</button></td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -409,37 +422,6 @@
                         </script>
                     </div>
                 </div>
-				{{-- <div class="card shadow-sm">
-                    <div class="card-header">
-                        Size chart image
-                    </div>
-                    <div class="card-body">
-                        <div class="w-100 product__thumb">
-                            <label for="size_chart_image">
-                                @if (
-                                    $data->size_chart_image == NULL ||
-                                    !file_exists($data->size_chart_image)
-                                )
-                                    <img id="output2" src="{{ asset('img/placeholder-image.jpg') }}"/>
-                                @else
-                                    <img id="output2" src="{{ asset($data->size_chart_image) }}"/>
-                                @endif
-                            </label>
-                            @error('size_chart_image') <p class="small text-danger">{{ $message }}</p> @enderror
-                        </div>
-                        <input type="file" id="size_chart_image" accept="image/*" name="size_chart_image" onchange="loadFile2(event)" class="d-none">
-                        <small>Image Size: less than 200kb</small>
-                        <script>
-                            var loadFile2 = function(event) {
-                                var output2 = document.getElementById('output2');
-                                output2.src = URL.createObjectURL(event.target.files[0]);
-                                output2.onload = function() {
-                                    URL.revokeObjectURL(output2.src) // free memory
-                                }
-                            };
-                        </script>
-                    </div>
-                </div> --}}
                 <div class="card shadow-sm" style="position: sticky;top: 60px;">
                     <div class="card-body text-end">
                         <input type="hidden" name="product_id" value="{{$data->id}}">
@@ -456,6 +438,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" integrity="sha512-uto9mlQzrs59VwILcLiRYeLKPPbS/bT71da/OEBYEwcdNUk8jYIy+D176RYoop1Da+f9mvkYrmj5MCLZWEtQuA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <script>
+
+        ClassicEditor.create( document.querySelector( '#product_des' ) ).catch( error => {
+            console.error( error );
+        });
+
+        ClassicEditor.create( document.querySelector( '#product_short_des' ) ).catch( error => {
+            console.error( error );
+        });
 
         function deleteImage(imgId, id1, id2) {
             $.ajax({
@@ -486,26 +476,6 @@
             }
         });
 
-        function updateOrder(data) {
-            // $('.loading-data').show();
-            $.ajax({
-                url : "{{route('admin.product.variation.color.position')}}",
-                type : 'POST',
-                data: {
-                    _token : '{{csrf_token()}}',
-                    position : data
-                },
-                success:function(data) {
-                    // toastFire('success', 'Color position updated successfully');
-                    // $('.loading-data').hide();
-                    if (result.status == 200) {
-                        toastFire('success', result.message);
-                    } else {
-                        toastFire('error', result.message);
-                    }
-                }
-            });
-        }
 
         // image fabric upload
         $image_crop = $('#image_demo').croppie({
@@ -533,48 +503,8 @@
             $('#uploadimageModal').modal('show');
         });
 
-        function fabricUploadFunc(color_id) {
-            $('input[name=color_fabric_color_id]').val(color_id)
-        }
 
-        $('.crop_image').click(function (event) {
-            $image_crop.croppie('result', {
-                type: 'canvas',
-                size: 'viewport'
-            }).then(function (response) {
-                $.ajax({
-                    url: "{{ route('admin.product.variation.color.fabric.upload') }}",
-                    type: "POST",
-                    data: {
-                        "_token": '{{ csrf_token() }}',
-                        "image": response,
-                        "product_id": '{{$id}}',
-                        "color_id": $('input[name=color_fabric_color_id]').val(),
-                    },
-                    beforeSend: function() {
-                        $('.crop_image').html('Please wait').attr('disabled', true);
-                    },
-                    success: function (result) {
-                        $('#uploadimageModal').modal('hide');
-                        $('.crop_image').html('Crop & Upload Image').attr('disabled', false);
-                        if(result.error == true){
-                            toastFire('warning', result.message);
-                        } else {
-                            const img = `<img src="${result.image}" alt="">`;
 
-                            $('#image_demo').html('');
-                            $('#fabric_id_'+result.color_id).attr('src', result.image);
-                            $('#color_box_down_'+result.color_id+' div').html(img);
-                            $('#color_box_up_'+result.color_id+' div').html(img);
-                            toastFire('success', result.message);
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        toastFire('warning', error);
-                    }
-                });
-            })
-        });
 
         // bulk action
         $('select[name="bulkAction"]').on('change', function() {
@@ -584,9 +514,9 @@
         $(document).ready(function () {
             function toggleGstField() {
                 if ($('#gstToggle').is(':checked')) {
-                    $('#gst').prop('disabled', false).prop('required', true);
+                    $('#gst').prop('disabled', false).prop(true);
                 } else {
-                    $('#gst').val('').prop('disabled', true).prop('required', false);
+                    $('#gst').val('').prop('disabled', true).prop(false);
                 }
             }
 
@@ -597,6 +527,34 @@
             $('#gstToggle').on('change', function () {
                 toggleGstField();
             });
+        });
+
+
+        let variationIndex = {{ $product->variations->count() }};
+
+        document.getElementById('addVariation').addEventListener('click', function() {
+            let tableBody = document.querySelector('#variationTable tbody');
+            let row = `
+                <tr>
+                    <td><input type="text" name="variations[${variationIndex}][weight]" class="form-control"></td>
+                    <td><input type="text" name="variations[${variationIndex}][code]" class="form-control"></td>
+                    <td><input type="number" step="0.01" name="variations[${variationIndex}][price]" class="form-control"></td>
+                    <td><input type="number" step="0.01" name="variations[${variationIndex}][offer_price]" class="form-control"></td>
+                    <td><input type="number" name="variations[${variationIndex}][stock]" class="form-control"></td>
+                    <td>
+                        <input type="file" name="variations[${variationIndex}][images][]" class="form-control" multiple>
+                    </td>
+                    <td><button type="button" class="btn btn-sm btn-danger removeVariation">x</button></td>
+                </tr>
+            `;
+            tableBody.insertAdjacentHTML('beforeend', row);
+            variationIndex++;
+        });
+
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('removeVariation')) {
+                e.target.closest('tr').remove();
+            }
         });
 
     </script>

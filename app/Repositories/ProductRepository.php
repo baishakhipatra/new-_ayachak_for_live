@@ -132,19 +132,30 @@ class ProductRepository implements ProductInterface
             $newEntry->image = $upload_path . $uploadedImage;
             $newEntry->save();
 
-            // multiple image upload handling
-            if (isset($data['product_images'])) {
-                $multipleImageData = [];
-                foreach ($data['product_images'] as $imagekey => $imagevalue) {
-                    $imageName = mt_rand() . '-' . time() . "." . $image->getClientOriginalName();
-                    $imagevalue->move($upload_path, $imageName);
-                    $image_path = $upload_path . $imageName;
-                    $multipleImageData[] = [
+            if (isset($data['variations']) && is_array($data['variations'])) {
+                foreach ($data['variations'] as $variation) {
+                   $variationModel = ProductVariation::create([
                         'product_id' => $newEntry->id,
-                        'image' => $image_path
-                    ];
+                        'weight' => $variation['weight'],
+                        'code' => $variation['code'],
+                        'price' => $variation['price'],
+                        'offer_price' => $variation['offer_price'] ?? null,
+                        'stock'       => $variation['stock'] ?? 0,
+                    ]);
+
+                    if (!empty($variation['images'])) {
+                        $variationUploadPath = "uploads/product/product-images/";
+                        foreach ($variation['images'] as $imageFile) {
+                            //$path = $imageFile->store('product_variations', 'public');
+                            $imageName = time() . '-' . mt_rand() . '.' . $imageFile->getClientOriginalExtension();
+                            $imageFile->move($variationUploadPath, $imageName);
+                            ProductVariationImage::create([
+                                'product_variation_id' => $variationModel->id, 
+                                'image_path'           => $variationUploadPath . $imageName,
+                            ]);
+                        }
+                    }
                 }
-                if (count($multipleImageData) > 0) ProductImage::insert($multipleImageData);
             }
             DB::commit();
             return $newEntry;
@@ -157,7 +168,6 @@ class ProductRepository implements ProductInterface
     public function update($id, array $newDetails)
     {
         // dd($newDetails);
-
         DB::beginTransaction();
 
         try {
@@ -201,21 +211,47 @@ class ProductRepository implements ProductInterface
                 $updatedEntry->image = $upload_path . $uploadedImage;
             }
 
-			if (isset($newDetails['size_chart_image'])) {
-                // delete old image
-                if (Storage::exists($updatedEntry->size_chart_image)) unlink($updatedEntry->size_chart_image);
-
-                $image = $collectedData['size_chart_image'];
-                $imageName = $styleNoSlug . '-' . mt_rand() . '-' . time() . "." . $image->getClientOriginalExtension();
-                $image->move($upload_path, $imageName);
-                $uploadedImage = $imageName;
-                $updatedEntry->size_chart_image = $upload_path . $uploadedImage;
-            }
-
             $updatedEntry->save();
+            if (isset($newDetails['variations']) && is_array($newDetails['variations'])) {
+            foreach ($newDetails['variations'] as $variationData) {
+          
+                if (isset($variationData['id']) && $variation = ProductVariation::find($variationData['id'])) {
+                
+                    $variation->update([
+                        'weight'      => $variationData['weight'],
+                        'code'        => $variationData['code'],
+                        'price'       => $variationData['price'],
+                        'offer_price' => $variationData['offer_price'] ?? null,
+                        'stock'       => $variationData['stock'] ?? 0,
+                    ]);
+                } else {
+                 
+                    $variation = ProductVariation::create([
+                        'product_id'  => $updatedEntry->id,
+                        'weight'      => $variationData['weight'],
+                        'code'        => $variationData['code'],
+                        'price'       => $variationData['price'],
+                        'offer_price' => $variationData['offer_price'] ?? null,
+                        'stock'       => $variationData['stock'] ?? 0,
+                    ]);
+                }
+                if (!empty($variationData['images'])) {
+                    $variationUploadPath = "uploads/product/product-images/";
+                    foreach ($variationData['images'] as $imageFile) {
+                        $imageName = time() . '-' . mt_rand() . '.' . $imageFile->getClientOriginalExtension();
+                        $imageFile->move($variationUploadPath, $imageName);
+                        //$path = $imageFile->store('product_variations', 'public');
+                        ProductVariationImage::create([
+                            'product_variation_id' => $variation->id,
+                            'image_path'           => $variationUploadPath . $imageName,
+                        ]);
+                    }
+                }
+            }
+        }
 
-            DB::commit();
-            return $updatedEntry;
+        DB::commit();
+        return $updatedEntry;
         } catch (\Throwable $th) {
             throw $th;
             DB::rollback();

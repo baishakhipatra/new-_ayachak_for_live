@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('page', 'Product SKU Codes')
+@section('page', 'Product Variant')
 
 @section('content')
 <section>
@@ -19,7 +19,6 @@
                 <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#importStock">
                     Stock Inventory
                 </button>
-                {{-- <a href="{{route('admin.product.sku_list.export', ['search' => request('search')])}}" class="btn btn-sm btn-primary">Export</a> --}}
                 <a href="{{ route('admin.product.sku_list.export', request()->query()) }}" 
                     class="btn btn-sm btn-primary">
                     Export
@@ -332,7 +331,7 @@
                     data.forEach(img => {
                         html += `
                             <div class="col-md-3 mb-3 text-center">
-                                <img src="/${img.image_path}" class="img-fluid mb-2" style="max-height: 150px;">
+                                <img src="{{ asset('') }}${img.image_path}" class="img-fluid mb-2" style="max-height: 150px;">
                                 <button class="btn btn-sm btn-danger deleteImageBtn" data-id="${img.id}">Delete</button>
                             </div>
                         `;

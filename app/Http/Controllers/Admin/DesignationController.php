@@ -10,7 +10,7 @@ use App\Models\{Admin, DesignationPermission, Designation, Permission};
 class DesignationController extends Controller
 {
     public function index() {
-        $designations = Designation::get();
+        $designations = Designation::where('name','!=','Super Admin')->get();
         return view('admin.designation.index', compact('designations'));
     }
 
@@ -18,7 +18,7 @@ class DesignationController extends Controller
         return view('admin.designation.create');
     }
 
-     public function store(Request $request) {
+    public function store(Request $request) {
 
         $validator = Validator::make($request->all(), [
             'name'             => 'required|string|max:255',

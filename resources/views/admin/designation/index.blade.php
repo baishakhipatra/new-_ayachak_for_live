@@ -8,7 +8,6 @@
 <div class="card">
   <div class="card-footer d-flex justify-content-end">
     <a href="{{ route('admin.designation.create') }}" class="btn btn-primary btn-sm">+ Add Designation</a>
- 
   </div>
 
   <div class="px-3 py-2">

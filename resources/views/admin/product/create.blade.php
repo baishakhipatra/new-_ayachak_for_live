@@ -11,7 +11,8 @@
 </style>
 
 <section>
-    <form method="post" action="{{ route('admin.product.store') }}" enctype="multipart/form-data">@csrf
+    <form method="post" action="{{ route('admin.product.store') }}" enctype="multipart/form-data">
+        @csrf
         <div class="row">
             <div class="col-lg-9">
                 <div class="card shadow-sm">
@@ -155,8 +156,6 @@
                                 </div>
                             </content>
                         </div>
-
-
                         <div class="admin__content">
                             <aside>
                                 <nav>Pack <span class="text-danger">*</span></nav>
@@ -172,6 +171,39 @@
                                     </div>
                                 </div>
                             </content>
+                        </div>
+                        <div class="card shadow-sm mt-3">
+                            <div class="card-body">
+                                <nav>Product Variation <span class="text-danger">*</span></nav>
+
+                                <table class="table table-bordered" id="variationTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Weight</th>
+                                            <th>SKU Code</th>
+                                            <th>Price</th>
+                                            <th>Offer Price</th>
+                                            <th>Stock</th>
+                                            <th>Variation Images</th>
+                                            <th><button type="button" class="btn btn-sm btn-success" id="addVariation">+</button></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><input type="text" name="variations[0][weight]" class="form-control" value="{{old('weight')}}" required></td>
+                                            <td><input type="text" name="variations[0][code]" class="form-control" value="{{old('code')}}" required></td>
+                                            <td><input type="number" step="0.01" name="variations[0][price]" class="form-control" value="{{old('price')}}" required></td>
+                                            <td><input type="number" step="0.01" name="variations[0][offer_price]" class="form-control" value="{{old('offer_price')}}"></td>
+                                            <td><input type="number" name="variations[0][stock]" class="form-control" value="{{old('stock')}}"></td>
+                                            <td>
+                                                <input type="file" name="variations[0][images][]" class="form-control" multiple>
+                                                <small class="text-muted">You can upload multiple images for this variation.</small>
+                                            </td>
+                                            <td><button type="button" class="btn btn-sm btn-danger removeVariation">x</button></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -221,9 +253,6 @@
     ClassicEditor.create( document.querySelector( '#product_short_des' ) ).catch( error => {
         console.error( error );
     });
-    ClassicEditor.create( document.querySelector( '#wash_care' ) ).catch( error => {
-        console.error( error );
-    });
 
 	$(document).on('click','.removeTimePrice',function(){
 		var thisClickedBtn = $(this);
@@ -246,6 +275,31 @@
         $('#gstToggle').on('change', function () {
             toggleGstField();
         });
+    });
+
+    let variationIndex = 1;
+
+    document.getElementById('addVariation').addEventListener('click', function() {
+        let tableBody = document.querySelector('#variationTable tbody');
+        let row = `
+            <tr>
+                <td><input type="text" name="variations[${variationIndex}][weight]" class="form-control" required></td>
+                <td><input type="text" name="variations[${variationIndex}][code]" class="form-control" required></td>
+                <td><input type="number" step="0.01" name="variations[${variationIndex}][price]" class="form-control" required></td>
+                <td><input type="number" step="0.01" name="variations[${variationIndex}][offer_price]" class="form-control"></td>
+                <td><input type="number" name="variations[${variationIndex}][stock]" class="form-control"></td>
+                <td><input type="file" name="variations[${variationIndex}][images][]" class="form-control"></td>
+                <td><button type="button" class="btn btn-sm btn-danger removeVariation">x</button></td>
+            </tr>
+        `;
+        tableBody.insertAdjacentHTML('beforeend', row);
+        variationIndex++;
+    });
+
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('removeVariation')) {
+            e.target.closest('tr').remove();
+        }
     });
 </script>
 @endsection

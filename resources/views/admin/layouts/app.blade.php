@@ -38,6 +38,7 @@
                 <li class="@if(request()->is('admin/admin-user-management*') || request()->is('admin/user-management*') || request()->is    ('admin/designation*')) active @endif">
                     <a href="javascript:void(0)"><i class="fi fi-br-cube"></i> <span>Super Admin Module</span></a>
                     <ul>
+                        
                         <li class="{{ request()->is('admin/admin-user-management*') ? 'active' : '' }}">
                             <a href="{{ route('admin.admin-user-management.index') }}">
                                 <i class="fi fi-br-database"></i> <span>Role User</span>
@@ -77,7 +78,7 @@
 
                         <li class="{{ ( request()->is('admin/product/create*') ) ? 'active' : '' }}"><a href="{{ route('admin.product.create') }}">Add New</a></li>
 
-                        <li class="{{ ( request()->is('admin/product/sku-list*') ) ? 'active' : '' }}"><a href="{{ route('admin.product.sku_list') }}">Product SKUs</a></li>
+                        <li class="{{ ( request()->is('admin/product/sku-list*') ) ? 'active' : '' }}"><a href="{{ route('admin.product.sku_list') }}">Product Variant</a></li>
                     </ul>
                 </li>
                 @endif

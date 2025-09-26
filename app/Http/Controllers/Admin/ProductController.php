@@ -66,8 +66,7 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-        // dd($request->all());
-
+        //dd($request->all());
         $request->validate([
             "cat_id" => "nullable",
             "sub_cat_id" => "nullable",
@@ -85,13 +84,20 @@ class ProductController extends Controller
             'gst'=>'nullable|regex:/^[^\+\-\&\%]+$/',
             "pack" => "nullable|string|max:255",
 
+        
+            "variations" => "required|array|min:1",
+            "variations.*.weight" => "required|string|max:50",
+            "variations.*.code" => "required|string|max:100|unique:product_variation,code",
+            "variations.*.price" => "required|numeric",
+            "variations.*.offer_price" => "nullable|numeric",
+            "variations.*.stock" => "required|integer|min:0",
+            "variations.*.images.*" => "nullable|image|mimes:jpg,jpeg,png,svg,gif,webp|max:10000000",
         ]);
 
         $params = $request->except('_token');
         $storeData = $this->productRepository->create($params);
 
         if ($storeData) {
-            // return redirect()->route('admin.product.edit', $storeData->id)->with('success', 'New Product created, add Product Variation!');
             return redirect()->route('admin.product.index')->with('success', 'New Product created, add Product Variation!');
 
         } else {
@@ -112,15 +118,16 @@ class ProductController extends Controller
         $data = $this->productRepository->listById($id);
         $images = $this->productRepository->listImagesById($id);
 
+        $product = Product::with('variations.images')->findOrFail($id);
+
         \DB::statement("SET SQL_MODE=''");
 
-        return view('admin.product.edit', compact('id', 'data', 'categories', 'images'));
+        return view('admin.product.edit', compact('id', 'data', 'categories', 'images','product'));
     }
 
     public function update(Request $request)
     {
         // dd($request->all());
-
         $request->validate([
             "product_id" => "required|integer",
             "cat_id" => "nullable|integer",
@@ -130,7 +137,7 @@ class ProductController extends Controller
             "short_desc" => "nullable",
             "desc" => "nullable",
             "price" => "required|integer",
-            "offer_price" => "required|integer",
+            "offer_price" => "nullable|integer",
             "meta_title" => "nullable|string",
             "meta_desc" => "nullable|string",
             "meta_keyword" => "nullable|string",
@@ -140,13 +147,38 @@ class ProductController extends Controller
             "product_images" => "nullable|array",
             'gst'=>'nullable|regex:/^[^\+\-\&\%]+$/',
             "pack" => "nullable|string|max:255",
+
+            
+            "variations" => "required|array|min:1",
+            "variations.*.weight" => "required|string|max:50",
+           "variations.*.code" => [
+                'required',
+                'string',
+                'max:100',
+                function($attribute, $value, $fail) use ($request) {
+                    $index = explode('.', $attribute)[1];
+                    $variationId = $request->input("variations.$index.id") ?? null;
+
+                    $existsQuery = ProductVariation::where('code', $value);
+                    if ($variationId) {
+                        $existsQuery->where('id', '!=', $variationId);
+                    }
+
+                    if ($existsQuery->exists()) {
+                        $fail("The $attribute has already been taken.");
+                    }
+                }
+            ],
+            "variations.*.price" => "required|numeric",
+            "variations.*.offer_price" => "nullable|numeric",
+            "variations.*.stock" => "required|integer|min:0",
+            "variations.*.images.*" => "nullable|image|mimes:jpg,jpeg,png,svg,gif,webp|max:10000000",
         ]);
 
         $params = $request->except('_token');
         $storeData = $this->productRepository->update($request->product_id, $params);
-
+       // dd($storeData);
         if ($storeData) {
-            // return redirect()->route('admin.product.index')->with('success', 'Product updated successfully');
             return redirect()->back()->with('success', 'Product updated successfully');
         } else {
             return redirect()->route('admin.product.update', $request->product_id)->withInput($request->all());
@@ -164,43 +196,6 @@ class ProductController extends Controller
         }
     }
 
-    public function sale(Request $request, $id)
-    {
-        $storeData = $this->productRepository->sale($id);
-
-        // if ($storeData) {
-        return redirect()->route('admin.product.index');
-        // } else {
-        //     return redirect()->route('admin.product.create')->withInput($request->all());
-        // }
-    }
-
-    public function trending(Request $request, $id)
-    {
-        $product = Product::findOrFail($id);
-
-        if ($product->is_trending == 1) {
-            $product->is_trending = 0;  
-        } else {
-            $product->is_trending = 1;
-        }
-        $product->save();
-
-        return redirect()->route('admin.product.index');
-    }
-    public function hotdeal(Request $request, $id)
-    {
-        $product = Product::findOrFail($id);
-
-        if ($product->is_hotdeal == 1) {
-            $product->is_hotdeal = 0;
-        } else {
-            $product->is_hotdeal = 1;
-        }
-        $product->save();
-
-        return redirect()->route('admin.product.index');
-    }
     public function feature(Request $request, $id)
     {
         $product = Product::findOrFail($id);
@@ -214,19 +209,7 @@ class ProductController extends Controller
 
         return redirect()->route('admin.product.index');
     }
-    public function dealoftheday(Request $request, $id)
-    {
-        $product = Product::findOrFail($id);
 
-        if ($product->is_deal_of_the_day == 1) {
-            $product->is_deal_of_the_day = 0;
-        } else {
-            $product->is_deal_of_the_day = 1;
-        }
-        $product->save();
-
-        return redirect()->route('admin.product.index');
-    }
 
     public function destroy(Request $request, $id)
     {
@@ -317,543 +300,6 @@ class ProductController extends Controller
 
         return redirect()->back()->with('success', 'Images added successfully!');
     }
-
-    public function variationSizeUpload(Request $request)
-    {
-        // dd($request->all());
-
-        $validator = Validator::make($request->all(), [
-            'product_id' => 'required',
-            'color_id' => 'required',
-            'size' => 'required',
-            'price' => 'required',
-            'offer_price' => 'required',
-        ]);
-
-        if (!$validator->fails()) {
-            $productImage = new ProductColorSize();
-            $productImage->product_id = $request->product_id;
-            $productImage->color = $request->color_id;
-            $productImage->size = $request->size;
-            $productImage->assorted_flag = $request->assorted_flag ? $request->assorted_flag : 0;
-            $productImage->price = $request->price;
-            $productImage->offer_price = $request->offer_price;
-            $productImage->stock = $request->stock ? $request->stock : 0;
-            $productImage->code = $request->code ? $request->code : 0;
-            $productImage->save();
-
-            // return response()->json(['status' => 200, 'message' => 'Size added successfully']);
-            return redirect()->back();
-        } else {
-            // return response()->json(['status' => 200, 'message' => $validator->errors()->first()]);
-            return redirect()->back()->with('failure', $validator->errors()->first())->withInput($request->all());
-
-            // return redirect()->route('admin.product.index')->with('failure', $validator->errors()->first())->withInput($request->all());
-        }
-
-        /* $request->validate([
-            'product_id' => 'required',
-            'color_id' => 'required',
-            'size' => 'required',
-            'price' => 'required',
-            'offer_price' => 'required',
-        ]);
-
-        $productImage = new ProductColorSize();
-        $productImage->product_id = $request->product_id;
-        $productImage->color = $request->color_id;
-        $productImage->size = $request->size;
-        $productImage->assorted_flag = $request->assorted_flag ? $request->assorted_flag : 0;
-        $productImage->price = $request->price;
-        $productImage->offer_price = $request->offer_price;
-        $productImage->stock = $request->stock ? $request->stock : 0;
-        $productImage->code = $request->code ? $request->code : 0;
-        $productImage->save();
-
-        // return redirect()->back();
-        return response()->json(['status' => 200, 'message' => 'Size added successfully']); */
-    }
-
-    public function variationColorDestroy(Request $request, $productId, $colorId)
-    {
-        // dd($productId, $colorId);
-        ProductColorSize::where('product_id', $productId)->where('color', $colorId)->delete();
-        return redirect()->back()->with('success', 'Color variation deleted!');
-    }
-
-    public function variationColorAdd(Request $request)
-    {
-        // dd("offer");
-        $validator = Validator::make($request->all(), [
-            'product_id' => 'required',
-            'color' => 'required',
-            'size' => 'required',
-            'price' => 'required',
-            'offer_price' => 'nullable|lt:price',
-            'sku_code' => 'required|unique:product_color_sizes,code',
-        ],
-    [
-        'offer_price.lt'=> 'Offer price must be less than price'
-    ]);
-
-        if (!$validator->fails()) {
-
-            $check = ProductColorSize::where('product_id', $request->product_id)->where('color', $request->color)->where('size', $request->size)->count();
-
-            if ($check == 0) {
-                $colorName = Color::select('name')->where('id', $request->color)->first();
-                $sizeName = Size::select('name')->where('id', $request->size)->first();
-
-                $productImage = new ProductColorSize();
-                $productImage->product_id = $request->product_id;
-                $productImage->color = $request->color;
-                $productImage->color_name = $colorName->name;
-                $productImage->size = $request->size;
-                $productImage->size_name = $sizeName->name;
-                $productImage->assorted_flag = $request->assorted_flag ? $request->assorted_flag : 0;
-                $productImage->price = $request->price ?? 0;
-                $productImage->offer_price = $request->offer_price ?? $request->price;
-                $productImage->stock = $request->stock ? $request->stock : 0;
-                $productImage->code = $request->sku_code ?? '';
-                $productImage->save();
-
-                return redirect()->back()->with('success', 'Color added successfully');
-            } else {
-                return redirect()->back()->with('failure', 'This color & size already exist. Select a different one.')->withInput($request->all());
-            }
-        } else {
-            return redirect()->back()->with('failure', $validator->errors()->first())->withInput($request->all());
-        }
-
-        // dd($request->all());
-
-        /* $request->validate([
-            'product_id' => 'required',
-            'color' => 'required',
-            'size' => 'required',
-            'price' => 'required',
-            'offer_price' => 'required',
-        ]);
-
-        $productImage = new ProductColorSize();
-        $productImage->product_id = $request->product_id;
-        $productImage->color = $request->color;
-        $productImage->size = $request->size;
-        $productImage->assorted_flag = $request->assorted_flag ? $request->assorted_flag : 0;
-        $productImage->price = $request->price;
-        $productImage->offer_price = $request->offer_price;
-        $productImage->stock = $request->stock ? $request->stock : 0;
-        $productImage->code = $request->code ? $request->code : 0;
-        $productImage->save();
-
-        return redirect()->back(); */
-    }
-
-    public function variationColorRename(Request $request)
-    {
-        $request->validate([
-            'product_id' => 'required|integer',
-            'current_color2' => 'required|integer',
-            'update_color_name' => 'required'
-        ]);
-
-        // $colorsCHeck = ProductColorSize::select('color')->where('product_id', $request->product_id)->groupBy('color')->pluck('color')->toArray();
-
-        // if(in_array($request->update_color, $colorsCHeck)) {
-        //     return redirect()->back()->with('failure', 'Color exists already');
-        // }
-
-        // $color = Color::findOrFail($request->update_color);
-
-        ProductColorSize::where('product_id', $request->product_id)->where('color', $request->current_color2)->update(['color_name' => $request->update_color_name]);
-
-        return redirect()->back()->with('success', 'Color name updated');
-    }
-
-    public function variationColorEdit(Request $request)
-    {
-        // dd($request->all());
-        $request->validate([
-            'product_id' => 'required|integer',
-            'current_color' => 'required|integer',
-            'update_color' => 'required|integer'
-        ]);
-
-        $colorsCHeck = ProductColorSize::select('color')->where('product_id', $request->product_id)->groupBy('color')->pluck('color')->toArray();
-
-        if (in_array($request->update_color, $colorsCHeck)) {
-            return redirect()->back()->with('failure', 'Color exists already');
-        }
-
-        $color = Color::findOrFail($request->update_color);
-
-        ProductColorSize::where('product_id', $request->product_id)->where('color', $request->current_color)->update(['color' => $request->update_color, 'color_name' => $color->name, 'color_fabric' => null]);
-        return redirect()->back()->with('success', 'Color updated');
-    }
-
-   public function variationSizeEdit(Request $request)
-    {
-        // dd($request->all());
-
-        $validator = Validator::make($request->all(), [
-            'id' => 'required',
-            'size' => 'nullable',
-            'size_details' => 'nullable',
-            'price' => 'required',
-            'offer_price' => 'nullable',
-            'code' => 'required',
-        ]);
-
-        if (!$validator->fails()) {
-            if (empty($request->size)) {
-                ProductColorSize::where('id', $request->id)->update([
-                    'size_details' => $request->size_details,
-                    'price' => $request->price,
-                    'offer_price' => $request->offer_price,
-                    'code' => $request->code,
-                ]);
-            } else {
-                // check if the size exists already
-                $productColorSizeDetail = ProductColorSize::findOrFail($request->id);
-
-                $check = ProductColorSize::where('product_id', $productColorSizeDetail->product_id)->where('color', $productColorSizeDetail->color)->where('size', $productColorSizeDetail->size)->count();
-
-                if ($check == 0) {
-                    $sizeName = Size::select('name')->where('id', $request->size)->first();
-
-                    ProductColorSize::where('id', $request->id)->update([
-                        'size' => $request->size,
-                        'size_name' => $sizeName->name,
-                        'size_details' => $request->size_details,
-                        'price' => $request->price,
-                        'offer_price' => $request->offfer_price,
-                        'code' => $request->code,
-                    ]);
-                } else {
-                    return redirect()->back()->with('failure', 'This color & size already exist for this product. Select a different one.')->withInput($request->all());
-                }
-            }
-
-            return redirect()->back()->with('success', 'Size details updated successfully');
-        } else {
-            return redirect()->back()->with('failure', $validator->errors()->first())->withInput($request->all());
-        }
-    }
-
-    public function variationColorPosition(Request $request)
-    {
-        // dd($request->all());
-        $position = $request->position;
-        $i = 1;
-        foreach ($position as $key => $value) {
-            $banner = ProductColorSize::findOrFail($value);
-            $banner->position = $i;
-            $banner->save();
-            $i++;
-        }
-        return response()->json(['status' => 200, 'message' => 'Position updated']);
-    }
-
-    public function variationStatusToggle(Request $request)
-    {
-        // dd($request->all());
-        $data = ProductColorSize::where('product_id', $request->productId)->where('color', $request->colorId)->first();
-
-        if ($data) {
-            if ($data->status == 1) {
-                $status = 0;
-                $statusType = 'inactive';
-                $statusMessage = 'Color is inactive';
-            } else {
-                $status = 1;
-                $statusType = 'active';
-                $statusMessage = 'Color is active';
-            }
-
-            $data->status = $status;
-            $data->save();
-            return response()->json(['status' => 200, 'type' => $statusType, 'message' => $statusMessage]);
-        } else {
-            return response()->json(['status' => 400, 'message' => 'Something happened']);
-        }
-    }
-
-    public function variationFabricUpload(Request $request)
-    {
-        // dd($request->all());
-
-        $save_location = 'uploads/color/';
-        $data = $request->image;
-        $image_array_1 = explode(";", $data);
-        $image_array_2 = explode(",", $image_array_1[1]);
-        $data = base64_decode($image_array_2[1]);
-        $imageName = mt_rand() . '_' . time() . '.png';
-
-        if (file_put_contents($save_location . $imageName, $data)) {
-            // $user = Auth::user();
-            // $user->image_path = $save_location.$imageName;
-            // $user->save();
-            // return response()->json(['error' => false, 'message' => 'Image updated', 'image' => asset($save_location.$imageName)]);
-
-            $productVariation = ProductColorSize::where('product_id', $request->product_id)->where('color', $request->color_id)->get();
-
-            foreach ($productVariation as $item) {
-                $item->color_fabric = $save_location . $imageName;
-                $item->save();
-            }
-
-            return response()->json(['error' => false, 'message' => 'Image uploaded', 'image' => asset($save_location . $imageName), 'color_id' => $request->color_id]);
-        } else {
-            return response()->json(['error' => true, 'message' => 'Something went wrong']);
-        }
-    }
-
-    public function variationCSVUpload(Request $request)
-    {   
-        if (!empty($request->file)) {
-            $file = $request->file('file');
-            $filename = $file->getClientOriginalName();
-            $extension = $file->getClientOriginalExtension();
-            $tempPath = $file->getRealPath();
-            $fileSize = $file->getSize();
-            $mimeType = $file->getMimeType();
-
-            $valid_extension = array("csv");
-            $maxFileSize = 50097152;
-            if (in_array(strtolower($extension), $valid_extension)) {
-                if ($fileSize <= $maxFileSize) {
-                    $location = 'uploads/csv';
-                    $file->move($location, $filename);
-                    // $filepath = public_path($location . "/" . $filename);
-                    $filepath = $location . "/" . $filename;
-
-                    // dd($filepath);
-
-                    $file = fopen($filepath, "r");
-                    $importData_arr = array();
-                    $i = 0;
-                    while (($filedata = fgetcsv($file, 10000, ",")) !== FALSE) {
-                        $num = count($filedata);
-                        // Skip first row
-                        if ($i == 0) {
-                            $i++;
-                            continue;
-                        }
-                        for ($c = 0; $c < $num; $c++) {
-                            $importData_arr[$i][] = $filedata[$c];
-                        }
-                        $i++;
-                    }
-                    fclose($file);
-                    $successCount = 0;
-                    foreach ($importData_arr as $importData) {
-                        $insertData = array(
-                            "PRODUCT_ID" => isset($importData[0]) ? $importData[0] : null,
-                            "PRODUCT_STYLE_NO" => isset($importData[1]) ? $importData[1] : null,
-                            "COLOR_MASTER" => isset($importData[2]) ? $importData[2] : null,
-                            // "CUSTOM_COLOR_NAME" => isset($importData[2]) ? $importData[2] : null,
-                            "SIZE" => isset($importData[3]) ? $importData[3] : null,
-                            "PRICE" => isset($importData[4]) ? $importData[4] : null,
-                            "OFFER_PRICE" => isset($importData[5]) ? $importData[5] : null,
-                            "SKU_CODE" => isset($importData[6]) ? $importData[6] : null,
-                            "STOCK" => isset($importData[7]) ? $importData[7] : 1,
-                            // "COLOR_POSITION" => isset($importData[8]) ? $importData[8] : 1,
-                            "STATUS" => isset($importData[8]) ? $importData[8] : 1
-                        );
-
-                        $resp = ProductColorSize::insertData($insertData, $successCount);
-                        $successCount = $resp['successCount'];
-                    }
-
-                    Session::flash('message', 'CSV Import Complete. Total no of entries: ' . count($importData_arr) . '. Successfull: ' . $successCount . ', Failed: ' . (count($importData_arr) - $successCount));
-                } else {
-                    Session::flash('message', 'File too large. File must be less than 50MB.');
-                }
-            } else {
-                Session::flash('message', 'Invalid File Extension. supported extensions are ' . implode(', ', $valid_extension));
-            }
-        } else {
-            Session::flash('message', 'No file found.');
-        }
-
-        return redirect()->back();
-    }
-    public function ProductColorSizeVariationExportCSV(){
-       
-        $data = ProductColorSize::orderBy('product_id','ASC')->get();
-        if(count($data)>0){
-            $delimiter = ",";
-            $fileName = "Product Color Size Variation Details-".date('d-m-Y').".csv";
-            // Create a file pointer
-            $f = fopen('php://memory', 'w');
-
-            // Set Column Headers
-            $header = array("PRODUCT_ID","PRODUCT_STYLE_NO","COLOR_MASTER","SIZE","PRICE","OFFER_PRICE","SKU_CODE","STATUS[1:ACTIVE,0:INACTIVE]");
-            fputcsv($f,$header,$delimiter);
-
-            $count =1;
-            foreach($data as $key => $row){
-                $exportData = array(
-                    $row->product_id ? $row->product_id : '',
-                    $row->product_style_no ? $row->product_style_no : '',
-                    $row->color_name ? $row->color_name : '',
-                    $row->size_name ? $row->size_name : '',
-                    $row->price ? $row->price : '',      
-                    $row->offer_price ? $row->offer_price : '',      
-                    $row->code ? $row->code : '',      
-                    $row->status ? $row->status : ''                       
-                );
-                // dd($exportData);
-                fputcsv($f,$exportData,$delimiter);
-                $count++;
-            }
-            fseek($f,0);
-            // Set headers to download file rather than displayed
-            header('Content-Type: text/csv');
-            header('Content-Disposition: attachment; filename="' . $fileName . '";');
-
-            //output all remaining data on a file pointer
-            fpassthru($f);
-
-        }
-
-    }
-
-    public function productvariationCSVUpload(Request $request){
-        if (!empty($request->file)) {
-                    $file = $request->file('file');
-                    $filename = $file->getClientOriginalName();
-                    $extension = $file->getClientOriginalExtension();
-                    $tempPath = $file->getRealPath();
-                    $fileSize = $file->getSize();
-                    $mimeType = $file->getMimeType();
-        
-                    $valid_extension = array("csv");
-                    $maxFileSize = 50097152;
-                    if (in_array(strtolower($extension), $valid_extension)) {
-                        if ($fileSize <= $maxFileSize) {
-                            $location = 'uploads/csv';
-                            $file->move($location, $filename);
-                            // $filepath = public_path($location . "/" . $filename);
-                            $filepath = $location . "/" . $filename;
-        
-                            // dd($filepath);
-        
-                            $file = fopen($filepath, "r");
-                            $importData_arr = array();
-                            $i = 0;
-                            while (($filedata = fgetcsv($file, 10000, ",")) !== FALSE) {
-                                $num = count($filedata);
-                                // Skip first row
-                                if ($i == 0) {
-                                    $i++;
-                                    continue;
-                                }
-                                for ($c = 0; $c < $num; $c++) {
-                                    $importData_arr[$i][] = $filedata[$c];
-                                }
-                                $i++;
-                            }
-                            fclose($file);
-                            $successCount = 0;
-        
-                            foreach ($importData_arr as $importData) {
-                                // if(empty($importData[0])){
-                                //     Session::flash('message', 'Category name must be required');
-                                //     return redirect()->back();
-                                // }
-                                if(empty($importData[1])){
-                                    Session::flash('message', 'Style no must be required');
-                                    return redirect()->back();
-                                }
-                                if(!isset($importData[2])){
-                                    Session::flash('message', 'Product name must be required');
-                                    return redirect()->back();
-                                }
-                                if(!isset($importData[3])){
-                                    Session::flash('message', 'Price must be required');
-                                    return redirect()->back();
-                                }
-                                // if(!isset($importData[4])){
-                                //     Session::flash('message', 'Offer Price must be required');
-                                //     return redirect()->back();
-                                // }
-                                if(!isset($importData[8])){
-                                    Session::flash('message', 'GST must be required');
-                                    return redirect()->back();
-                                }
-                                // if(empty($importData[9])){
-                                //     Session::flash('message', 'Wash care must be required');
-                                //     return redirect()->back();
-                                // }
-
-
-
-
-                                $catId='';
-                                $colorId='';
-                                $sizeId='';
-                                if(!empty($importData[0])){
-                                $CatsExistCheck = Category::where('name', $importData[0])->first();
-                                            if ($CatsExistCheck) {
-                                                $insertdistributorCatsId = $CatsExistCheck->id;
-                                                $catId .= $insertdistributorCatsId;
-        
-                                            } else {
-                                                    $dirCat = new Category();
-                                                    $dirCat->name = $importData[0];
-                                                    $dirCat->save();
-                                                    $insertdistributorCatsId = $dirCat->id;
-        
-                                                    $catId .= $insertdistributorCatsId;
-                                                }
-                                            }
-                                                // dd($importData);
-                                 // slug generate
-                                $slug = \Str::slug($importData[2].'-'.$importData[1], '-');
-                                $slugExistCount = Product::where('slug', $slug)->count();
-                                if ($slugExistCount > 0) $slug = $slug . '-' . ($slugExistCount + 1);
-                                $insertData = array(
-                                    "cat_id" => $catId ? $catId: null,
-                                    "style_no" => isset($importData[1]) ? $importData[1] : null,
-                                    "name" => isset($importData[2]) ? $importData[2] : null,
-                                    // "size" => isset($importData[6]) ? $importData[6] : null,
-                                    "price" => isset($importData[3]) ? $importData[3] : null,
-                                    "offer_price" => isset($importData[4]) ? $importData[4] : null,
-                                    "brand" => isset($importData[5]) ? $importData[5] : null,
-                                    "fabric" => isset($importData[6]) ? $importData[6] : null,
-                                    "pattern" => isset($importData[7]) ? $importData[7] : null,
-                                    "gst" => isset($importData[8]) ? $importData[8] : null,
-                                    "wash_care" => isset($importData[9]) ? $importData[9] : null,
-                                    "short_desc" => isset($importData[10]) ? $importData[10] : null,
-                                    "status" => isset($importData[11]) ? $importData[11] : 1,
-                                    "image" => 'backend_asset/images/defaul-product-image.png',
-                                    "slug"=>$slug,
-                                    "created_at" => now(),
-                                    "updated_at"=> now(),
-                                );
-        
-                                $resp = Product::insertProductData($insertData,$successCount);
-                                $successCount = $resp['successCount'];
-        
-        
-                            }
-        
-                            Session::flash('message', 'CSV Import Complete. Total no of entries: ' . count($importData_arr) . '. Successfull: ' . $successCount . ', Failed: ' . (count($importData_arr) - $successCount));
-                        } else {
-                            Session::flash('message', 'File too large. File must be less than 50MB.');
-                        }
-                    } else {
-                        Session::flash('message', 'Invalid File Extension. supported extensions are ' . implode(', ', $valid_extension));
-                    }
-                } else {
-                    Session::flash('message', 'No file found.');
-                }
-        
-                return redirect()->back();
-    }
-
-   
 
     public function variationBulkEdit(Request $request)
     {

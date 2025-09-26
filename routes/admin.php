@@ -174,16 +174,6 @@ Route::prefix('admin')->name('admin.')->middleware('prevent-back-history')->grou
             Route::get('/export/all', 'Admin\ProductController@exportAll')->middleware('permission')->name('export.all');
 
             // variation
-            Route::post('/variation/color/add', 'Admin\ProductController@variationColorAdd')->name('variation.color.add');
-            Route::post('/variation/color/position', 'Admin\ProductController@variationColorPosition')->name('variation.color.position');
-            Route::post('/variation/color/status/toggle', 'Admin\ProductController@variationStatusToggle')->name('variation.color.status.toggle');
-            Route::post('/variation/color/edit', 'Admin\ProductController@variationColorEdit')->name('variation.color.edit');
-            Route::post('/variation/color/rename', 'Admin\ProductController@variationColorRename')->name('variation.color.rename');
-            Route::post('/variation/color/fabric/upload', 'Admin\ProductController@variationFabricUpload')->name('variation.color.fabric.upload');
-            Route::get('/variation/{productId}/color/{colorId}/delete', 'Admin\ProductController@variationColorDestroy')->name('variation.color.delete');
-            Route::post('/variation/size/add', 'Admin\ProductController@variationSizeUpload')->name('variation.size.add');   
-            Route::post('/variation/size/edit', 'Admin\ProductController@variationSizeEdit')->name('variation.size.edit');
-            Route::get('/variation/{id}/size/remove', 'Admin\ProductController@variationSizeDestroy')->name('variation.size.delete');
             Route::post('/variation/image/add', 'Admin\ProductController@variationImageUpload')->name('variation.image.add');
             Route::post('/variation/image/remove', 'Admin\ProductController@variationImageDestroy')->name('variation.image.delete');
             Route::post('/csv/variation/upload', 'Admin\ProductController@variationCSVUpload')->name('variation.csv.upload');
