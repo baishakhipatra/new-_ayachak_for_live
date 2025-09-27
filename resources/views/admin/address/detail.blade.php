@@ -12,7 +12,7 @@
                         <div class="col-md-12">
                             <div class="d-flex">
                                 <div>
-                                    <h5>{{$data->user->fname.' '.$data->user->lname}}</h5>
+                                    <h5>{{ucwords($data->user->fname.' '.$data->user->lname)}}</h5>
                                     <p class="text-muted small mb-0 mt-2">{{$data->user->email}}</p>
                                     <p class="text-muted small">{{$data->user->mobile}}</p>
                                 </div>
@@ -21,16 +21,16 @@
                             <hr>
 
                             <p class="text-muted small mb-1">Street address</p>
-                            <p class="text-dark small">{{$data->address}}</p>
+                            <p class="text-dark small">{{ucwords($data->address)}}</p>
 
                             <p class="text-muted small mb-1">Landmark</p>
-                            <p class="text-dark small">{{$data->landmark}}</p>
+                            <p class="text-dark small">{{ucwords($data->landmark)}}</p>
 
                             <p class="text-muted small mb-1">State</p>
-                            <p class="text-dark small">{{$data->state}}</p>
+                            <p class="text-dark small">{{ucwords($data->state)}}</p>
 
                             <p class="text-muted small mb-1">City</p>
-                            <p class="text-dark small">{{$data->city}}</p>
+                            <p class="text-dark small">{{ucwords($data->city)}}</p>
 
                             <p class="text-muted small mb-1">Pincode</p>
                             <p class="text-dark small">{{$data->pin}}</p>

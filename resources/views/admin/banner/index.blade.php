@@ -94,7 +94,7 @@
                         {{-- Description --}}
                         <div class="mb-3">
                             <label class="form-label">Description</label>
-                            <textarea name="description" rows="3" class="form-control">{{ old('description') }}</textarea>
+                            <textarea name="description" id="content" rows="3" class="form-control">{{ old('description') }}</textarea>
                             @error('description') <p class="small text-danger">{{ $message }}</p> @enderror
                         </div>
 
@@ -140,7 +140,6 @@
                 </div>
             </div>
         </div>
-
     </div>
 </section>
 @endsection
@@ -177,5 +176,10 @@
             }
         });
     }
+    ClassicEditor
+    .create( document.querySelector( '#content' ) )
+    .catch( error => {
+        console.error( error );
+    });
 </script>
 @endsection

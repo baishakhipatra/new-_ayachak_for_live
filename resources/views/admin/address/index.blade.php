@@ -8,7 +8,6 @@
         <div class="col-sm-8">
             <div class="card">
                 <div class="card-body">
-
                     <div class="search__filter">
                         <div class="row align-items-center justify-content-between">
                             <div class="col">
@@ -61,7 +60,6 @@
                                 </div>
                             </div>
                             <div class="col-auto">
-                                {{-- <p>{{$data->count()}} Items</p> --}}
                                 @php
                                     if (!empty($_GET['status'])) {
                                         if ($_GET['status'] == 'active') {
@@ -75,7 +73,7 @@
                                         ($data->count() > 1) ? $itemShow = 'Items' : $itemShow = 'Item';
                                         echo '<p>'.$data->count().' '.$itemShow.'</p>';
                                     }
-                                    @endphp
+                                @endphp
                             </div>
                             </div>
                         </div>
@@ -106,7 +104,7 @@
                                             if ($item->status == 1) continue;
                                         }
                                     }
-                                    @endphp
+                                @endphp
                                 <tr>
                                     <td class="check-column">
                                         <input name="delete_check[]" class="tap-to-delete" type="checkbox" onclick="clickToRemove()" value="{{$item->id}}" 
@@ -117,19 +115,13 @@
                                             }
                                         }
                                         @endphp>
-                                    {{-- </td> <td class="check-column">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                            <label class="form-check-label" for="flexCheckDefault"></label>
-                                        </div>
-                                    </td> --}}
                                     <td>
                                         @if($item->user)
-                                        {{$item->user->fname.' '.$item->user->lname}}
+                                        {{ucwords($item->user->fname.' '.$item->user->lname)}}
                                         @endif
                                     </td>
                                     <td>
-                                    {{$item->address}}
+                                    {{ucwords($item->address)}}
                                     <div class="row__action">
                                         <a href="{{ route('admin.address.view', [$item->id,'mode'=>'edit']) }}">Edit</a>
                                         <a href="{{ route('admin.address.view', [$item->id,'mode'=>'view']) }}">View</a>
@@ -154,7 +146,7 @@
             <div class="card">
                 <div class="card-body">
                     <form method="POST" action="{{ route('admin.address.store') }}" enctype="multipart/form-data">
-                    @csrf
+                        @csrf
                         <h4 class="page__subtitle">Add New</h4>
                         <div class="form-group mb-3">
                             <label class="label-control">User <span class="text-danger">*</span> </label>

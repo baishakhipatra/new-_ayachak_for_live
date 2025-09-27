@@ -107,7 +107,7 @@
                         </div> --}}
                         <div class="form-group mb-3">
                             <label class="label-control">Description </label>
-                            <textarea name="description" class="form-control">{{$data->description}}</textarea>
+                            <textarea name="description" id="description" class="form-control">{{$data->description}}</textarea>
                             @error('description') <p class="small text-danger">{{ $message }}</p> @enderror
                         </div>
                         <div class="row">
@@ -205,4 +205,14 @@
         </div>
     </div>
 </section>
+@endsection
+
+@section('script')
+<script>
+    ClassicEditor
+    .create( document.querySelector( '#description' ) )
+    .catch( error => {
+        console.error( error );
+    });
+</script>
 @endsection

@@ -5,7 +5,6 @@
 @section('content')
 <section>
     <div class="row">
-        <!-- Preview Section -->
         <div class="col-sm-8">
             <div class="card">    
                 <div class="card-body">
@@ -62,7 +61,7 @@
 
                         <div class="mb-3">
                             <label class="form-label">Description</label>
-                            <textarea name="description" rows="3" class="form-control">{{ old('description', $data->description) }}</textarea>
+                            <textarea name="description" id="content-edit" rows="3" class="form-control">{{ old('description', $data->description) }}</textarea>
                             @error('description') <p class="small text-danger">{{ $message }}</p> @enderror
                         </div>
 
@@ -90,4 +89,14 @@
     </div>
 </section>
 
+@endsection
+
+@section('script')
+<script>
+    ClassicEditor
+    .create( document.querySelector( '#content-edit' ) )
+    .catch( error => {
+        console.error( error );
+    });
+</script>
 @endsection

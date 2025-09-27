@@ -117,8 +117,6 @@ Route::prefix('admin')->name('admin.')->middleware('prevent-back-history')->grou
         // category
         Route::prefix('category')->name('category.')->group(function () {
             Route::get('/', 'Admin\CategoryController@index')->name('index');
-            // Route::get('/active', 'Admin\CategoryController@activeCategory')->name('active');
-            // Route::get('/inactive', 'Admin\CategoryController@inactiveCategory')->name('inactive');
             Route::post('/store', 'Admin\CategoryController@store')->name('store');
             Route::get('/{id}/view', 'Admin\CategoryController@show')->name('view');
             Route::post('/{id}/update', 'Admin\CategoryController@update')->name('update');
@@ -161,11 +159,7 @@ Route::prefix('admin')->name('admin.')->middleware('prevent-back-history')->grou
             Route::post('/size', 'Admin\ProductController@size')->name('size');
             Route::get('/{id}/edit', 'Admin\ProductController@edit')->middleware('permission')->name('edit');
             Route::get('/{id}/status', 'Admin\ProductController@status')->name('status');
-            Route::get('/{id}/sale', 'Admin\ProductController@sale')->name('sale');
-            Route::get('/{id}/trending', 'Admin\ProductController@trending')->name('trending');
-            Route::get('/{id}/hotdeal', 'Admin\ProductController@hotdeal')->name('hotdeal');
             Route::get('/{id}/feature', 'Admin\ProductController@feature')->name('feature');
-            Route::get('/{id}/dealoftheday', 'Admin\ProductController@dealoftheday')->name('dealoftheday');
             Route::get('/{id}/delete', 'Admin\ProductController@destroy')->middleware('permission')->name('delete');
             Route::get('/{id}/image/delete', 'Admin\ProductController@destroySingleImage')->name('image.delete');
             Route::get('/bulkDelete', 'Admin\ProductController@bulkDestroy')->name('bulkDestroy');
@@ -196,11 +190,11 @@ Route::prefix('admin')->name('admin.')->middleware('prevent-back-history')->grou
 
         });
 
-          Route::prefix('stock')->name('stock.')->group(function () {
-            Route::get('/stock_sample_csv', [StockController::class, 'stock_sample_csv'])->name('sample_csv');
-            Route::post('/stock_import', [StockController::class, 'stock_import'])->name('stock_import');
+        Route::prefix('stock')->name('stock.')->group(function () {
+        Route::get('/stock_sample_csv', [StockController::class, 'stock_sample_csv'])->name('sample_csv');
+        Route::post('/stock_import', [StockController::class, 'stock_import'])->name('stock_import');
 
-          });
+        });
 
 
         // address
@@ -273,10 +267,7 @@ Route::prefix('admin')->name('admin.')->middleware('prevent-back-history')->grou
             Route::post('/{id}/update', 'Admin\GalleryController@update')->name('update');
             Route::get('/{id}/status', 'Admin\GalleryController@status')->name('status');
             Route::get('/{id}/delete', 'Admin\GalleryController@destroy')->name('delete');
-        });
-
-     
-		
+        });	
     });
 	
 });

@@ -162,7 +162,6 @@
                 </div>
             </form>
         </div>
-
     </div>
 
     <!-- Modal -->
@@ -185,14 +184,9 @@
                                             <input type="text" name="name" placeholder="" class="form-control" value="{{old('name')}}">
                                             @error('name') <p class="small text-danger">{{ $message }}</p> @enderror
                                         </div>
-                                        {{-- <div class="form-group mb-3">
-                                            <label class="label-control">Parent <span class="text-danger">*</span> </label>
-                                            <input type="text" name="parent" placeholder="" class="form-control" value="{{old('parent')}}">
-                                            @error('parent') <p class="small text-danger">{{ $message }}</p> @enderror
-                                        </div> --}}
                                         <div class="form-group mb-3">
                                             <label class="label-control">Description </label>
-                                            <textarea name="description" class="form-control">{{old('description')}}</textarea>
+                                            <textarea name="description" id="description" class="form-control">{{old('description')}}</textarea>
                                             @error('description') <p class="small text-danger">{{ $message }}</p> @enderror
                                         </div>
                                     </div>
@@ -295,4 +289,14 @@
     </div>
 
 </section>
+@endsection
+
+@section('script')
+<script>
+    ClassicEditor
+    .create( document.querySelector( '#description' ) )
+    .catch( error => {
+        console.error( error );
+    });
+</script>
 @endsection

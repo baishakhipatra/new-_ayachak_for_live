@@ -143,8 +143,6 @@
                         <a
                             href="{{ route('admin.category.view', $item->category->id) }}">{{ $item->category ? $item->category->name : '' }}</a>
                             @endif
-                        {{-- > --}}
-                        {{-- {{$item->subCategory ? $item->subCategory->name : 'NA'}} --}}
                     </td>
                     <td>
                          Rs. {{ $item->price }}
