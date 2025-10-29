@@ -139,7 +139,8 @@
                                     </div>
                                     <div class="col-9">
                                         <div class="form-check form-switch">
-                                            <input class="form-check-input" type="checkbox" id="gstToggle" checked>
+                                            <input class="form-check-input" type="checkbox" id="gstToggle"  name="gst_applicable"
+                                            {{ old('gst_applicable') == 'on' ? 'checked' : '' }}>
                                             <label class="form-check-label" for="gstToggle">Yes</label>
                                         </div>
                                     </div>
@@ -152,22 +153,6 @@
                                     <div class="col-9">
                                         <input type="number" id="gst" name="gst" class="form-control" aria-describedby="priceHelpInline" name="gst" value="{{old('gst')}}" step="0.01">
                                         @error('gst') <p class="small text-danger">{{ $message }}</p> @enderror
-                                    </div>
-                                </div>
-                            </content>
-                        </div>
-                        <div class="admin__content">
-                            <aside>
-                                <nav>Pack <span class="text-danger">*</span></nav>
-                            </aside>
-                            <content>
-                                <div class="row mb-2 align-items-center">
-                                    <div class="col-3">
-                                        <label for="inputPassword6" class="col-form-label">Net Qty</label>
-                                    </div>
-                                    <div class="col-9">
-                                        <input type="text" id="inputprice6" class="form-control" aria-describedby="priceHelpInline" name="pack" value="{{ old('pack') ? old('pack') : '1 PC' }}">
-                                        @error('pack') <p class="small text-danger">{{ $message }}</p> @enderror
                                     </div>
                                 </div>
                             </content>
@@ -190,11 +175,19 @@
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td><input type="text" name="variations[0][weight]" class="form-control" value="{{old('weight')}}" required></td>
-                                            <td><input type="text" name="variations[0][code]" class="form-control" value="{{old('code')}}" required></td>
-                                            <td><input type="number" step="0.01" name="variations[0][price]" class="form-control" value="{{old('price')}}" required></td>
-                                            <td><input type="number" step="0.01" name="variations[0][offer_price]" class="form-control" value="{{old('offer_price')}}"></td>
-                                            <td><input type="number" name="variations[0][stock]" class="form-control" value="{{old('stock')}}"></td>
+                                            <td><input type="text" name="variations[0][weight]" class="form-control" value="{{ old('variations.0.weight') }}" required></td>
+                                            <td><input type="text" name="variations[0][code]" class="form-control" value="{{ old('variations.0.code') }}" required></td>
+                                            <td><input type="number" step="0.01" name="variations[0][price]" class="form-control" value="{{old('variations.0.price')}}" required> 
+                                                @error('variations.0.price')
+                                                    <small class="text-danger">{{ $message }}</small>
+                                                @enderror
+                                            </td>
+                                            <td><input type="number" step="0.01" name="variations[0][offer_price]" class="form-control" value="{{old('variations.0.offer_price')}}">
+                                                @error('variations.0.offer_price')
+                                                    <small class="text-danger">{{ $message }}</small>
+                                                @enderror
+                                            </td>
+                                            <td><input type="number" name="variations[0][stock]" class="form-control" value="{{ old('variations.0.stock') }}"></td>
                                             <td>
                                                 <input type="file" name="variations[0][images][]" class="form-control" multiple>
                                                 <small class="text-muted">You can upload multiple images for this variation.</small>

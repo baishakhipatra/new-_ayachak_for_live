@@ -115,19 +115,20 @@
                                             }
                                         }
                                         @endphp>
+                                    </td>
                                     <td>
                                         @if($item->user)
                                         {{ucwords($item->user->fname.' '.$item->user->lname)}}
                                         @endif
                                     </td>
                                     <td>
-                                    {{ucwords($item->address)}}
-                                    <div class="row__action">
-                                        <a href="{{ route('admin.address.view', [$item->id,'mode'=>'edit']) }}">Edit</a>
-                                        <a href="{{ route('admin.address.view', [$item->id,'mode'=>'view']) }}">View</a>
-                                        <a href="{{ route('admin.address.status', $item->id) }}">{{($item->status == 1) ? 'Active' : 'Inactive'}}</a>
-                                        {{-- <a href="{{ route('admin.address.delete', $item->id) }}" class="text-danger">Delete</a> --}}
-                                    </div>
+                                        {{ucwords($item->address)}}
+                                        <div class="row__action">
+                                            <a href="{{ route('admin.address.view', [$item->id,'mode'=>'edit']) }}">Edit</a>
+                                            <a href="{{ route('admin.address.view', [$item->id,'mode'=>'view']) }}">View</a>
+                                            <a href="{{ route('admin.address.status', $item->id) }}">{{($item->status == 1) ? 'Active' : 'Inactive'}}</a>
+                                            {{-- <a href="{{ route('admin.address.delete', $item->id) }}" class="text-danger">Delete</a> --}}
+                                        </div>
                                     </td>
                                     <td>Published<br/>{{date('d M Y', strtotime($item->created_at))}}</td>
                                     <td><span class="badge bg-{{($item->status == 1) ? 'success' : 'danger'}}">{{($item->status == 1) ? 'Active' : 'Inactive'}}</span></td>

@@ -69,6 +69,11 @@ Route::name('front.')->group(function () {
         Route::get('/payment', 'Front\CheckoutController@payment')->name('payment');
         Route::post('/payment/complete', 'Front\CheckoutController@paymentStore')->name('payment.store');
         Route::view('/complete', 'front.checkout.complete')->name('complete');
+
+        // in routes/web.php
+        Route::post('/icici/initiate', [ICICIPaymentController::class, 'initiatePayment'])->name('icici.initiate');
+        Route::post('/icici/callback', [ICICIPaymentController::class, 'callback'])->name('icici.callback');
+        Route::get('/icici/status/{order_id}', [ICICIPaymentController::class, 'checkStatus'])->name('icici.status');
     });
 
     // cart
@@ -162,6 +167,32 @@ Route::name('front.')->group(function () {
     Route::prefix('what-is-samabeta-upasana')->group(function (){
         Route::get('/', 'Front\PageController@samabeta_upasana')->name('samabeta_upasana.index');
     });
+
+    Route::prefix('centre')->group(function (){
+        Route::get('/', 'Front\PageController@center')->name('center.index');
+    });
+
+    Route::prefix('diksha')->group(function (){
+        Route::get('/', 'Front\PageController@diksha')->name('diksha.index');
+    });
+
+    Route::prefix('conclusion')->group(function (){
+        Route::get('/', 'Front\PageController@conclusion')->name('conclusion.index');
+    });
+
+    //Legal
+    Route::prefix('privacy_statement')->group(function (){
+        Route::get('/', 'Front\PageController@privacyStatement')->name('privacyStatement.index');
+    });
+
+    Route::prefix('terms_and_conditions')->group(function (){
+        Route::get('/', 'Front\PageController@termsAndCondition')->name('termsAndCondition.index');
+    });
+
+    Route::prefix('disclaimer')->group(function (){
+        Route::get('/', 'Front\PageController@disclaimer')->name('disclaimer.index');
+    });
+
 
 
     // category detail

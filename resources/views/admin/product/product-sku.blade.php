@@ -297,6 +297,8 @@
             e.preventDefault();
             let formData = $(this).serialize();
 
+            $('#editVariationForm .text-danger').text('');
+
             $.ajax({
                 url: "{{ route('admin.product.variation.update') }}",
                 method: "POST",
@@ -309,9 +311,21 @@
                     } else {
                         toastFire('error', res.message);
                     }
+                },
+                error: function (xhr) {
+                    if (xhr.status === 422) {
+                        let errors = xhr.responseJSON.errors;
+                        $.each(errors, function (key, value) {
+                            const errorField = $('[name="' + key + '"]');
+                            errorField.after('<p class="small text-danger">' + value[0] + '</p>');
+                        });
+                    } else {
+                        toastFire('error', 'Something went wrong.');
+                    }
                 }
             });
         });
+
     });
 
     $(document).ready(function () {

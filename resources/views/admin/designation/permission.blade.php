@@ -3,7 +3,6 @@
 @section('page', 'Permission - List')
 
 @section('content')
-
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h4 class="fw-bold mb-0">Manage Permissions for: {{ ucwords($designation->name)}}</h4>

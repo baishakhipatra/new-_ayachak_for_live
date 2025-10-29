@@ -122,8 +122,38 @@
                         </div>
                         @endif
                     </div>
-
                     <div class="row align-items-center justify-content-between">
+                        <div class="col-sm-12">
+                            <input type="hidden" name="mobile" id="checkoutMobile" value="{{ $data->mobile }}">
+                            <input type="hidden" name="email" id="checkoutEmail" value="{{ $data->email }}">
+                            <input type="hidden" name="payment_method" value="Cash On Delivery">
+
+                            {{-- Cash on Delivery button --}}
+                            <div id="cod-method" class="method">
+                                <button type="submit" id="rzp-button1" class="btn checkout-btn btn-success">
+                                    Place order
+                                </button>
+                            </div>
+
+                            {{-- ICICI Online Payment button --}}
+                            <div id="icici-method" class="method" style="display:none;">
+                                <form method="POST" action="{{ route('front.checkout.icici.initiate') }}">
+                                    @csrf
+                                    <input type="hidden" name="final_amount" value="{{ $data->final_amount }}">
+                                    <button type="submit" class="btn checkout-btn btn-success">
+                                        Pay with ICICI
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-12 mt-3 mt-sm-0">
+                            <a class="btn btn-danger mt-2" href="{{ route('front.cart.index') }}">Return to Cart</a>
+                        </div>
+                    </div>
+
+
+                    {{-- <div class="row align-items-center justify-content-between">
                         <div class="col-sm-12">
                             <input type="hidden" name="mobile" id="checkoutMobile" value="{{$data->mobile}}">
                             <input type="hidden" name="email" id="checkoutEmail" value="{{$data->email}}">
@@ -141,7 +171,7 @@
                         <div class="col-sm-12 mt-3 mt-sm-0">
                             <a class="btn btn-danger mt-2" href="{{route('front.cart.index')}}">Return to Cart</a>
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </form>
@@ -173,7 +203,31 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-    
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const codRadio = document.getElementById("cod");
+            const onlineRadio = document.getElementById("online");
+            const codMethod = document.getElementById("cod-method");
+            const iciciMethod = document.getElementById("icici-method");
+
+            function toggleMethods() {
+                if (onlineRadio && onlineRadio.checked) {
+                    codMethod.style.display = "none";
+                    iciciMethod.style.display = "block";
+                } else {
+                    codMethod.style.display = "block";
+                    iciciMethod.style.display = "none";
+                }
+            }
+
+            if (codRadio) codRadio.addEventListener("change", toggleMethods);
+            if (onlineRadio) onlineRadio.addEventListener("change", toggleMethods);
+            toggleMethods(); // initialize
+        });
+    </script>
+
 
 
     {{-- <script>

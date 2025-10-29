@@ -123,7 +123,7 @@
                     </td>
                    
                     <td>  
-                        @if ($item->payment_method == "online_payment")
+                        @if (strtolower($item->payment_method == "online_payment"))
 							@if ($item->transactionDetails)
 							<span class="text-dark mb-2 fw-bold">
 								<p class="small text-dark mb-1">&#8377; {{ number_format($paymentAmount)?? '' }} 
@@ -131,7 +131,7 @@
 							@else
 						   <span></span>
 							@endif
-                        @elseif($item->payment_method == "cash_on_delivery" || $item->payment_method == "Cash On Delivery")
+                        @elseif(strtolower($item->payment_method == "cash_on_delivery") || strtolower($item->payment_method == "Cash On Delivery"))
 							@if ($item->coupon_code_id != 0)
                             	@if($item->couponDetails)
 									@if($item->address_type=='ho')
@@ -154,18 +154,17 @@
                         @endif
                     </td>
                     <td>
-						
 						@if(!empty($paymentStatus))
                         @if ($item->payment_method == "online_payment")<span class="btn btn-sm btn-secondary">{{$paymentStatus}}</span>
 						@endif
 						@endif
                     </td>
                    
-                        <td>
-                        @if ($item->payment_method == "online_payment")
+                    <td>
+                        @if (strtolower($item->payment_method == "online_payment"))
                           @if($item->transactionDetails)@if($final_amount == $paymentAmount) @if($paymentStatus=='captured') <a href="{{ route('admin.order.invoice', $item->id) }}" class="btn btn-sm btn-primary">Invoice</a> @endif @endif @endif
                         
-                        @elseif($item->payment_method == "Cash On Delivery")
+                        @elseif(strtolower($item->payment_method == "Cash On Delivery"))
                        
                         <a href="{{ route('admin.order.invoice', $item->id) }}" class="btn btn-sm btn-primary">Invoice</a>
                         @endif
@@ -200,12 +199,12 @@
                         <div class="address">
                             <p class="small text-muted mb-0">Billing Address</p>
                             <p class="small text-dark mb-2">
-                                {!! $item->billing_address ? $item->billing_address.', ' : '<span class="text-danger">NO Street, </span>' !!}
-                                {!! $item->billing_landmark ? $item->billing_landmark.', ' : '<span class="text-danger">NO Landmark, </span>' !!}
+                                {!! $item->billing_address ? ucwords($item->billing_address).', ' : '<span class="text-danger">NO Street, </span>' !!}
+                                {!! $item->billing_landmark ? ucwords( $item->billing_landmark).', ' : '<span class="text-danger">NO Landmark, </span>' !!}
                                 {!! $item->billing_pin ? $item->billing_pin.', ' : '<span class="text-danger">NO Pincode, </span>' !!}
-                                {!! $item->billing_city ? $item->billing_city.', ' : '<span class="text-danger">NO City, </span>' !!}
-                                {!! $item->billing_state ? $item->billing_state.', ' : '<span class="text-danger">NO State, </span>' !!}
-                                {!! $item->billing_country ? $item->billing_country : '<span class="text-danger">NO Country</span>' !!}
+                                {!! $item->billing_city ? ucwords($item->billing_city).', ' : '<span class="text-danger">NO City, </span>' !!}
+                                {!! $item->billing_state ? ucwords($item->billing_state).', ' : '<span class="text-danger">NO State, </span>' !!}
+                                {!! $item->billing_country ? ucwords($item->billing_country) : '<span class="text-danger">NO Country</span>' !!}
                             </p>
                         </div>
 
@@ -228,8 +227,6 @@
                                 @endif
                             </p>
                         </div>
-
-                       
                     </td>
 
                     <td>

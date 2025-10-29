@@ -53,13 +53,13 @@
                                 <a href="{{route('front.event.index')}}">Events</a>
                             </li>
                             <li>
-                                <a href="">Centre</a>
+                                <a href="{{route('front.center.index')}}">Center</a>
                             </li>
                             <li>
-                                <a href="">Diksha</a>
+                                <a href="{{route('front.diksha.index')}}">Diksha</a>
                             </li>
                             <li>
-                                <a href="">Conclusion</a>
+                                <a href="{{route('front.conclusion.index')}}">Conclusion</a>
                             </li>
                         </ul>
                     </div>
@@ -67,16 +67,16 @@
                         <h3>Legal</h3>
                         <ul class="footer-list">
                             <li>
-                                <a href="">Privacy Statement</a>
+                                <a href="{{route('front.privacyStatement.index')}}">Privacy Statement</a>
                             </li>
                             <li>
-                                <a href="">Terms and conditions</a>
+                                <a href="{{route('front.termsAndCondition.index')}}">Terms and conditions</a>
                             </li>
-                            <li>
+                            {{-- <li>
                                 <a href="">Refund and Cancellation Policy</a>
-                            </li>
+                            </li> --}}
                             <li>
-                                <a href="">Disclaimer</a>
+                                <a href="{{route('front.disclaimer.index')}}">Disclaimer</a>
                             </li>
                         </ul>
                     </div>
@@ -89,7 +89,6 @@
                             <h3>Ayachak Ashrama, Varanasi</h3>
                             <p>D46/19B, Swarupananda Street, Luxa (Behind Luxa Thana), Varanasi, Uttar Pradesh, <br> Pin-221010, <br>Phone-(0542)2452376</p>
                         </address>
-                        
                     </div>
                 </div>
             </div>

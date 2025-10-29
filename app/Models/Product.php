@@ -16,10 +16,6 @@ class Product extends Model
     }
 
     public static function insertData($data, $count) {
-        //dd($data)
-        // echo "<pre>";
-        // print_r($key);
-        // exit;
         $id='';
         $value = DB::table('products')->where('style_no', $data['style_no'])->where('name', $data['name'])->get();
         //dd($value);
@@ -51,42 +47,64 @@ class Product extends Model
         // dd($id);
     }
 
-    public static function insertProductData($data, $successCount){
-        $resp = [];
-        if (isset($data)) {
-            // check if SKU exists
-            // dd($data);
+    // public static function insertProductData($data, $successCount){
+    //     $resp = [];
+    //     if (isset($data)) {
+    //         DB::table('products')->insert([
+    //             'cat_id' => $data['cat_id'],
+    //             'style_no' => $data['style_no'],
+    //             'name' => $data['name'],
+    //             'price' => $data['price'],
+    //             'offer_price' => $data['offer_price'],
+    //             'gst' => $data['gst'],
+    //             'short_desc' => $data['short_desc'],
+    //             'image' => $data['image'],
+    //             'slug' => $data['slug'],
+    //             'status' => $data['status']
+    //         ]);
+    //         $successCount++;
+    
+    //         $csvStatus = 'success';
+    //         $csvDesc = 'All correct data provided';
+    //     }else{
+    //         $csvStatus = 'error';
+    //         $csvDesc = 'Failed to import';
+    //     }
+        
+    //     $resp = [
+    //         "successCount" => $successCount,    
+    //     ];
+
+    //     return $resp;
+    // }
+    public static function insertProductData($data, $successCount)
+    {
+        try {
+            // Insert with timestamps
             DB::table('products')->insert([
                 'cat_id' => $data['cat_id'],
                 'style_no' => $data['style_no'],
                 'name' => $data['name'],
-                'fabric' => $data['fabric'],
                 'price' => $data['price'],
                 'offer_price' => $data['offer_price'],
                 'gst' => $data['gst'],
                 'short_desc' => $data['short_desc'],
-                'brand' => $data['brand'],
-                'pattern' => $data['pattern'],
                 'image' => $data['image'],
                 'slug' => $data['slug'],
-                'wash_care' => $data['wash_care'],
-                // 'position' => $data['COLOR_POSITION'],
-                'status' => $data['status']
+                'status' => $data['status'],
+                'created_at' => now(),
+                'updated_at' => now(),
             ]);
-            $successCount++;
-    
-            $csvStatus = 'success';
-            $csvDesc = 'All correct data provided';
-        }else{
-            $csvStatus = 'error';
-            $csvDesc = 'Failed to import';
-        }
-        
-        $resp = [
-            "successCount" => $successCount,    
-        ];
 
-        return $resp;
+            $successCount++;
+        } catch (\Exception $e) {
+            // Log the actual reason for failure
+            \Log::error('CSV Product Import Failed: ' . $e->getMessage());
+        }
+
+        return [
+            'successCount' => $successCount,
+        ];
     }
 
     // New code

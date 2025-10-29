@@ -116,7 +116,7 @@ class ProductRepository implements ProductInterface
             $newEntry->meta_desc = $collectedData['meta_desc'];
             $newEntry->meta_keyword = $collectedData['meta_keyword'];
             $newEntry->style_no = $collectedData['style_no'];
-            $newEntry->pack = $collectedData['pack'];
+            //$newEntry->pack = $collectedData['pack'];
             $newEntry->gst = $collectedData['gst'] ?? 0;
             $slug = Str::slug($collectedData['name'].'-'.$collectedData['style_no'], '-');
             $slugExistCount = Product::where('slug', $slug)->count();
@@ -198,8 +198,8 @@ class ProductRepository implements ProductInterface
             $updatedEntry->meta_desc = $collectedData['meta_desc'];
             $updatedEntry->meta_keyword = $collectedData['meta_keyword'];
             $updatedEntry->style_no = $collectedData['style_no'];
-            $updatedEntry->pack = $collectedData['pack'];
-            $updatedEntry->gst = $collectedData['gst'];
+            //$updatedEntry->pack = $collectedData['pack'];
+            $updatedEntry->gst = $collectedData['gst'] ?? 0;
             if (isset($newDetails['image'])) {
                 // delete old image
                 if (Storage::exists($updatedEntry->image)) unlink($updatedEntry->image);

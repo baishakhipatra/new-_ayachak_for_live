@@ -320,12 +320,13 @@
                                         <input type="text" id="inputprice6" class="form-control" aria-describedby="priceHelpInline" name="style_no" value="{{$data->style_no}}">
                                         @error('style_no') <p class="small text-danger">{{ $message }}</p> @enderror
                                     </div>
-                                    <div class="col-3">
+                                    {{-- <div class="col-3">
                                         <label class="col-form-label">GST Applicable</label>
                                     </div>
                                     <div class="col-9">
                                         <div class="form-check form-switch">
-                                            <input class="form-check-input" type="checkbox" id="gstToggle" checked>
+                                            <input class="form-check-input" type="checkbox" id="gstToggle" name="gst_applicable"
+                                            {{ old('gst_applicable', $data->gst_applicable ?? ($data->gst ? 1 : 0)) ? 'checked' : '' }}>
                                             <label class="form-check-label" for="gstToggle">Yes</label>
                                         </div>
                                     </div>
@@ -333,24 +334,27 @@
                                         <label for="inputPassword6" class="col-form-label">GST(%)</label>
                                     </div>
                                     <div class="col-9">
-                                        <input type="number" id="gst" class="form-control" aria-describedby="priceHelpInline" name="gst" value="{{$data->gst}}" step="0.01">
+                                        <input type="number" id="gst" class="form-control" aria-describedby="priceHelpInline" name="gst" value="{{ old('gst', $data->gst ?? '') }}" step="0.01">
                                         @error('gst') <p class="small text-danger">{{ $message }}</p> @enderror
+                                    </div> --}}
+                                    <div class="row mb-2 align-items-center">
+                                        <div class="col-3"><label class="col-form-label">GST Applicable</label></div>
+                                        <div class="col-9">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="gstToggle" name="gst_applicable"
+                                                    {{ $data->gst_applicable || $data->gst ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="gstToggle">Yes</label>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            </content>
-                        </div>
-                        <div class="admin__content">
-                            <aside>
-                                <nav>Pack <span class="text-danger">*</span></nav>
-                            </aside>
-                            <content>
-                                <div class="row mb-2 align-items-center">
-                                    <div class="col-3">
-                                        <label for="inputPassword6" class="col-form-label">Net Qty</label>
-                                    </div>
-                                    <div class="col-9">
-                                        <input type="text" id="inputprice6" class="form-control" aria-describedby="priceHelpInline" name="pack" value="{{ old('pack') ? old('pack') : $data->pack }}">
-                                        @error('pack') <p class="small text-danger">{{ $message }}</p> @enderror
+
+                                    <div class="row mb-2 align-items-center">
+                                        <div class="col-3"><label class="col-form-label">GST(%)</label></div>
+                                        <div class="col-9">
+                                            <input type="number" id="gst" name="gst" class="form-control" step="0.01"
+                                                value="{{ $data->gst }}">
+                                            @error('gst') <p class="small text-danger">{{ $message }}</p> @enderror
+                                        </div>
                                     </div>
                                 </div>
                             </content>
@@ -373,24 +377,64 @@
                                     </thead>
                                     <tbody>
                                         @foreach($product->variations as $index => $variation)
-                                        <tr>
-                                            <input type="hidden" name="variations[{{ $index }}][id]" value="{{ $variation->id }}">
-                                            <td><input type="text" name="variations[{{ $index }}][weight]" class="form-control" value="{{ $variation->weight }}"></td>
-                                            <td><input type="text" name="variations[{{ $index }}][code]" class="form-control" value="{{ $variation->code }}"></td>
-                                            <td><input type="number" step="0.01" name="variations[{{ $index }}][price]" class="form-control" value="{{ $variation->price }}"></td>
-                                            <td><input type="number" step="0.01" name="variations[{{ $index }}][offer_price]" class="form-control" value="{{ $variation->offer_price }}"></td>
-                                            <td><input type="number" name="variations[{{ $index }}][stock]" class="form-control" value="{{ $variation->stock }}"></td>
-                                            <td>
-                                                <input type="file" name="variations[{{ $index }}][images][]" class="form-control" multiple>
-                                                <small class="text-muted">You can upload multiple images for this variation.</small>
-                                                <div class="existing-images mt-1">
-                                                    @foreach($variation->images as $img)
-                                                        <img src="{{ asset($img->image_path) }}" style="width: 50px; height: 50px;" class="me-1 mb-1">
-                                                    @endforeach
-                                                </div>
-                                            </td>
-                                            <td><button type="button" class="btn btn-sm btn-danger removeVariation">x</button></td>
-                                        </tr>
+                                            <tr>
+                                                <input type="hidden" name="variations[{{ $index }}][id]" value="{{ $variation->id }}">
+                                                
+                                                <td>
+                                                    <input type="text" name="variations[{{ $index }}][weight]" class="form-control"
+                                                        value="{{ old("variations.$index.weight", $variation->weight) }}">
+                                                    @error("variations.$index.weight")
+                                                        <small class="text-danger">{{ $message }}</small>
+                                                    @enderror
+                                                </td>
+                                                
+                                                <td>
+                                                    <input type="text" name="variations[{{ $index }}][code]" class="form-control"
+                                                        value="{{ old("variations.$index.code", $variation->code) }}">
+                                                    @error("variations.$index.code")
+                                                        <small class="text-danger">{{ $message }}</small>
+                                                    @enderror
+                                                </td>
+                                                
+                                                <td>
+                                                    <input type="number" step="0.01" name="variations[{{ $index }}][price]" class="form-control"
+                                                        value="{{ old("variations.$index.price", $variation->price) }}">
+                                                    @error("variations.$index.price")
+                                                        <small class="text-danger">{{ $message }}</small>
+                                                    @enderror
+                                                </td>
+                                                
+                                                <td>
+                                                    <input type="number" step="0.01" name="variations[{{ $index }}][offer_price]" class="form-control"
+                                                        value="{{ old("variations.$index.offer_price", $variation->offer_price) }}">
+                                                    @error("variations.$index.offer_price")
+                                                        <small class="text-danger">{{ $message }}</small>
+                                                    @enderror
+                                                </td>
+
+                                                <td>
+                                                    <input type="number" name="variations[{{ $index }}][stock]" class="form-control"
+                                                        value="{{ old("variations.$index.stock", $variation->stock) }}">
+                                                    @error("variations.$index.stock")
+                                                        <small class="text-danger">{{ $message }}</small>
+                                                    @enderror
+                                                </td>
+
+                                                <td>
+                                                    <input type="file" name="variations[{{ $index }}][images][]" class="form-control" multiple>
+                                                    <small class="text-muted">Upload multiple images</small>
+                                                    <div class="existing-images mt-1">
+                                                        @foreach($variation->images as $img)
+                                                            <img src="{{ asset($img->image_path) }}" style="width:50px;height:50px;" class="me-1 mb-1">
+                                                        @endforeach
+                                                    </div>
+                                                    @error("variations.$index.images")
+                                                        <small class="text-danger">{{ $message }}</small>
+                                                    @enderror
+                                                </td>
+
+                                                <td><button type="button" class="btn btn-sm btn-danger removeVariation">x</button></td>
+                                            </tr>
                                         @endforeach
                                     </tbody>
                                 </table>
@@ -514,19 +558,13 @@
         $(document).ready(function () {
             function toggleGstField() {
                 if ($('#gstToggle').is(':checked')) {
-                    $('#gst').prop('disabled', false).prop(true);
+                    $('#gst').prop('disabled', false).prop('required', true);
                 } else {
-                    $('#gst').val('').prop('disabled', true).prop(false);
+                    $('#gst').val('').prop('disabled', true).prop('required', false);
                 }
             }
-
-            // Run on load
             toggleGstField();
-
-            // Run on toggle change
-            $('#gstToggle').on('change', function () {
-                toggleGstField();
-            });
+            $('#gstToggle').on('change', function () { toggleGstField(); });
         });
 
 

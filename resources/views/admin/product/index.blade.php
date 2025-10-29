@@ -180,14 +180,14 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                Bulk Upload Existing Product Variation with SKU code, color & size
+                Bulk Upload Existing Product Variation with SKU code
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form method="post" action="{{ route('admin.product.csv.upload') }}" enctype="multipart/form-data" id="borrowerCsvUpload">@csrf
                     <input type="file" name="file" class="form-control" accept=".csv">
                     <br>
-                    <a href="{{ asset('backend_asset/static/product-variation-sample.csv') }}">Download Sample CSV</a>
+                    <a href="{{ asset('backend_asset/static/product-variation-sample.csv') }}" download>Download Sample CSV</a>
                     <br>
                     <button type="submit" class="btn btn-danger mt-3" id="csvImportBtn">Import <i class="fas fa-upload"></i></button>
                 </form>

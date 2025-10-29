@@ -143,34 +143,73 @@
             <th>Qty</th>
             <th class="text-end">Price</th>
             <th class="text-end">Taxable Value</th>
-            <th class="text-end">GST</th>
-            <th class="text-end">Total</th>
+            <th class="text-end">CGST (INR)</th>
+            <th class="text-end">SGST (INR)</th>
+            <th class="text-end">IGST (INR)</th>
+            <th class="text-end">Total (INR)</th>
         </tr>
         </thead>
         <tbody>
         @foreach($order->orderProducts as $product)
+            @php
+                $gstPercent = $product->gst;
+                $gstAmount = $product->gst_amount;
+
+                $cgst = 0;
+                $sgst = 0;
+                $igst = 0;
+
+                $cgstPercent = 0;
+                $sgstPercent = 0;
+                $igstPercent = 0;
+
+                if(strtolower($order->shipping_state) == 'west bengal') {
+                    $cgst = $gstAmount / 2;
+                    $sgst = $gstAmount / 2;
+
+                    $cgstPercent = $gstPercent /2;
+                    $sgstPercent = $gstPercent/2;
+                } else {
+                    $igst = $gstAmount;
+                    $igstPercent = $gstPercent;
+                }
+            @endphp
             <tr>
                 <td>{{ $loop->iteration }}</td>
                 <td>{{ $product->product_name }}</td>
                 <td>{{ $product->qty }}</td>
                 <td class="text-end">{{ number_format($product->total, 2) }}</td>
                 <td class="text-end">{{ number_format(($product->total) - ($product->gst_amount),2) }}</td>
-                <td class="text-end">{{ number_format($product->gst_amount,2) }}</td>
+                {{-- <td class="text-end">{{ number_format($product->gst_amount,2) }}</td> --}}
+                <td class="text-end">{{ number_format($cgst,2) }} 
+                @if($cgstPercent > 0)
+                    <small class="text-muted">({{ rtrim(rtrim(number_format($cgstPercent, 2), '0'), '.') }}%)</small>
+                @endif</td>
+                <td class="text-end">{{ number_format($sgst,2) }}
+                @if($sgstPercent > 0)
+                    <small class="text-muted">({{ rtrim(rtrim(number_format($sgstPercent, 2), '0'), '.') }}%)</small>
+                @endif
+                </td>
+                <td class="text-end">{{ number_format($igst,2) }}
+                @if($igstPercent > 0)
+                    <small class="text-muted">({{ rtrim(rtrim(number_format($igstPercent, 2), '0'), '.') }}%)</small>
+                @endif
+                </td>
                 <td class="text-end">{{ number_format($product->total,2) }}</td>
             </tr>
         @endforeach
         </tbody>
         <tfoot>
         <tr>
-            <th colspan="6" class="text-end">Grand Total</th>
+            <th colspan="8" class="text-end">Grand Total</th>
             <th class="text-end">{{ number_format($order->amount, 2) }}</th>
         </tr>
         <tr>
-            <th colspan="6" class="text-end">Discount</th>
+            <th colspan="8" class="text-end">Discount</th>
             <th class="text-end">- {{ number_format($order->discount_amount, 2) }}</th>
         </tr>
         <tr>
-            <th colspan="6" class="text-end">Final Amount</th>
+            <th colspan="8" class="text-end">Final Amount</th>
             <th class="text-end">{{ number_format($order->final_amount, 2) }}</th>
         </tr>
         </tfoot>

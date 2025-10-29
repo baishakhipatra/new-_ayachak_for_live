@@ -11,7 +11,7 @@ class Checkout extends Model
     protected $table = "checkout";
 
     protected $fillable = [
-        'user_id', 'sub_total_amount', 'discount_amount', 'gst_amount', 'final_amount','coupon_id'
+       'user_id', 'coupon_id', 'sub_total_amount', 'discount_amount', 'gst_amount', 'final_amount', 'billing_address', 'shipping_address', 'transaction_id', 'merchantTxnNo' 
     ];
 
     public function coupon(){

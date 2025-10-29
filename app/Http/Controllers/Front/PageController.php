@@ -115,7 +115,7 @@ class PageController extends Controller
 
         $description = $setting->content;
 
-        return view('front.pages.abhiksha', compact('page_heading', 'description'));
+        return view('front.pages.morality-compaign', compact('page_heading', 'description'));
     }
 
     public function ayachakAshram()
@@ -146,7 +146,7 @@ class PageController extends Controller
 
         $description = $setting->content;
 
-        return view('front.pages.ayachak-ashram', compact('page_heading', 'description'));
+        return view('front.pages.the-multiversity', compact('page_heading', 'description'));
     }
 
     public function akhanda()
@@ -207,6 +207,90 @@ class PageController extends Controller
         return view('front.pages.samabeta-upasana', compact('page_heading', 'description')); 
     }
 
+    public function center()
+    {
+       $page_heading = 'CENTER';
 
+       $setting = Settings::where('page_heading', 'like', "%{$page_heading}%")->first();
+        //dd($setting);
+        if (!$setting) {
+            abort(404, 'Page settings not found.');
+        }
+
+        $description = $setting->content;
+
+        return view('front.pages.center', compact('page_heading', 'description')); 
+    }
+
+    public function diksha()
+    {
+        $page_heading = 'Diksha';
+
+        $setting = Settings::where('page_heading', 'like', "%{$page_heading}%")->first();
+
+        if(!$setting) {
+            abort(404, 'Page Not Found');
+        }
+
+        $description = $setting->content;
+
+        return view('front.pages.diksha', compact('page_heading','description'));
+    }
+
+    public function conclusion(){
+        $page_heading = 'Conclusion';
+
+        $setting = Settings::where('page_heading', 'like', "%{$page_heading}%")->first();
+
+        if(!$setting) {
+            abort(404, 'Page Not Found');
+        }
+
+        $description = $setting->content;
+
+        return view('front.pages.conclusion',compact('page_heading','description'));
+    }
+
+    public function privacyStatement(){
+        $page_heading = 'Privacy Statement';
+
+        $setting = Settings::where('page_heading', 'like', "%{$page_heading}%")->first();
+
+        if(!$setting) {
+            abort(404, 'Page Not Found');
+        }
+
+        $description = $setting->content;
+
+        return view('front.pages.privacyStatement',compact('page_heading','description'));
+    }
+
+    public function termsAndCondition(){
+        $page_heading = 'Terms and conditions';
+
+        $setting = Settings::where('page_heading', 'like', "%{$page_heading}%")->first();
+
+        if(!$setting) {
+            abort(404, 'Page Not Found');
+        }
+
+        $description = $setting->content;
+
+        return view('front.pages.termsAndCondition',compact('page_heading','description'));
+    }
+
+    public function disclaimer(){
+        $page_heading = 'Disclaimer';
+
+        $setting = Settings::where('page_heading', 'like', "%{$page_heading}%")->first();
+
+        if(!$setting) {
+            abort(404, 'Page Not Found');
+        }
+
+        $description = $setting->content;
+
+        return view('front.pages.disclaimer',compact('page_heading','description'));
+    }
 
 }

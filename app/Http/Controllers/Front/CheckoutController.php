@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use App\Mail\OrderConfirmationMail;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Http;
 
 class CheckoutController extends Controller
 {
@@ -112,7 +113,7 @@ class CheckoutController extends Controller
     public function store(Request $request)
     {
         $checkoutId = $request->checkout_id;
-        //dd($checkoutId);
+        // dd($checkoutId);
         
         $rules = [
             'email' => 'required|email|max:255',
@@ -197,6 +198,9 @@ class CheckoutController extends Controller
         ];
 
         //dd($checkoutData);
+        $checkout = Checkout::where('id', $checkoutId)->first();
+        // dd($checkout);
+        $this->initiatePaymentMethod($checkout->final_amount, $request->email, $request->mobile, $request->name);
 
         if ($checkoutId) {
             Checkout::where('id', $checkoutId)->update($checkoutData);
@@ -213,6 +217,82 @@ class CheckoutController extends Controller
         ]);
     }
 
+    protected function initiatePaymentMethod($amount,$email,$mobile,$name){
+        do {
+            $order_id = uniqid('ORD'); // generate something like ORD671FA5C8F12A9
+        } while (Checkout::where('transaction_id', $order_id)->exists());
+       // dd($order_id);
+        $merchantId = env('ICICI_MERCHANT_ID');
+
+        $data = [
+            "merchantId"=> env('ICICI_MARCHANT_ID'),
+            "merchantTxnNo"=> $order_id,
+            "amount"=> $amount,
+            "currencyCode"=> "356",
+            "payType"=> "0",       
+            "customerEmailID"=> $email,
+            "transactionType"=> "SALE",
+            "txnDate"=> date('YmdHis'),
+            "returnURL"=> secure_url('api/customer/icici/thankyou'),
+            "customerMobileNo"=> "91".$mobile,
+            "customerName"=> $name,
+        ];
+        // Create secureHash
+        $hashKey = implode('', [
+            $data["amount"],
+            $data["currencyCode"],
+            $data["customerEmailID"],
+            $data["customerMobileNo"],
+            $data["customerName"],
+            $data["merchantId"],
+            $data["merchantTxnNo"],
+            $data["payType"],
+            $data["returnURL"],
+            $data["transactionType"],
+            $data["txnDate"]
+        ]);
+
+        $data['secureHash'] = hash_hmac('sha256', $hashKey, env('ICICI_MARCHANT_SECRET_KEY'));
+
+        // Send request to Phicommerce using cURL
+        $ch = curl_init(env('ICICI_PAYMENT_INITIATE_BASH_URL'));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Content-Type: application/json'
+        ]);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+
+        $response = curl_exec($ch);
+
+        if (curl_errno($ch)) {
+            $error = curl_error($ch);
+            curl_close($ch);
+            return response()->json(['error' => $error], 500);
+        }
+
+        curl_close($ch);
+        $InitiateSaleResponse = json_decode($response, true);
+        dd($InitiateSaleResponse);
+
+        if (isset($response['redirectUrl'])) {
+            // store transaction in DB
+            Transaction::create([
+                'user_id' => $user->id,
+                'order_id' => $order_id,
+                'transaction' => $order_id,
+                'amount' => $amount,
+                'currency' => 'INR',
+                'method' => 'ICICI',
+                'description' => 'ICICI Payment Initiated',
+                'bank' => '',
+                'upi' => '',
+                'status' => 0,
+            ]);
+
+            return redirect($response['redirectUrl']);
+        }
+    }
 
     public function payment(Request $request)
     {

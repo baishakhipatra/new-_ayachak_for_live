@@ -27,6 +27,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
+
 class ProductController extends Controller
 {
     // private ProductInterface $productRepository;
@@ -66,40 +67,50 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-        //dd($request->all());
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             "cat_id" => "nullable",
             "sub_cat_id" => "nullable",
             "collection_id" => "nullable",
             "name" => "required|string|max:255",
             "short_desc" => "nullable",
             "desc" => "nullable",
-            "price" => "required|integer",
-            "offer_price" => "nullable|integer",
+            "price" => "required|integer|min:0",
+            "offer_price" => "nullable|integer|min:0",
             "meta_title" => "nullable",
             "meta_desc" => "nullable",
             "meta_keyword" => "nullable",
             "style_no" => "nullable|unique:products",
             "image" => "required|mimes:jpg,jpeg,png,svg,gif,webp|max:10000000",
-            'gst'=>'nullable|regex:/^[^\+\-\&\%]+$/',
-            "pack" => "nullable|string|max:255",
+            'gst' => 'nullable|regex:/^[^\+\-\&\%]+$/',
 
-        
             "variations" => "required|array|min:1",
             "variations.*.weight" => "required|string|max:50",
             "variations.*.code" => "required|string|max:100|unique:product_variation,code",
-            "variations.*.price" => "required|numeric",
-            "variations.*.offer_price" => "nullable|numeric",
+            "variations.*.price" => "required|numeric|min:0",
+            "variations.*.offer_price" => "nullable|numeric|min:0",
             "variations.*.stock" => "required|integer|min:0",
             "variations.*.images.*" => "nullable|image|mimes:jpg,jpeg,png,svg,gif,webp|max:10000000",
         ]);
 
+        $validator->after(function ($validator) use ($request) {
+            if ($request->offer_price && $request->offer_price > $request->price) {
+                $validator->errors()->add('offer_price', 'Offer price cannot be greater than the regular price.');
+            }
+
+            if (isset($request->variations) && is_array($request->variations)) {
+                foreach ($request->variations as $index => $variation) {
+                    if (!empty($variation['offer_price']) && $variation['offer_price'] > $variation['price']) {
+                        $validator->errors()->add("variations.$index.offer_price", "Offer price in variation #".($index+1)." cannot be greater than its price.");
+                    }
+                }
+            }
+        });
+        $validated = $validator->validate();
         $params = $request->except('_token');
         $storeData = $this->productRepository->create($params);
 
         if ($storeData) {
             return redirect()->route('admin.product.index')->with('success', 'New Product created, add Product Variation!');
-
         } else {
             return redirect()->route('admin.product.create')->withInput($request->all());
         }
@@ -125,10 +136,68 @@ class ProductController extends Controller
         return view('admin.product.edit', compact('id', 'data', 'categories', 'images','product'));
     }
 
+    // public function update(Request $request)
+    // {
+    //     // dd($request->all());
+    //     $request->validate([
+    //         "product_id" => "required|integer",
+    //         "cat_id" => "nullable|integer",
+    //         "sub_cat_id" => "nullable|integer",
+    //         "collection_id" => "nullable|integer",
+    //         "name" => "required|string|max:255",
+    //         "short_desc" => "nullable",
+    //         "desc" => "nullable",
+    //         "price" => "required|integer",
+    //         "offer_price" => "nullable|integer",
+    //         "meta_title" => "nullable|string",
+    //         "meta_desc" => "nullable|string",
+    //         "meta_keyword" => "nullable|string",
+    //         "style_no" => "nullable",
+    //         "image" => "nullable",
+    //         "size_chart_image" => "nullable",
+    //         "product_images" => "nullable|array",
+    //         'gst'=>'nullable|regex:/^[^\+\-\&\%]+$/',
+    //         //"pack" => "nullable|string|max:255",
+
+            
+    //         "variations" => "required|array|min:1",
+    //         "variations.*.weight" => "required|string|max:50",
+    //        "variations.*.code" => [
+    //             'required',
+    //             'string',
+    //             'max:100',
+    //             function($attribute, $value, $fail) use ($request) {
+    //                 $index = explode('.', $attribute)[1];
+    //                 $variationId = $request->input("variations.$index.id") ?? null;
+
+    //                 $existsQuery = ProductVariation::where('code', $value);
+    //                 if ($variationId) {
+    //                     $existsQuery->where('id', '!=', $variationId);
+    //                 }
+
+    //                 if ($existsQuery->exists()) {
+    //                     $fail("The $attribute has already been taken.");
+    //                 }
+    //             }
+    //         ],
+    //         "variations.*.price" => "required|numeric",
+    //         "variations.*.offer_price" => "nullable|numeric",
+    //         "variations.*.stock" => "required|integer|min:0",
+    //         "variations.*.images.*" => "nullable|image|mimes:jpg,jpeg,png,svg,gif,webp|max:10000000",
+    //     ]);
+
+    //     $params = $request->except('_token');
+    //     $storeData = $this->productRepository->update($request->product_id, $params);
+    //    // dd($storeData);
+    //     if ($storeData) {
+    //         return redirect()->back()->with('success', 'Product updated successfully');
+    //     } else {
+    //         return redirect()->route('admin.product.update', $request->product_id)->withInput($request->all());
+    //     }
+    // }
     public function update(Request $request)
     {
-        // dd($request->all());
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             "product_id" => "required|integer",
             "cat_id" => "nullable|integer",
             "sub_cat_id" => "nullable|integer",
@@ -136,22 +205,20 @@ class ProductController extends Controller
             "name" => "required|string|max:255",
             "short_desc" => "nullable",
             "desc" => "nullable",
-            "price" => "required|integer",
-            "offer_price" => "nullable|integer",
+            "price" => "required|integer|min:0",
+            "offer_price" => "nullable|integer|min:0",
             "meta_title" => "nullable|string",
             "meta_desc" => "nullable|string",
             "meta_keyword" => "nullable|string",
-            "style_no" => "nullable",
-            "image" => "nullable",
-            "size_chart_image" => "nullable",
-            "product_images" => "nullable|array",
-            'gst'=>'nullable|regex:/^[^\+\-\&\%]+$/',
-            "pack" => "nullable|string|max:255",
-
+            "style_no" => "nullable|string|unique:products,style_no,".$request->product_id,
+            "image" => "nullable|mimes:jpg,jpeg,png,svg,gif,webp|max:10000000",
+            "size_chart_image" => "nullable|mimes:jpg,jpeg,png,svg,gif,webp|max:10000000",
+            'gst' => 'nullable|regex:/^[^\+\-\&\%]+$/',
             
             "variations" => "required|array|min:1",
+            "variations.*.id" => "nullable|integer",
             "variations.*.weight" => "required|string|max:50",
-           "variations.*.code" => [
+            "variations.*.code" => [
                 'required',
                 'string',
                 'max:100',
@@ -169,21 +236,38 @@ class ProductController extends Controller
                     }
                 }
             ],
-            "variations.*.price" => "required|numeric",
-            "variations.*.offer_price" => "nullable|numeric",
+            "variations.*.price" => "required|numeric|min:0",
+            "variations.*.offer_price" => "nullable|numeric|min:0",
             "variations.*.stock" => "required|integer|min:0",
             "variations.*.images.*" => "nullable|image|mimes:jpg,jpeg,png,svg,gif,webp|max:10000000",
         ]);
 
+        $validator->after(function ($validator) use ($request) {
+            if ($request->offer_price && $request->offer_price > $request->price) {
+                $validator->errors()->add('offer_price', 'Offer price cannot be greater than the regular price.');
+            }
+
+            if (isset($request->variations) && is_array($request->variations)) {
+                foreach ($request->variations as $index => $variation) {
+                    if (!empty($variation['offer_price']) && $variation['offer_price'] > $variation['price']) {
+                        $validator->errors()->add("variations.$index.offer_price", "Offer price in variation #".($index+1)." cannot be greater than its price.");
+                    }
+                }
+            }
+        });
+
+        $validated = $validator->validate();
+
         $params = $request->except('_token');
-        $storeData = $this->productRepository->update($request->product_id, $params);
-       // dd($storeData);
-        if ($storeData) {
+        $updatedProduct = $this->productRepository->update($request->product_id, $params);
+
+        if ($updatedProduct) {
             return redirect()->back()->with('success', 'Product updated successfully');
         } else {
             return redirect()->route('admin.product.update', $request->product_id)->withInput($request->all());
         }
     }
+
 
     public function status(Request $request, $id)
     {
@@ -350,7 +434,7 @@ class ProductController extends Controller
             $f = fopen('php://memory', 'w');
 
             // Set Column Headers
-            $header = array("PRODUCT_ID","CATEGORY_ID","NAME","PRODUCT_STYLE_NO","POSITION","PRICE","OFFER_PRICE","GST","STATUS[1:ACTIVE,0:INACTIVE]");
+            $header = array("PRODUCT_ID","CATEGORY_ID","NAME","PRODUCT_STYLE_NO","PRICE","OFFER_PRICE","GST","STATUS[1:ACTIVE,0:INACTIVE]");
             fputcsv($f,$header,$delimiter);
 
             $count =1;
@@ -358,16 +442,10 @@ class ProductController extends Controller
                 $exportData = array(
                     $row->id ? $row->id : '',
                     $row->cat_id ? $row->cat_id : '',
-                    //$row->sub_cat_id ? $row->sub_cat_id : '',
                     $row->name ? $row->name : '',
-                    $row->product_style_no ? $row->product_style_no : '',
-                    $row->position ? $row->position : '',
+                    $row->style_no ? $row->style_no : '',
                     $row->price ? $row->price : '',      
-                    $row->offer_price ? $row->offer_price : '',      
-                    // $row->brand ? $row->brand : '',
-                    // $row->wash_care ? $row->wash_care : '',      
-                    // $row->pattern ? $row->pattern : '',      
-                    // $row->fabric ? $row->fabric : '',      
+                    $row->offer_price ? $row->offer_price : '',     
                     $row->gst ? $row->gst : '',      
                     $row->status ? $row->status : ''                       
                 );
@@ -376,15 +454,103 @@ class ProductController extends Controller
                 $count++;
             }
             fseek($f,0);
-            // Set headers to download file rather than displayed
             header('Content-Type: text/csv');
             header('Content-Disposition: attachment; filename="' . $fileName . '";');
-
-            //output all remaining data on a file pointer
             fpassthru($f);
 
         }
     }
+
+    public function productvariationCSVUpload(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:xlsx,xls,csv|max:51200', 
+        ]);
+
+        $file = $request->file('file');
+        $extension = $file->getClientOriginalExtension();
+
+        if (in_array($extension, ['xlsx', 'xls'])) {
+            $spreadsheet = IOFactory::load($file->getRealPath());
+            $sheet = $spreadsheet->getActiveSheet();
+            $rows = $sheet->toArray();
+        } else {
+            $rows = array_map('str_getcsv', file($file->getRealPath()));
+        }
+
+        if (count($rows) < 2) {
+            return redirect()->back()->with('failure', 'No data found in file.');
+        }
+
+        $header = array_map('trim', $rows[0]);
+        unset($rows[0]);
+
+        $imported = 0;
+        $skipped = 0;
+
+        foreach ($rows as $row) {
+            if (count($row) < count($header)) {
+                $skipped++;
+                continue;
+            }
+
+            $data = array_combine($header, $row);
+
+          
+            $validator = Validator::make($data, [
+                'PRODUCT_STYLE_NO' => 'required',
+                'PRODUCT_NAME'     => 'required|string|max:255',
+                'PRICE'            => 'required|numeric',
+                'PRODUCT_CATEGORY' => 'nullable|string|max:255',
+                'OFFER_PRICE'      => 'nullable|numeric',
+                'SHORT_DESC'       => 'nullable|string|max:1000',
+                'STATUS (1: active, 0: inactive)' => 'nullable|in:0,1',
+            ]);
+
+            if ($validator->fails()) {
+                $skipped++;
+                continue;
+            }
+
+            $catId = null;
+            if (!empty($data['PRODUCT_CATEGORY'])) {
+                $category = Category::firstOrCreate(['name' => $data['PRODUCT_CATEGORY']]);
+                $catId = $category->id;
+            }
+
+            $slug = \Str::slug($data['PRODUCT_NAME'] . '-' . $data['PRODUCT_STYLE_NO'], '-');
+            $slugExistCount = Product::where('slug', $slug)->count();
+            if ($slugExistCount > 0) $slug .= '-' . ($slugExistCount + 1);
+
+            // Insert product
+            $productInsert = [
+                'cat_id'     => $catId,
+                'style_no'   => $data['PRODUCT_STYLE_NO'],
+                'name'       => $data['PRODUCT_NAME'],
+                'price'      => $data['PRICE'],
+                'offer_price'=> $data['OFFER_PRICE'] ?? null,
+                'gst'        => $data['GST'] ?? null,
+                'short_desc' => $data['SHORT_DESC'] ?? null,
+                'status'     => $data['STATUS (1: active, 0: inactive)'] ?? 1,
+                'image'      => 'backend_asset/images/defaul-product-image.png',
+                'slug'       => $slug,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+
+            try {
+                Product::insertProductData($productInsert, $imported); 
+                $imported++;
+            } catch (\Exception $e) {
+                $skipped++;
+                continue;
+            }
+        }
+
+        $message = "$imported products imported, $skipped skipped.";
+        return redirect()->back()->with('success', $message);
+    }
+
 
     public function productSkuList(Request $request)
     {
@@ -470,8 +636,10 @@ class ProductController extends Controller
             'id'           => 'required|exists:product_variation,id',
             'code'         => 'required|string|max:255',
             'weight'       => 'nullable|string|max:100',
-            'price'        => 'required|numeric',
-            'offer_price'  => 'nullable|numeric',
+            'price'        => 'required|numeric|min:0',
+            'offer_price'  => 'nullable|numeric|min:0|lte:price',
+        ],[
+            'offer_price.lte' => 'Offer price cannot be greater than actual price',
         ]);
 
         $variation = ProductVariation::find($request->id);
@@ -685,9 +853,6 @@ class ProductController extends Controller
     }
 
 }
-
-
-
 
 
     // public function productSkuListSyncAll(Request $request)

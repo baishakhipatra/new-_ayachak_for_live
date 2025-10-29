@@ -67,7 +67,7 @@
 
                     <form action="{{ route('front.cart.add') }}" method="POST" id="addToCartForm">
                         @csrf
-                        <input type="hidden" name="product_id" value="{{ $data->id }}">
+                            <input type="hidden" name="product_id" value="{{ $data->id }}">
                         @if (isset($productVariations[0]))
                             <input type="hidden" name="variation_id" id="selectedVariation" value="{{ $productVariations[0]->id }}">
                         @else
@@ -84,7 +84,26 @@
                             @endif
                         </div>
 
+                        @php
+                            $productVariations = $productVariations->sortBy(function ($variation) {
+                                preg_match('/\d+/', $variation->weight, $matches);
+                                return isset($matches[0]) ? (int)$matches[0] : 0;
+                            });
+                        @endphp
+
                         @if(isset($productVariations) && $productVariations->count() > 0)
+
+                            <div class="stock-holder">
+                                @php
+                                    $firstVariation = $productVariations->first();
+                                @endphp
+                                @if($firstVariation->stock > 0)
+                                    <span class="instock">In Stock</span>
+                                @else
+                                    <span class="outof-stock">Out of Stock</span>
+                                @endif
+                            </div>
+
                             <div class="variation-list">
                                 @foreach ($productVariations as $key => $variation)
                                     <label>
@@ -101,16 +120,7 @@
                                     </label>
                                 @endforeach
                             </div>
-                            <div class="variation-stock mt-2 fw-bold">
-                                @php
-                                    $firstVariation = $productVariations->first();
-                                @endphp
-                                @if($firstVariation->stock > 0)
-                                    <span class="text-success">In Stock</span>
-                                @else
-                                    <span class="text-danger">Out of Stock</span>
-                                @endif
-                            </div>
+                            
                         @endif
 
                         @if($hasStock)
@@ -123,13 +133,14 @@
                                 <input type="submit" class="bton btn-fill add-to-cart-btn" value="Add to Cart">
                             </div>
                         @else
-                            <div class="alert alert-danger mt-3">
-                                This product is currently out of stock
+                            <div class="stock-holder">
+                               <span class="outof-stock"> This product is currently out of stock</span>
                             </div>
                         @endif
                     </form>
                     
                     <div class="description">
+                        <h3>Product Description</h3>
                         {!! $data->desc !!}
                     </div>
                 </div>
@@ -404,7 +415,7 @@
     $(document).ready(function () {
 
         if (!$('.quantity-group').find('.stock-error').length) {
-            $('.quantity-group').append('<div class="stock-error text-danger mt-2" style="font-size: 14px;"></div>');
+            $('.quantity-group').append('<div class="stock-error text-danger mt-2"></div>');
         }
     
         let selectedStock = parseInt($('input[name="variation"]:checked').data('stock')) || 0;
