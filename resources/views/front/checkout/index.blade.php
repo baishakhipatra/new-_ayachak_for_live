@@ -439,11 +439,10 @@
                     method: "POST",
                     data: $('#checkoutForm').serialize(),
                     success: function (response) {
+                        console.log(response);  
                         if (response.success) {
                             window.location.href = response.redirect_url;
-                        } else {
-                            alert(response.message || "Something went wrong, please try again.");
-                        }
+                        } 
                     }
                 });
             }

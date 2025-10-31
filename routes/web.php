@@ -66,7 +66,8 @@ Route::name('front.')->group(function () {
     Route::prefix('checkout')->name('checkout.')->group(function () {
         Route::get('/', 'Front\CheckoutController@index')->name('index');
         Route::post('/store', 'Front\CheckoutController@store')->name('store');
-        Route::get('/payment', 'Front\CheckoutController@payment')->name('payment');
+       // Route::get('/payment', 'Front\CheckoutController@payment')->name('payment');
+        Route::get('/payment/{checkoutId}', 'Front\CheckoutController@initiatePaymentMethod')->name('payment');
         Route::post('/payment/complete', 'Front\CheckoutController@paymentStore')->name('payment.store');
         Route::view('/complete', 'front.checkout.complete')->name('complete');
 
