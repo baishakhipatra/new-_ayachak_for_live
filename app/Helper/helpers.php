@@ -39,7 +39,7 @@ use Illuminate\Support\Facades\Auth;
     //     }
     // }
 
-// send mail helper
+    // send mail helper
     function SendMail($data)
     {
         $mail_from = (isset($data['from']) && !empty($data['from']))

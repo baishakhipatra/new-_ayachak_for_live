@@ -1,231 +1,178 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Invoice #{{ $order->order_no }}</title>
+  <title>Ayachak Ashram - Invoice</title>
   <meta charset="utf-8">
-  <style>
-      body {
-          font-family: 'Segoe UI', Arial, sans-serif;
-          font-size: 13px;
-          color: #333;
-          margin: 0;
-          padding: 20px;
-          background: #f8f9fa;
-      }
-      .invoice-box {
-          background: #fff;
-          padding: 25px;
-          border-radius: 8px;
-          box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      }
-      h2 {
-          margin: 0;
-          font-size: 20px;
-          color: #444;
-      }
-      .header {
-          display: flex;
-          justify-content: space-between;
-          align-items: flex-start;
-      }
-      .header-left {
-          max-width: 60%;
-      }
-      .header-right {
-          text-align: right;
-      }
-      hr {
-          border: none;
-          border-top: 1px solid #ddd;
-          margin: 20px 0;
-      }
-      .addresses {
-          display: flex;
-          justify-content: space-between;
-          margin-top: 10px;
-      }
-      .address {
-          width: 48%;
-          line-height: 1.5;
-      }
-      .address strong {
-          display: block;
-          margin-bottom: 5px;
-          text-decoration: underline;
-      }
-      table {
-          width: 100%;
-          border-collapse: collapse;
-          margin-top: 20px;
-      }
-      table th, table td {
-          border: 1px solid #ddd;
-          padding: 8px 10px;
-      }
-      table th {
-          background: #f1f1f1;
-          font-weight: 600;
-          text-align: left;
-      }
-      table td.text-end, th.text-end {
-          text-align: right;
-      }
-      tfoot th {
-          background: #fafafa;
-      }
-      .footer {
-          display: flex;
-          justify-content: space-between;
-          margin-top: 30px;
-      }
-      .amount-in-words {
-          font-style: italic;
-          font-size: 12px;
-          color: #555;
-      }
-      .signature {
-          text-align: right;
-      }
-  </style>
 </head>
 <body>
-<div class="invoice-box">
-    <!-- Header -->
-    <div class="header">
-        <div class="header-left">
-            <h2>Invoice</h2>
-            <p><strong>Sold By / Billed From:</strong><br>
-                Ayachak Ashrama<br>
-                <strong>Head Office</strong><br>
-                GURU-DHAM, P-238, Swami Swarupananda Sarani<br>
-                P.O. - Kankurgachi, Kolkata-700054<br>
-                Phone: 2320-8455 / 5559
-            </p>
+  <style>
+    .invoice-container-inner {
+        /* padding: 20px; */
+        border: 1px solid #ccc;
+    }
+    .invoice-container {
+      width: 100%;
+      margin: 20px auto;
+      font-family: Arial, sans-serif;
+    }
+    .invoice-header {
+        display: flex;
+        column-gap: 25px;
+        justify-content: space-between;
+    }
+    .address-part {
+        max-width: 50%;
+        flex:0 0 50%;
+    }
+    .invoice-logo-part {
+        max-width: 50%;
+        flex:0 0 50%;
+    }
+    .address-part h3 {
+        font-size: 15px;
+        margin-top: 0;
+    }
+    .invoice-body {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+    .invoice-body h3  {
+        font-size: 15px;
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+    table{
+        width:100%;
+        text-align: left;
+        border-collapse: collapse;
+    }
+    table th, table td {
+        padding: 9px;
+    }
+    p{
+        margin-top: 0;
+    }
+    @media print {
+        body * {
+            visibility: hidden;
+        }
+        .invoice-container, .invoice-container * {
+            visibility: visible;
+        }
+    }
+  </style>
+  
+    <div class="invoice-container">
+        <h4 style="text-align: center; font-size: 25px; margin-bottom: 6px;">Tax Invoice</h4>
+        <span style="font-size: 15px; display: block; text-align: right; margin-bottom: 16px;">Original / Duplocate Copy</span>
+        <div class="invoice-container-inner">
+            <table>
+                <thead style="vertical-align:top;">
+                    <tr>
+                        <th style="width:306px;">
+                            <h3 style="margin-bottom: 2px; line-height: 1.2; margin-top: 0;">AYACHAK BIPANI</h3>
+                            <p style="margin-top: 0; font-weight: 400;">( A Unit of Ayachak Ashrama )</p>
+                            <h4 style="font-weight: bold; margin-bottom: 6px;">GURUDHAM</h4>
+                            <p style="margin-top: 0; margin-bottom: 3px; font-weight: 400;">P-238, Swami Swarupananda Sarani</p>
+                            <p style="margin-top: 0; margin-bottom: 3px; font-weight: 400;">Kankurgachi, Kolkata-700054</p>
+                            <p style="margin-top: 0; margin-bottom: 3px; font-weight: 400;">GST-19AAAAA1519K1ZW, State: West Bengal</p>
+                        </th>
+                        <th style="width:200px;">
+                            <h3 style="margin:0; line-height: 1.2;">Invoice No.</h3>
+                        </th>
+                        <th style="width:150px;">
+                            <h3 style="margin:0; line-height: 1.2;">Dated.</h3>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="3" style="padding: 0; vertical-align:top;">
+
+                            <table style="padding-top:17px; margin-top:17px; min-height: 140px; vertical-align:top; border-top:1px solid #ccc;">
+                                <tr>
+                                    <td style="width:306px; vertical-align:top;">
+                                        <strong style="font-size: 14px; margin-bottom: 4px; display: block;"> {{ ucwords($order->fname) }} {{ ucwords($order->lname) }}</strong>
+                                        <p style="font-size: 13px;">{{ ucwords($order->fname) }} {{ $order->lname }}<br>
+                                            {{ ucwords($order->shipping_address) ?? ucwords($order->billing_address) }}, 
+                                            {{ ucwords($order->shipping_city) ?? ucwords($order->billing_city) }}<br>
+                                            {{ ucwords($order->shipping_state) ?? ucwords($order->billing_state) }}, 
+                                            {{ ucwords($order->shipping_country) ?? ucwords($order->billing_country) }}<br>
+                                            Landmark: {{ ucwords($order->billing_landmark) }}<br>
+                                            Alt. Phone: {{ $order->mobile }}</p>
+                                    </td>
+                                    <td style="vertical-align:top; width:200px; font-size: 13px;">{{ $order->order_no }}</td>
+                                    <td style="vertical-align:top; width:150px; font-size: 13px;">{{ $order->created_at->format('d-M-Y') }}</td>
+                                </tr>
+                            </table>
+
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="invoice-body">
+                <table style="border:1px solid #ccc;">
+                    <thead>
+                        <tr>
+                            <th style="border:1px solid #ccc;"><h3 style="margin:0; line-height: 1.2;">Description of goods</h3></th>
+                            <th style="border:1px solid #ccc;"><h3 style="margin:0; line-height: 1.2;">HSN/SAC</h3></th>
+                            <th style="border:1px solid #ccc;"><h3 style="margin:0; line-height: 1.2;">Quentity</h3></th>
+                            <th style="border:1px solid #ccc;"><h3 style="margin:0; line-height: 1.2;">Rate</h3></th>
+                            <th style="border:1px solid #ccc;"><h3 style="margin:0; line-height: 1.2;">Amount</h3></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($order->orderProducts as $product)
+                        <tr style="border-bottom:1px solid #ccc;">
+                            <td style="vertical-align: top; width:200px; font-size: 13px; border:1px solid #ccc;">
+                                {{ $product->product_name }}
+                            </td>
+                            <td style="vertical-align: top; width:100px; font-size: 13px; border:1px solid #ccc;">
+                                {{$product->productDetails->style_no ?? '-'}}
+                            </td>
+                            <td style="vertical-align: top; width:100px; font-size: 13px; border:1px solid #ccc;">
+                                {{ $product->qty }}
+                            </td>
+                            <td style="vertical-align: top; width:100px; font-size: 13px; border:1px solid #ccc;">
+                               ₹{{ $product->amount }}
+                            </td>
+                            <td style="vertical-align: top; width:100px; font-size: 13px; border:1px solid #ccc;">₹{{ number_format($product->total,2) }}</td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+                <table style="margin-top: 34px;">
+                    <tr>
+                        <td style="width: 50%; vertical-align: top;">
+                            <strong style="text-decoration: underline; display: inline-block; margin-bottom: 6px;">Declarnation</strong>
+                            <p>We declare that this invoice shows the actual price of the goods described and that
+                                all particulars are true and correct. All subject to Kolkata Jurisdiction <br>
+                                Hours: 11 a.m to 6 p.m. (Monday Closed) 
+                            </p>
+                        </td>
+                        <td style="border:1px solid #ccc; vertical-align: top; border-bottom: 0; border-right: 0;">
+                            <div style="height: 100%; display: flex; justify-content: space-between; flex-direction: column; height: 150px;">
+                                <p style="text-align: right; font-size: 13px;">E. &. O. E for AYACHAK BIPANI</p>
+
+                                <p style="text-align: right; font-size: 13px; margin-bottom: 4px;">Authorised Signature</p>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
         </div>
-        <div class="header-right">
-            <p>
-                <strong>Invoice Number:</strong> {{ $order->order_no }}<br>
-                <strong>Invoice Date:</strong> {{ $order->created_at->format('d-M-Y') }}
-            </p>
-        </div>
-    </div>
-
-    <hr>
-
-    <!-- Billing & Shipping -->
-    <div class="addresses">
-        <div class="address">
-            <strong>Bill To</strong>
-            {{ ucwords($order->fname) }} {{ ucwords($order->lname) }}<br>
-            {{ ucwords($order->billing_address) }}, {{ ucwords($order->billing_city) }}<br>
-            {{ ucwords($order->billing_state) }}, {{ ucwords($order->billing_country) }}<br>
-            Landmark: {{ ucwords($order->billing_landmark) }}<br>
-            Phone: {{ $order->mobile }}
-        </div>
-        <div class="address">
-            <strong>Ship To</strong>
-            {{ ucwords($order->fname) }} {{ $order->lname }}<br>
-            {{ ucwords($order->shipping_address) ?? ucwords($order->billing_address) }}, 
-            {{ ucwords($order->shipping_city) ?? ucwords($order->billing_city) }}<br>
-            {{ ucwords($order->shipping_state) ?? ucwords($order->billing_state) }}, 
-            {{ ucwords($order->shipping_country) ?? ucwords($order->billing_country) }}<br>
-            Landmark: {{ ucwords($order->billing_landmark) }}<br>
-            Alt. Phone: {{ $order->alt_mobile }}
-        </div>
-    </div>
-
-    <!-- Items -->
-    <table>
-        <thead>
-        <tr>
-            <th>#</th>
-            <th>Product</th>
-            <th>Qty</th>
-            <th class="text-end">Price</th>
-            <th class="text-end">Taxable Value</th>
-            <th class="text-end">CGST (INR)</th>
-            <th class="text-end">SGST (INR)</th>
-            <th class="text-end">IGST (INR)</th>
-            <th class="text-end">Total (INR)</th>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach($order->orderProducts as $product)
-            @php
-                $gstPercent = $product->gst;
-                $gstAmount = $product->gst_amount;
-
-                $cgst = 0;
-                $sgst = 0;
-                $igst = 0;
-
-                $cgstPercent = 0;
-                $sgstPercent = 0;
-                $igstPercent = 0;
-
-                if(strtolower($order->shipping_state) == 'west bengal') {
-                    $cgst = $gstAmount / 2;
-                    $sgst = $gstAmount / 2;
-
-                    $cgstPercent = $gstPercent /2;
-                    $sgstPercent = $gstPercent/2;
-                } else {
-                    $igst = $gstAmount;
-                    $igstPercent = $gstPercent;
-                }
-            @endphp
+        <table>
             <tr>
-                <td>{{ $loop->iteration }}</td>
-                <td>{{ $product->product_name }}</td>
-                <td>{{ $product->qty }}</td>
-                <td class="text-end">{{ number_format($product->total, 2) }}</td>
-                <td class="text-end">{{ number_format(($product->total) - ($product->gst_amount),2) }}</td>
-                {{-- <td class="text-end">{{ number_format($product->gst_amount,2) }}</td> --}}
-                <td class="text-end">{{ number_format($cgst,2) }} 
-                @if($cgstPercent > 0)
-                    <small class="text-muted">({{ rtrim(rtrim(number_format($cgstPercent, 2), '0'), '.') }}%)</small>
-                @endif</td>
-                <td class="text-end">{{ number_format($sgst,2) }}
-                @if($sgstPercent > 0)
-                    <small class="text-muted">({{ rtrim(rtrim(number_format($sgstPercent, 2), '0'), '.') }}%)</small>
-                @endif
+                <td style="font-size: 13px;">
+                    GST-19AAAAA1519K1ZW
                 </td>
-                <td class="text-end">{{ number_format($igst,2) }}
-                @if($igstPercent > 0)
-                    <small class="text-muted">({{ rtrim(rtrim(number_format($igstPercent, 2), '0'), '.') }}%)</small>
-                @endif
-                </td>
-                <td class="text-end">{{ number_format($product->total,2) }}</td>
+                <td style="font-size: 13px;">JOY GURU. This is a Computer generated invoice <br>
+                Cheque should be given infavour if Ayachak Bipani</td>
             </tr>
-        @endforeach
-        </tbody>
-        <tfoot>
-        <tr>
-            <th colspan="8" class="text-end">Grand Total</th>
-            <th class="text-end">{{ number_format($order->amount, 2) }}</th>
-        </tr>
-        <tr>
-            <th colspan="8" class="text-end">Discount</th>
-            <th class="text-end">- {{ number_format($order->discount_amount, 2) }}</th>
-        </tr>
-        <tr>
-            <th colspan="8" class="text-end">Final Amount</th>
-            <th class="text-end">{{ number_format($order->final_amount, 2) }}</th>
-        </tr>
-        </tfoot>
-    </table>
-
-    <!-- Footer -->
-    <div class="footer">
-        <div>
-            <p class="amount-in-words">Amount Chargeable (in words):<br>
-                INR {{ amountInWords($order->final_amount) }} Only</p>
-        </div>
-        <div class="signature">
-            <strong>Authorized Signatory</strong>
-            ____________________
-        </div>
+        </table>
     </div>
-</div>
+
+
 </body>
 </html>

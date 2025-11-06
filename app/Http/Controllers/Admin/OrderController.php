@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class OrderController extends Controller
 {
@@ -193,9 +194,28 @@ class OrderController extends Controller
         $hasActive = OrderProduct::where('order_id', $ord_product->order_id)
                                     ->where('status', '!=',$request->status )
                                     ->exists();
-
         if (!$hasActive) {
-            Order::where('id', $ord_product->order_id)->update(['status' => $request->status]);
+            $order = Order::find($ord_product->order_id);
+            $order->status = $request->status;
+            $order->save();
+
+            if ($request->status == 2) {
+                $view = 'admin.mail.confirm_mail';
+                $subject = 'Your Order is Confirmed';
+            } elseif ($request->status == 3) {
+                $view = 'admin.mail.shipped_mail';
+                $subject = 'Your Order is Shipped';
+            } elseif ($request->status == 5) {
+                $view = 'admin.mail.cancelled_mail';
+                $subject = 'Your Order is Cancelled';
+            }
+
+            Mail::send($view, [
+                'order' => $order,
+                'products' => $order->orderProducts
+            ], function ($message) use ($order, $subject) {
+                $message->to($order->email)->subject($subject);
+            });
         }
 
         if ($statusUpdated) {

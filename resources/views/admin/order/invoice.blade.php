@@ -1,4 +1,4 @@
-    @extends('admin.layouts.app')
+@extends('admin.layouts.app')
 
 @section('page', 'Order Invoice')
 
@@ -16,7 +16,6 @@
         <div class="col-12">
             <div class="card shadow-sm">
                 <div class="card-body printDiv">
-
                     <div class="d-flex justify-content-between">
                         <div>
                             <strong>Sold By / Billed From:</strong><br>
@@ -159,6 +158,7 @@
                     <a href="javascript:void(0)" class="btn btn-primary btn-sm" onclick="printInvoice()">Print</a>
                 </div>
             </div>
+
         </div>
     </div>
 </section>

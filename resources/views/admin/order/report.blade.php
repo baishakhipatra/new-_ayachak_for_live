@@ -73,7 +73,6 @@
                     <th>Order</th>
                     <th>Customer</th>
                     <th>Total Amount</th>
-                    <th>Paid Amount</th>
                     <th>Payment Status</th>
                     <th>Payment Type</th>
                     <th>Date</th>
@@ -131,41 +130,6 @@
                                 @endif
                             </td>
                             
-                            @if ($trans)
-                            @php
-                                $getPaymentResp = getPaymentResp($trans->online_payment_id);
-                                $paymentStatus = $getPaymentResp->status;
-                                $paymentAmount = $getPaymentResp->amount/100;
-                            @endphp
-                            @endif
-                            <td>
-                                @if ($item->payment_method == "online_payment")
-									@if ($trans)
-									<span class="text-dark mb-2 fw-bold">
-										<p class="small text-dark mb-1">&#8377; {{ number_format($paymentAmount) }} 
-									</span>
-									@endif
-                                @elseif($item->payment_method == "cash_on_delivery")
-									
-											@if($item->address_type=='ho')
-												<span class="text-dark mb-2 fw-bold">
-													<p class="small text-dark mb-1">&#8377;{{ number_format(($item->final_amount)-($item->shipping_charges)) ?? ''}}
-												</span>
-											@elseif($item->address_type=='dankuni')
-												<span class="text-dark mb-2 fw-bold">
-													<p class="small text-dark mb-1">&#8377;{{ number_format(($item->final_amount)-($item->shipping_charges)) ?? ''}}
-												</span>
-											 @else
-											<span class="text-dark mb-2 fw-bold">
-												<p class="small text-dark mb-1">&#8377;{{ number_format($item->final_amount) }}
-											</span>
-											@endif
-						         		
-								@else
-								<span>Transaction not captured</span>
-								@endif
-                              
-                            </td>
                             <td>
                                 @if ($item->payment_method == "online_payment")<span class="btn btn-sm btn-secondary">{{$paymentStatus}}</span>@endif
                             </td>

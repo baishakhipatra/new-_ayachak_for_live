@@ -79,7 +79,7 @@ class ProductController extends Controller
             "meta_title" => "nullable",
             "meta_desc" => "nullable",
             "meta_keyword" => "nullable",
-            "style_no" => "nullable|unique:products",
+            "style_no" => "required",
             "image" => "required|mimes:jpg,jpeg,png,svg,gif,webp|max:10000000",
             'gst' => 'nullable|regex:/^[^\+\-\&\%]+$/',
 
@@ -210,7 +210,7 @@ class ProductController extends Controller
             "meta_title" => "nullable|string",
             "meta_desc" => "nullable|string",
             "meta_keyword" => "nullable|string",
-            "style_no" => "nullable|string|unique:products,style_no,".$request->product_id,
+            "style_no" => "required|string".$request->product_id,
             "image" => "nullable|mimes:jpg,jpeg,png,svg,gif,webp|max:10000000",
             "size_chart_image" => "nullable|mimes:jpg,jpeg,png,svg,gif,webp|max:10000000",
             'gst' => 'nullable|regex:/^[^\+\-\&\%]+$/',

@@ -118,8 +118,7 @@
                     @endphp
                     @endif
                     <td>
-                        @if($trans) {{$trans->online_payment_id}}@endif
-                      
+                        @if($trans) {{$trans->online_payment_id}}@endif                      
                     </td>
                    
                     <td>  
@@ -154,10 +153,12 @@
                         @endif
                     </td>
                     <td>
+						
 						@if(!empty($paymentStatus))
                         @if ($item->payment_method == "online_payment")<span class="btn btn-sm btn-secondary">{{$paymentStatus}}</span>
 						@endif
 						@endif
+                        {{-- {{$item->payment_method}} --}}
                     </td>
                    
                     <td>
@@ -330,8 +331,5 @@
                 return false;
             }
         }
-
-
-        
     </script>
 @endsection

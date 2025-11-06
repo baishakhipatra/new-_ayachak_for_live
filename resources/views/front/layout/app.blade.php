@@ -32,7 +32,7 @@
    toastr.options = {
         "closeButton": true,
         "progressBar": true,
-        "positionClass": "toast-bottom-right", // 🔥 Change position here
+        "positionClass": "toast-bottom-right", 
         "timeOut": "5000"
     }
       @if(session('success'))

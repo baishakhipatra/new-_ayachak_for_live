@@ -126,7 +126,7 @@
                             <content>
                                 <div class="row mb-2 align-items-center">
                                     <div class="col-3">
-                                        <label for="inputPassword6" class="col-form-label">Product No</label>
+                                        <label for="inputPassword6" class="col-form-label">HSN/SAC No</label>
                                     </div>
                                     <div class="col-9">
                                         <input type="text" id="inputprice6" class="form-control" aria-describedby="priceHelpInline" name="style_no" value="{{old('style_no')}}">

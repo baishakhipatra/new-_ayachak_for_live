@@ -340,80 +340,80 @@ class CheckoutController extends Controller
     //     }
     // }
 
-    public function initiatePaymentMethod($amount,$email,$mobile){
-        try{
-            $user = auth()->user();
-        do {
-            $order_id = uniqid('ORD'); // generate something like ORD671FA5C8F12A9
-        } while (Checkout::where('transaction_id', $order_id)->exists());
-        //    dd($order_id);
-        $merchantId = env('ICICI_MERCHANT_ID');
-        $aggregatorID = env('ICICI_AGGREGATOR_ID');
-        $data = [
-            "addlParam1"       => "Test1",
-            "addlParam2"       => "Test2",
-            "aggregatorID"     => env('ICICI_AGGREGATOR_ID'),  // Add this to .env
-            "amount"           => number_format($amount, 2, '.', ''),
-            "currencyCode"     => "356",
-            "customerEmailID"  => $email,
-            "customerMobileNo" => "91".$mobile,
-            "merchantId"       => env('ICICI_MERCHANT_ID'),
-            "merchantTxnNo"    => $order_id,
-            "payType"          => "0",
-            "returnURL"        => secure_url('api/customer/icici/thankyou'),
-            "transactionType"  => "SALE",
-            "txnDate"          => date('YmdHis'),
-        ];
-        ksort($data);
-        $plainHashText = implode('', array_values($data));
-            $secretKey = env('ICICI_MERCHANT_SECRET_KEY');
-        $data['secureHash'] = hash_hmac('sha256', $plainHashText, $secretKey);
+    // public function initiatePaymentMethod($amount,$email,$mobile){
+    //     try{
+    //         $user = auth()->user();
+    //     do {
+    //         $order_id = uniqid('ORD'); 
+    //     } while (Checkout::where('transaction_id', $order_id)->exists());
+    //     //    dd($order_id);
+    //     $merchantId = env('ICICI_MERCHANT_ID');
+    //     $aggregatorID = env('ICICI_AGGREGATOR_ID');
+    //     $data = [
+    //         "addlParam1"       => "Test1",
+    //         "addlParam2"       => "Test2",
+    //         "aggregatorID"     => env('ICICI_AGGREGATOR_ID'),  
+    //         "amount"           => number_format($amount, 2, '.', ''),
+    //         "currencyCode"     => "356",
+    //         "customerEmailID"  => $email,
+    //         "customerMobileNo" => "91".$mobile,
+    //         "merchantId"       => env('ICICI_MERCHANT_ID'),
+    //         "merchantTxnNo"    => $order_id,
+    //         "payType"          => "0",
+    //         "returnURL"        => secure_url('api/customer/icici/thankyou'),
+    //         "transactionType"  => "SALE",
+    //         "txnDate"          => date('YmdHis'),
+    //     ];
+    //     ksort($data);
+    //     $plainHashText = implode('', array_values($data));
+    //         $secretKey = env('ICICI_MERCHANT_SECRET_KEY');
+    //     $data['secureHash'] = hash_hmac('sha256', $plainHashText, $secretKey);
 
-        $ch = curl_init(env('ICICI_PAYMENT_INITIATE_BASH_URL'));
-        //dd($ch);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'Content-Type: application/json'
-        ]);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+    //     $ch = curl_init(env('ICICI_PAYMENT_INITIATE_BASH_URL'));
+    //     //dd($ch);
+    //     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    //     curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    //         'Content-Type: application/json'
+    //     ]);
+    //     curl_setopt($ch, CURLOPT_POST, true);
+    //     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
 
-        $response = curl_exec($ch);
+    //     $response = curl_exec($ch);
 
-        if (curl_errno($ch)) {
-            $error = curl_error($ch);
-            curl_close($ch);
-            return response()->json(['error' => $error], 500);
-        }
+    //     if (curl_errno($ch)) {
+    //         $error = curl_error($ch);
+    //         curl_close($ch);
+    //         return response()->json(['error' => $error], 500);
+    //     }
 
-        curl_close($ch);
-        $InitiateSaleResponse = json_decode($response, true);
-       // dd($InitiateSaleResponse);
+    //     curl_close($ch);
+    //     $InitiateSaleResponse = json_decode($response, true);
+    //    // dd($InitiateSaleResponse);
 
-        if (isset($response['redirectUrl'])) {
-            // store transaction in DB
-            Transaction::create([
-                'user_id' => $user->id,
-                'order_id' => $order_id,
-                'transaction' => $order_id,
-                'amount' => $amount,
-                'currency' => 'INR',
-                'method' => 'ICICI',
-                'description' => 'ICICI Payment Initiated',
-                'bank' => '',
-                'upi' => '',
-                'status' => 0,
-            ]);
-            return redirect($response['redirectUrl']);
-        }
-        }catch (\Throwable $e) {
-            // Log the error for debugging
-            \Log::error('ICICI Payment Initiation Failed: ' . $e->getMessage());
-            dd($e->getMessage());
-            // Return error response or redirect
-            return back()->with('error', 'Something went wrong while initiating payment. Please try again later.');
-        }
-    }
+    //     if (isset($response['redirectUrl'])) {
+    //         // store transaction in DB
+    //         Transaction::create([
+    //             'user_id' => $user->id,
+    //             'order_id' => $order_id,
+    //             'transaction' => $order_id,
+    //             'amount' => $amount,
+    //             'currency' => 'INR',
+    //             'method' => 'ICICI',
+    //             'description' => 'ICICI Payment Initiated',
+    //             'bank' => '',
+    //             'upi' => '',
+    //             'status' => 0,
+    //         ]);
+    //         return redirect($response['redirectUrl']);
+    //     }
+    //     }catch (\Throwable $e) {
+    //         // Log the error for debugging
+    //         \Log::error('ICICI Payment Initiation Failed: ' . $e->getMessage());
+    //         dd($e->getMessage());
+    //         // Return error response or redirect
+    //         return back()->with('error', 'Something went wrong while initiating payment. Please try again later.');
+    //     }
+    // }
 
     public function payment(Request $request)
     {
